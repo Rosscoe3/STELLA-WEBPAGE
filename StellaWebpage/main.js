@@ -15,9 +15,9 @@ visibleGradient.addColorStop(0.5, "rgba(255, 255, 0, 0.75)");
 visibleGradient.addColorStop(0.75, "rgba(255, 102, 0, 0.75)");
 visibleGradient.addColorStop(1, "rgba(255, 0, 0, 0.75)");
 
-let infraredGradient = ctx.createLinearGradient(0, 0, 0, 500);
-infraredGradient.addColorStop(0, "rgba(58, 123, 213, 1)");
-infraredGradient.addColorStop(1, "rgba(0, 210, 255, 0)");
+let infraredGradient = ctx.createLinearGradient(0, 0, 800, 0);
+infraredGradient.addColorStop(0, "rgba(255, 0, 0, 1)");
+infraredGradient.addColorStop(1, "rgba(173, 173, 173, 0.25)");
 
 //** FILE DROP JS */
 let dropArea = document.getElementById('drop-area');
@@ -31,52 +31,84 @@ let uploadNew = document.getElementById("newFile");
 //** VARIOUS VARIABLES */
 var RESOURCE_LOADED = false;
 
-const labels = [
-  '450',
-  '500',
-  '550',
-  '570',
-  '600',
-  '610',
-  '650',
-  '680',
-  '730',
-  '760',
-  '810',
-  '860',
-];
+var visibleStartData = [2.4, 2.6, 2.2, 1.9, 2.0, 1.8];
+var infraredStartData = [5.4, 5.0, 5.4, 6.5, 5.0, 4.3];
 
-var visibleData = [2.4, 2.6, 2.2, 1.9, 2.0, , 1.8, , , , , ];
-var infraredData = [, , , , , 5.4, , 5.0, 5.4, 6.5, 5.0, 4.3];
 var visible = [...Array(1)].map(e => Array(1));
 var infrared = [...Array(1)].map(e => Array(1));
 
 var data = {
-  labels, 
+  // labels,
   datasets: [
     {
-      data: visibleData,
+      data: [{
+        x: 450,
+        y: visibleStartData[0],
+      },
+      {
+        x: 500,
+        y: visibleStartData[1],
+      },
+      {
+        x: 550,
+        y: visibleStartData[2],
+      },
+      {
+        x: 570,
+        y: visibleStartData[3],
+      },
+      {
+        x: 600,
+        y: visibleStartData[4],
+      },
+      {
+        x: 650,
+        y: visibleStartData[5],
+      }],
+      showLine: true,
       label: "Visible",
       fill: true,
       backgroundColor: visibleGradient,
       borderColor: "#fff", 
       pointBackgroundColor: 'rgb(189, 195, 199)',
-      tension: 0.01,
     },
     {
-      data: infraredData,
+      data: [{
+        x: 610,
+        y: infraredStartData[0],
+      },
+      {
+        x: 680,
+        y: infraredStartData[1],
+      },
+      {
+        x: 730,
+        y: infraredStartData[2],
+      },
+      {
+        x: 760,
+        y: infraredStartData[3],
+      },
+      {
+        x: 810,
+        y: infraredStartData[4],
+      },
+      {
+        x: 860,
+        y: infraredStartData[5],
+      }],
+      showLine: true,
       label: "Infrared",
       fill: true,
       backgroundColor: infraredGradient,
       borderColor: "#fff", 
       pointBackgroundColor: 'rgb(189, 195, 199)',
-      tension: 0.01,
     },
   ], 
 };
 
 const config = {
-  type: 'line', 
+  type: 'scatter', 
   data: data, 
   options: {
     radius: 3,
@@ -108,7 +140,16 @@ const config = {
       y:{
         ticks: {
           callback: function (value){
-            return value + "nm";
+            return value + " uW/cm^2";
+          }
+        }
+      }, 
+      x:{
+        type: 'linear',
+        position: 'bottom',
+        ticks: {
+          callback: function (value){
+            return value + " nm";
           }
         }
       }
@@ -156,15 +197,58 @@ function updateChart()
     {
       dataTimeIndex = 0;
     }
-  
-    visibleData = [visible[dataTimeIndex][0], visible[dataTimeIndex][1], visible[dataTimeIndex][2], visible[dataTimeIndex][3], visible[dataTimeIndex][4], , visible[dataTimeIndex][5], , , , , ];
-    infraredData = [, , , , , infrared[dataTimeIndex][0], , infrared[dataTimeIndex][1], infrared[dataTimeIndex][2], infrared[dataTimeIndex][3], infrared[dataTimeIndex][4], infrared[dataTimeIndex][5]];
-  
-    // visibleData = [visible[0][0], visible[1][1], visible[1][2], visible[1][3], visible[1][4], , visible[1][5], , , , , ];
-    // infraredData = [, , , , , infrared[1][0], , infrared[1][1], infrared[1][2], infrared[1][3], infrared[1][4], infrared[1][5]];
-  
-    myChart.data.datasets[0].data = visibleData;
-    myChart.data.datasets[1].data = infraredData;
+
+    myChart.data.datasets[0].data = [
+    {
+      x: 450,
+      y: visible[dataTimeIndex][0],
+    },
+    {
+      x: 500,
+      y: visible[dataTimeIndex][1],
+    },
+    {
+      x: 550,
+      y: visible[dataTimeIndex][2],
+    },
+    {
+      x: 570,
+      y: visible[dataTimeIndex][3],
+    },
+    {
+      x: 600,
+      y: visible[dataTimeIndex][4],
+    },
+    {
+      x: 650,
+      y: visible[dataTimeIndex][5],
+    },];
+
+    myChart.data.datasets[1].data = [
+      {
+        x: 610,
+        y: infrared[dataTimeIndex][0],
+      },
+      {
+        x: 680,
+        y: infrared[dataTimeIndex][1],
+      },
+      {
+        x: 730,
+        y: infrared[dataTimeIndex][2],
+      },
+      {
+        x: 760,
+        y: infrared[dataTimeIndex][3],
+      },
+      {
+        x: 810,
+        y: infrared[dataTimeIndex][4],
+      },
+      {
+        x: 860,
+        y: infrared[dataTimeIndex][5],
+      },];
     
     setTimeout(function()
     {
@@ -250,7 +334,7 @@ const handleDrop = (e) => {
       console.log(infrared);
 
       RESOURCE_LOADED = true;
-      updateChart(visible, infrared);
+      updateChart();
     };
   
     //console.log(visible[0][0]);
