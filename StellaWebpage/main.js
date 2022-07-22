@@ -9,7 +9,7 @@ let delayed;
 
 //** GRADIENT FILL */
 let visibleGradient = ctx.createLinearGradient(0, 0, 500, 0);
-visibleGradient.addColorStop(0, "rgba(0, 0, 255, 0.75)");
+visibleGradient.addColorStop(0.1, "rgba(0, 0, 255, 0.75)");
 visibleGradient.addColorStop(0.25, "rgba(0, 255, 0, 0.75)");
 visibleGradient.addColorStop(0.5, "rgba(255, 255, 0, 0.75)");
 visibleGradient.addColorStop(0.75, "rgba(255, 102, 0, 0.75)");
@@ -17,7 +17,7 @@ visibleGradient.addColorStop(1, "rgba(255, 0, 0, 0.75)");
 
 let infraredGradient = ctx.createLinearGradient(0, 0, 800, 0);
 infraredGradient.addColorStop(0, "rgba(255, 0, 0, 1)");
-infraredGradient.addColorStop(1, "rgba(173, 173, 173, 0.25)");
+infraredGradient.addColorStop(1, "rgba(173, 173, 173, 0.75)");
 
 //** FILE DROP JS */
 let dropArea = document.getElementById('drop-area');
@@ -30,6 +30,8 @@ let uploadNew = document.getElementById("newFile");
 
 //** VARIOUS VARIABLES */
 var RESOURCE_LOADED = false;
+var animPlay = true;
+var animWaitFunc;
 
 var visibleStartData = [2.4, 2.6, 2.2, 1.9, 2.0, 1.8];
 var infraredStartData = [5.4, 5.0, 5.4, 6.5, 5.0, 4.3];
@@ -138,26 +140,43 @@ const config = {
     },
     scales: {
       y:{
-        ticks: {
-          callback: function (value){
-            return value + " uW/cm^2";
-          }
+        // ticks: {
+        //   callback: function (value){
+        //     return value + "μW/cm²";
+        //   }
+        // },
+        title: {
+          display: true,
+          text: 'μW/cm²',
+          font: {
+            size: 15
+          },
         }
       }, 
       x:{
         type: 'linear',
         position: 'bottom',
-        ticks: {
-          callback: function (value){
-            return value + " nm";
-          }
-        }
+        // ticks: {
+        //   callback: function (value){
+        //     return value + " nm";
+        //   }
+        // },
+        title: {
+          display: true,
+          text: 'Wavelength (nm)', 
+          align: 'center',
+          font: {
+            size: 15
+          },
+        },
       }
     },
   },
 };
 
 const myChart = new Chart(ctx, config);
+
+graphGradients();
 
 //** INITIALIZES DRAG AND DROP */
 const initApp = () => {
@@ -185,18 +204,59 @@ const initApp = () => {
 
 }
 
-function updateChart()
+function updateChart(backward)
 {
   if(RESOURCE_LOADED)
   {
-    if(dataTimeIndex < visible.length - 1)
+    
+    
+    if(animPlay)
     {
-      dataTimeIndex++;
+      if(dataTimeIndex < visible.length - 1)
+      {
+        dataTimeIndex++;
+      }
+      else
+      {
+        dataTimeIndex = 0;
+      }
     }
     else
     {
-      dataTimeIndex = 0;
+      //** BACKWARDS IN TIMELINE */
+      if(backward)
+      {
+        if(dataTimeIndex < visible.length - 1 && dataTimeIndex > 0)
+        {
+          dataTimeIndex--;
+        }
+        else if(dataTimeIndex == visible.length - 1)
+        {
+          dataTimeIndex--;
+        }
+        else
+        {
+          dataTimeIndex = visible.length - 1;
+        }
+      }
+      //** FORWARDS IN TIMELINE */
+      else if(!backward)
+      {
+        if(dataTimeIndex < visible.length - 1)
+        {
+          dataTimeIndex++;
+        }
+        else
+        {
+          dataTimeIndex = 0;
+        }
+      }
     }
+    
+
+    var progress = (dataTimeIndex/(visible.length-1)) * 100;
+    document.querySelector(".progress__fill").style.width = progress + "%";
+    console.log("PROGRESS: " + progress + " DATA INDEX: " + dataTimeIndex);
 
     myChart.data.datasets[0].data = [
     {
@@ -250,14 +310,32 @@ function updateChart()
         y: infrared[dataTimeIndex][5],
       },];
     
-    setTimeout(function()
+    myChart.update();
+
+    if(animPlay)
     {
-      myChart.update();
-      updateChart();
-      console.log(visible[dataTimeIndex]);
-      console.log("UPDATE: " + dataTimeIndex);
-    }, animationTime);
+      animWaitFunc = setTimeout(function()
+      {
+        updateChart();
+        console.log(visible[dataTimeIndex]);
+        console.log("UPDATE: " + dataTimeIndex);
+        
+      }, animationTime);
+    }
   }
+}
+
+function graphGradients()
+{
+  console.log(myChart.height);
+  
+  visibleGradient = ctx.createLinearGradient(myChart.width/4, 0, myChart.width/4, 0);
+  // visibleGradient.addColorStop(0, "rgba(0, 0, 255, 0.75)");
+  // visibleGradient.addColorStop(0.25, "rgba(0, 255, 0, 0.75)");
+  // visibleGradient.addColorStop(0.5, "rgba(255, 255, 0, 0.75)");
+  visibleGradient.addColorStop(0.75, "rgba(255, 102, 0, 0.75)");
+  visibleGradient.addColorStop(1, "rgba(255, 0, 0, 0.75)");
+  myChart.data.datasets[0].data.backgroundColor = visibleGradient;
 }
 
 document.addEventListener("DOMContentLoaded", initApp);
@@ -354,5 +432,52 @@ uploadNew.addEventListener("click", function (ev)
   document.querySelector('.droparea').classList.toggle("active");
   document.getElementById("chart").classList.toggle("active");
   RESOURCE_LOADED = false;
-
 });
+
+const box = document.querySelector('.box');
+box.addEventListener('click', (e)=>{
+  e.target.classList.toggle('pause');
+
+  if(animPlay)
+  {
+    animPlay = false;
+    clearTimeout(animWaitFunc);
+    console.log("PAUSE");
+  }
+  else
+  {
+    animPlay = true;
+    updateChart();
+    console.log("PLAY");
+  }
+  
+  //clearTimeout(animWaitFunc);
+})
+
+const arrowRight = document.getElementById('arrowRight');
+arrowRight.addEventListener('click', (e)=>{
+  console.log("Right Button");
+  
+  if(animPlay)
+  {
+    animPlay = false;
+    box.classList.toggle('pause');
+  }
+  
+  clearTimeout(animWaitFunc);
+  updateChart(false);
+})
+
+const arrowLeft = document.getElementById('arrowLeft');
+arrowLeft.addEventListener('click', (e)=>{
+  console.log("Left Button");
+  
+  if(animPlay)
+  {
+    animPlay = false;
+    box.classList.toggle('pause');
+  }
+  
+  clearTimeout(animWaitFunc);
+  updateChart(true);
+})

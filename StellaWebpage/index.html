@@ -9,12 +9,30 @@
     <div class="chart" id = "chart">
       <canvas id = "graph">
       </canvas>
-      <div class="newFile" id = "newFile">
-        <b>Upload new file</b>
+      <div class="progressContainer" id="progressContainer">
+        <div class="progress" id="progressBar">
+          <div class="progress__fill" id="progress_fill">
+          </div>
+          
+          <div class="container">
+            <div class="box center pause" id = "playPauseBtn">
+              
+            </div>
+          </div>
+          <div class="arrow right" id="arrowRight">
+
+          </div>
+          <div class="arrow left" id="arrowLeft">
+            
+          </div>
+        </div>
       </div>
     </div>
     
-
+    <div class="newFile" id = "newFile">
+      <b>Upload new file</b>
+    </div>
+    
     <section class="droparea">
         <i class="far fa-images"></i>
         <p><b>Drop your .txt file here</b></p>
