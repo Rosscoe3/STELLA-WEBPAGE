@@ -37,13 +37,14 @@ body{
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 25%;
+  width: 30%;
   max-width: 100%;
   height: 15%;
   border: 4px dashed rgb(184, 184, 184);
   border-radius: 15px;
   transition: all .5s ease;
   opacity: 100%;
+  top: 67%;
 }
 
 .droparea.active {
@@ -132,11 +133,11 @@ body{
   background: rgb(220, 220, 220);
   border-radius: 10px;
   opacity: 100%;
-  transition: all 500ms ease-in-out;
+  transition: all 250ms ease-in-out;
 }
 
 .center{
-	position: absolute;
+	position: inherit;
 	top: 50%;
 	left: 50%;
   
@@ -146,6 +147,7 @@ body{
 .box{
   width: 2vw;
   height: 2vw;
+
   box-sizing: border-box;
   border-style: solid;
   border-width: 1vw 0px 1vw 2vw;
@@ -196,21 +198,72 @@ body{
   -webkit-transform: rotate(45deg);
 }
 
-/* .slideContainer{
-  width: 10%;
-} */
+.boxContainer{
+  position: relative;
+  width: 100%;
+  height: 500%;
+  top: -200%;
+}
+
+.slidecontainer{
+  position: relative;
+  width: 40%;
+  top: 30%;
+  font-family: Arial;
+}
 
 .slider {
-  width: 50%; /* Full-width */
-  height: 25px; /* Specified height */
+  direction: rtl;
+  width: 100%; /* Full-width */
+  height: 10px; /* Specified height */
   background: #d3d3d3; /* Grey background */
   color: white;
   opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
   -webkit-transition: .2s; /* 0.2 seconds transition on hover */
   transition: opacity .2s;
 }
-.range {
-  width: 0;
-  height: 100%;
-  background: #E24F4F;
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+  input[type='range'] {
+    overflow: hidden;
+    border-radius: 25px;
+    -webkit-appearance: none;
+    background-color: rgb(75, 75, 75);
+  }
+  
+  input[type='range']::-webkit-slider-runnable-track {
+    height: 10px;
+    -webkit-appearance: none;
+    color: rgb(220, 220, 220);
+    margin-top: -1px;
+  }
+  
+  input[type='range']::-webkit-slider-thumb {
+    width: 10px;
+    -webkit-appearance: none;
+    height: 110%;
+    cursor: ew-resize;
+    background: rgb(0, 0, 0);
+    box-shadow: -80px 0 0 80px rgb(220, 220, 220);
+  }
+
+}
+/** FF*/
+input[type="range"]::-moz-range-progress {
+background-color: rgb(220, 220, 220);
+}
+input[type="range"]::-moz-range-track {  
+background-color: rgb(75, 75, 75);
+}
+/* IE*/
+input[type="range"]::-ms-fill-lower {
+background-color: rgb(220, 220, 220);
+}
+input[type="range"]::-ms-fill-upper {  
+background-color: rgb(75, 75, 75);
+}
+
+.introGif{
+  position: inherit;
+  width: 100%;
+  bottom: 120%;
 }

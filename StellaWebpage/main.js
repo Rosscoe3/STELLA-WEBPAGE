@@ -27,6 +27,7 @@ let animationTime = 1500;
 
 //** HTML ELEMENTS */
 let uploadNew = document.getElementById("newFile");
+let speedSlider = document.getElementById("myRange");
 
 //** VARIOUS VARIABLES */
 var RESOURCE_LOADED = false;
@@ -481,3 +482,11 @@ arrowLeft.addEventListener('click', (e)=>{
   clearTimeout(animWaitFunc);
   updateChart(true);
 })
+
+//** USED TO CONTROL SPEED OF ANIMATION */
+speedSlider.addEventListener("change", function(e){
+  // Force the string value of the range to a number and then force the 
+  // number to have a single decimal
+  animationTime = 200 * speedSlider.value;
+  console.log(speedSlider.value);
+});
