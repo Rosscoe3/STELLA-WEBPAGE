@@ -40,6 +40,8 @@ var infraredStartData = [5.4, 5.0, 5.4, 6.5, 5.0, 4.3];
 var visible = [...Array(1)].map(e => Array(1));
 var infrared = [...Array(1)].map(e => Array(1));
 
+
+//** DATA SETUP FOR CHARTJS */
 var data = {
   // labels,
   datasets: [
@@ -110,6 +112,7 @@ var data = {
   ], 
 };
 
+//** CONFIG SETUP FOR CHARTJS */
 const config = {
   type: 'scatter', 
   data: data, 
@@ -176,8 +179,6 @@ const config = {
 };
 
 const myChart = new Chart(ctx, config);
-
-graphGradients();
 
 //** INITIALIZES DRAG AND DROP */
 const initApp = () => {
@@ -326,17 +327,27 @@ function updateChart(backward)
   }
 }
 
+graphGradients();
 function graphGradients()
 {
-  console.log(myChart.height);
-  
-  visibleGradient = ctx.createLinearGradient(myChart.width/4, 0, myChart.width/4, 0);
-  // visibleGradient.addColorStop(0, "rgba(0, 0, 255, 0.75)");
-  // visibleGradient.addColorStop(0.25, "rgba(0, 255, 0, 0.75)");
-  // visibleGradient.addColorStop(0.5, "rgba(255, 255, 0, 0.75)");
+  console.log("HEIGHT: " + myChart.height + ", WIDTH: " + myChart.width);
+  console.log(myChart.data.datasets[0].backgroundColor);
+
+  visibleGradient = ctx.createLinearGradient(0, 0, myChart.width/2, 0);
+  visibleGradient.addColorStop(0.1, "rgba(0, 0, 255, 0.75)");
+  visibleGradient.addColorStop(0.25, "rgba(0, 255, 0, 0.75)");
+  visibleGradient.addColorStop(0.5, "rgba(255, 255, 0, 0.75)");
   visibleGradient.addColorStop(0.75, "rgba(255, 102, 0, 0.75)");
   visibleGradient.addColorStop(1, "rgba(255, 0, 0, 0.75)");
-  myChart.data.datasets[0].data.backgroundColor = visibleGradient;
+  
+  infraredGradient = ctx.createLinearGradient(0, 0, myChart.width, 0);
+  infraredGradient.addColorStop(0, "rgba(255, 0, 0, 1)");
+  infraredGradient.addColorStop(1, "rgba(173, 173, 173, 0.75)");
+  
+  myChart.data.datasets[0].backgroundColor = visibleGradient;
+  myChart.data.datasets[1].backgroundColor = infraredGradient;
+
+  myChart.update();
 }
 
 document.addEventListener("DOMContentLoaded", initApp);
@@ -348,73 +359,79 @@ const handleDrop = (e) => {
     const dt = e.dataTransfer;
     const files = dt.files;
     const fileArray = [...files];
-    document.querySelector('.droparea').classList.toggle("active");
-    document.getElementById("chart").classList.toggle("active");
-    newFile.classList.toggle("active");
-  
-    var file = e.dataTransfer.files[0],
-        reader = new FileReader();
     
-    //** WHEN THE DATA FILE IS LOADED */
-    reader.onload = function(event) 
+    var file = e.dataTransfer.files[0],
+    reader = new FileReader();
+
+    if(file.type == "text/plain")
     {
-      //** CLEAR THE ARRAY IF IT IS FULL */  
-      if(dataArray)
+      document.querySelector('.droparea').classList.toggle("active");
+      document.getElementById("chart").classList.toggle("active");
+      newFile.classList.toggle("active");
+      //** WHEN THE DATA FILE IS LOADED */
+      reader.onload = function(event) 
       {
-        dataArray = [];
-      }  
-  
-      //console.log(event.target);
-      const lineSplit = reader.result.split(/\r?\n/);
-      //console.log(lineSplit);
-      
-      for(var i = 0; i < lineSplit.length; i++)
-      {
-        dataArray.push(lineSplit[i].split(","));
-      }
-      //console.log(dataArray);
-  
-      //** SORT DATA TO VISIBLE AND INFRARED */
-      for(var x = 0; x < dataArray.length - 1; x++)
-      {
-        visible[x] = [];
-        infrared[x] = [];
-        //** OFFSET INDEX TO ONLY GRAB VALUES */
-        for(var y = 0; y < dataArray[x].length; y++)
+        //** CLEAR THE ARRAY IF IT IS FULL */  
+        if(dataArray)
         {
-          
-          //** IF EVEN, FOR GETTING THE LABELS */
-          if(y % 2 == 0)
+          dataArray = [];
+        }  
+    
+        //console.log(event.target);
+        const lineSplit = reader.result.split(/\r?\n/);
+        //console.log(lineSplit);
+        
+        for(var i = 0; i < lineSplit.length; i++)
+        {
+          dataArray.push(lineSplit[i].split(","));
+        }
+        //console.log(dataArray);
+    
+        //** SORT DATA TO VISIBLE AND INFRARED */
+        for(var x = 0; x < dataArray.length - 1; x++)
+        {
+          visible[x] = [];
+          infrared[x] = [];
+          //** OFFSET INDEX TO ONLY GRAB VALUES */
+          for(var y = 0; y < dataArray[x].length; y++)
           {
-            //infrared[x].push(dataArray[x][y]);
-          }
-          //** IF ODD, FOR GETTING THE DATA */
-          else
-          {
-            //** VISIBLE */
-            if(y < 12)
+            
+            //** IF EVEN, FOR GETTING THE LABELS */
+            if(y % 2 == 0)
             {
-              visible[x].push(parseFloat(dataArray[x][y]));
+              //infrared[x].push(dataArray[x][y]);
             }
-            //** INFRARED */
+            //** IF ODD, FOR GETTING THE DATA */
             else
             {
-              //** ADD BLANK SPACE TO ARRAY FOR CHART.JS*/
-              infrared[x].push(parseFloat(dataArray[x][y]));
-              //infrared[x].push(parseFloat(dataArray[x][y]));
+              //** VISIBLE */
+              if(y < 12)
+              {
+                visible[x].push(parseFloat(dataArray[x][y]));
+              }
+              //** INFRARED */
+              else
+              {
+                //** ADD BLANK SPACE TO ARRAY FOR CHART.JS*/
+                infrared[x].push(parseFloat(dataArray[x][y]));
+                //infrared[x].push(parseFloat(dataArray[x][y]));
+              }
+              
+              //** IF ODD */
             }
-            
-            //** IF ODD */
           }
         }
-      }
+  
+        console.log(visible);
+        console.log(infrared);
+  
+        RESOURCE_LOADED = true;
+        updateChart();
+        
+      };
+    }
 
-      console.log(visible);
-      console.log(infrared);
-
-      RESOURCE_LOADED = true;
-      updateChart();
-    };
+    
   
     //console.log(visible[0][0]);
   
@@ -482,6 +499,16 @@ arrowLeft.addEventListener('click', (e)=>{
   clearTimeout(animWaitFunc);
   updateChart(true);
 })
+
+//** WINDOW RESIZE EVENT */
+var doit;
+window.onresize = function() {
+  clearTimeout(doit);
+  doit = setTimeout(function() 
+  {
+      graphGradients();
+  }, 1000);
+};
 
 //** USED TO CONTROL SPEED OF ANIMATION */
 speedSlider.addEventListener("change", function(e){

@@ -44,7 +44,7 @@ body{
   border-radius: 15px;
   transition: all .5s ease;
   opacity: 100%;
-  top: 67%;
+  top: 60%;
 }
 
 .droparea.active {
@@ -264,6 +264,6 @@ background-color: rgb(75, 75, 75);
 
 .introGif{
   position: inherit;
-  width: 100%;
+  width: 125%;
   bottom: 120%;
 }
