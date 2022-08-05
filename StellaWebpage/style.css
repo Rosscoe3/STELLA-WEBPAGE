@@ -148,6 +148,7 @@ body{
   width: 2vw;
   height: 2vw;
 
+  opacity: 100%;
   box-sizing: border-box;
   border-style: solid;
   border-width: 1vw 0px 1vw 2vw;
@@ -159,10 +160,16 @@ body{
   border-width:0px 0px 0px 2vw;
 }
 
+.box:hover{
+  opacity: 50%;
+  transition: all 100ms ease-in-out;
+}
+
 .arrow{
   position: inherit;
   top: -10%;
   opacity: 100%;
+  size: 1;
 
   border: solid black;
   border-width: 0 0.3vw 0.3vw 0;
@@ -172,6 +179,7 @@ body{
 }
 
 .arrow:hover{
+  size: 2;
   opacity: 50%;
   transition: all 100ms ease-in-out;
 }
@@ -211,17 +219,39 @@ body{
   top: 30%;
   font-family: Arial;
 }
-
 .slider {
   direction: rtl;
+  position: inherit;
+  right: 1%;
   width: 100%; /* Full-width */
   height: 10px; /* Specified height */
   background: #d3d3d3; /* Grey background */
   color: white;
   opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
   -webkit-transition: .2s; /* 0.2 seconds transition on hover */
-  transition: opacity .2s;
+  transition: all .2s;
 }
+.slider:hover {
+  opacity: 0.5;
+  transition: all .2s;
+}
+.speedLabel{
+  position: absolute;
+  width: fit-content;
+  top: 80%;
+  left: 68%;
+  opacity: 0%;
+
+  font-size: 1.15vw;
+
+  color: rgb(219, 219, 219);
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+}
+.slider:hover ~ .speedLabel{
+  opacity: 100%;
+  transition: all .2s;
+}
+
 @media screen and (-webkit-min-device-pixel-ratio:0) {
   input[type='range'] {
     overflow: hidden;
@@ -243,13 +273,16 @@ body{
     height: 110%;
     cursor: ew-resize;
     background: rgb(0, 0, 0);
-    box-shadow: -80px 0 0 80px rgb(220, 220, 220);
+    box-shadow: -100px 0 0 100px rgb(220, 220, 220);;
   }
 
 }
 /** FF*/
 input[type="range"]::-moz-range-progress {
 background-color: rgb(220, 220, 220);
+}
+input[type="range"]::-moz-range-track {  
+background-color: rgb(75, 75, 75);
 }
 input[type="range"]::-moz-range-track {  
 background-color: rgb(75, 75, 75);
@@ -261,6 +294,18 @@ background-color: rgb(220, 220, 220);
 input[type="range"]::-ms-fill-upper {  
 background-color: rgb(75, 75, 75);
 }
+
+.frameNumber{
+  position: inherit;
+  top: 125%;
+  right: 0%;
+
+  font-size: 1.15vw;
+
+  color: rgb(219, 219, 219);
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+}
+
 
 .introGif{
   position: inherit;

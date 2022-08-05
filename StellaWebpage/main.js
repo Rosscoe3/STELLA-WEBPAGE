@@ -28,6 +28,7 @@ let animationTime = 1500;
 //** HTML ELEMENTS */
 let uploadNew = document.getElementById("newFile");
 let speedSlider = document.getElementById("myRange");
+let frameNumber = document.getElementById("frameNumber");
 
 //** VARIOUS VARIABLES */
 var RESOURCE_LOADED = false;
@@ -118,7 +119,7 @@ const config = {
   data: data, 
   options: {
     radius: 3,
-    hitRadius: 30,
+    hitRadius: 50,
     hoverRadius: 8,
     spanGaps: true,
     responsive: true,
@@ -259,6 +260,7 @@ function updateChart(backward)
     var progress = (dataTimeIndex/(visible.length-1)) * 100;
     document.querySelector(".progress__fill").style.width = progress + "%";
     console.log("PROGRESS: " + progress + " DATA INDEX: " + dataTimeIndex);
+    frameNumber.innerHTML = dataTimeIndex + "/" + (visible.length-1);
 
     myChart.data.datasets[0].data = [
     {
