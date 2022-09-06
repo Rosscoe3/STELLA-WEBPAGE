@@ -22,6 +22,7 @@ infraredGradient.addColorStop(1, "rgba(173, 173, 173, 0.75)");
 //** FILE DROP JS */
 let dropArea = document.getElementById('drop-area');
 let dataArray = [];
+let newDataArray = [];
 let dataTimeIndex = 0;
 let animationTime = 1500;
 
@@ -119,7 +120,7 @@ const config = {
   data: data, 
   options: {
     radius: 3,
-    hitRadius: 50,
+    hitRadius: 20,
     hoverRadius: 8,
     spanGaps: true,
     responsive: true,
@@ -215,7 +216,7 @@ function updateChart(backward)
     
     if(animPlay)
     {
-      if(dataTimeIndex < visible.length - 1)
+      if(dataTimeIndex < newDataArray.length - 1)
       {
         dataTimeIndex++;
       }
@@ -229,23 +230,23 @@ function updateChart(backward)
       //** BACKWARDS IN TIMELINE */
       if(backward)
       {
-        if(dataTimeIndex < visible.length - 1 && dataTimeIndex > 0)
+        if(dataTimeIndex < newDataArray.length - 1 && dataTimeIndex > 0)
         {
           dataTimeIndex--;
         }
-        else if(dataTimeIndex == visible.length - 1)
+        else if(dataTimeIndex == newDataArray.length - 1)
         {
           dataTimeIndex--;
         }
         else
         {
-          dataTimeIndex = visible.length - 1;
+          dataTimeIndex = newDataArray.length - 1;
         }
       }
       //** FORWARDS IN TIMELINE */
       else if(!backward)
       {
-        if(dataTimeIndex < visible.length - 1)
+        if(dataTimeIndex < newDataArray.length - 1)
         {
           dataTimeIndex++;
         }
@@ -257,7 +258,7 @@ function updateChart(backward)
     }
     
 
-    var progress = (dataTimeIndex/(visible.length-1)) * 100;
+    var progress = (dataTimeIndex/(newDataArray.length-1)) * 100;
     document.querySelector(".progress__fill").style.width = progress + "%";
     console.log("PROGRESS: " + progress + " DATA INDEX: " + dataTimeIndex);
     frameNumber.innerHTML = dataTimeIndex + "/" + (visible.length-1);
@@ -265,53 +266,53 @@ function updateChart(backward)
     myChart.data.datasets[0].data = [
     {
       x: 450,
-      y: visible[dataTimeIndex][0],
+      y: newDataArray[dataTimeIndex].V450_power,
     },
     {
       x: 500,
-      y: visible[dataTimeIndex][1],
+      y: newDataArray[dataTimeIndex].B500_power,
     },
     {
       x: 550,
-      y: visible[dataTimeIndex][2],
+      y: newDataArray[dataTimeIndex].G550_power,
     },
     {
       x: 570,
-      y: visible[dataTimeIndex][3],
+      y: newDataArray[dataTimeIndex].Y570_power,
     },
     {
       x: 600,
-      y: visible[dataTimeIndex][4],
+      y: newDataArray[dataTimeIndex].O600_power,
     },
     {
       x: 650,
-      y: visible[dataTimeIndex][5],
+      y: newDataArray[dataTimeIndex].R650_power,
     },];
 
     myChart.data.datasets[1].data = [
       {
         x: 610,
-        y: infrared[dataTimeIndex][0],
+        y: newDataArray[dataTimeIndex].nir610_power,
       },
       {
         x: 680,
-        y: infrared[dataTimeIndex][1],
+        y: newDataArray[dataTimeIndex].nir680_power,
       },
       {
         x: 730,
-        y: infrared[dataTimeIndex][2],
+        y: newDataArray[dataTimeIndex].nir730_power,
       },
       {
         x: 760,
-        y: infrared[dataTimeIndex][3],
+        y: newDataArray[dataTimeIndex].nir760_power,
       },
       {
         x: 810,
-        y: infrared[dataTimeIndex][4],
+        y: newDataArray[dataTimeIndex].nir810_power,
       },
       {
         x: 860,
-        y: infrared[dataTimeIndex][5],
+        y: newDataArray[dataTimeIndex].nir860_power,
       },];
     
     myChart.update();
@@ -321,7 +322,7 @@ function updateChart(backward)
       animWaitFunc = setTimeout(function()
       {
         updateChart();
-        console.log(visible[dataTimeIndex]);
+        console.log(newDataArray[dataTimeIndex]);
         console.log("UPDATE: " + dataTimeIndex);
         
       }, animationTime);
@@ -373,6 +374,11 @@ const handleDrop = (e) => {
       //** WHEN THE DATA FILE IS LOADED */
       reader.onload = function(event) 
       {
+        
+        newDataArray = csvToArray(reader.result);
+        console.log(newDataArray);
+        console.log(newDataArray[0].B500_power);
+        
         //** CLEAR THE ARRAY IF IT IS FULL */  
         if(dataArray)
         {
@@ -423,25 +429,13 @@ const handleDrop = (e) => {
             }
           }
         }
-  
-        console.log(visible);
-        console.log(infrared);
-  
         RESOURCE_LOADED = true;
         updateChart();
         
       };
     }
-
-    
-  
-    //console.log(visible[0][0]);
-  
     console.log(file);
     reader.readAsText(file);
-  
-    //console.log(files); // FileList
-    //console.log(fileArray);
   }
 }
 
@@ -476,7 +470,6 @@ box.addEventListener('click', (e)=>{
 
 const arrowRight = document.getElementById('arrowRight');
 arrowRight.addEventListener('click', (e)=>{
-  console.log("Right Button");
   
   if(animPlay)
   {
@@ -519,3 +512,31 @@ speedSlider.addEventListener("change", function(e){
   animationTime = 200 * speedSlider.value;
   console.log(speedSlider.value);
 });
+
+function csvToArray(str, delimiter = ",") {
+  // slice from start of text to the first \n index
+  // use split to create an array from string by delimiter
+  const headers = str.slice(0, str.indexOf("\n")).split(delimiter);
+  // slice from \n index + 1 to the end of the text
+  // use split to create an array of each csv value row
+  const rows = str.slice(str.indexOf("\n") + 1).split("\n");
+
+  // Map the rows
+  // split values from each row into an array
+  // use headers.reduce to create an object
+  // object properties derived from headers:values
+  // the object passed as an element of the array
+  const arr = rows.map(function (row) {
+    const values = row.split(delimiter);
+    const el = headers.reduce(function (object, header, index) {
+      header = header.replace(/\s/g, "");
+
+      object[header] = values[index];
+      return object;
+    }, {});
+    return el;
+  });
+
+  // return the array
+  return arr;
+}

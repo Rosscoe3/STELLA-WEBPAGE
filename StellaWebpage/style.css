@@ -32,6 +32,7 @@ body{
 
 .droparea {
   position: absolute;
+  pointer-events: auto;
   margin: 1rem auto;
   display: flex;
   flex-direction: column;
@@ -48,6 +49,7 @@ body{
 }
 
 .droparea.active {
+  pointer-events: none;
   opacity: 0%;
   transition: all 2s ease;
 }
@@ -219,6 +221,12 @@ body{
   top: 30%;
   font-family: Arial;
 }
+.timelineSlider{
+  position: relative;
+  width: 40%;
+  top: 30%;
+  font-family: Arial;
+}
 .slider {
   direction: rtl;
   position: inherit;
@@ -268,12 +276,12 @@ body{
   }
   
   input[type='range']::-webkit-slider-thumb {
-    width: 10px;
     -webkit-appearance: none;
+    width: 10px;
     height: 110%;
     cursor: ew-resize;
     background: rgb(0, 0, 0);
-    box-shadow: -100px 0 0 100px rgb(220, 220, 220);;
+    box-shadow: -1000px 0 0 1000px rgb(220, 220, 220);;
   }
 
 }
@@ -305,10 +313,9 @@ background-color: rgb(75, 75, 75);
   color: rgb(219, 219, 219);
   font-family: Avenir, Helvetica, Arial, sans-serif;
 }
-
-
 .introGif{
   position: inherit;
+  pointer-events: none;
   width: 125%;
   bottom: 120%;
 }
