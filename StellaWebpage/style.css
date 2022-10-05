@@ -319,3 +319,11 @@ background-color: rgb(75, 75, 75);
   width: 125%;
   bottom: 120%;
 }
+
+.checkBoxContainer{
+  position: absolute;
+  width: 10%;
+  height: 10%;
+  right: -10%;
+  bottom: 60%;
+}
