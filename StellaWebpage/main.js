@@ -434,6 +434,7 @@ function updateChart(backward)
       },];
     
     console.log(myChart.data.datasets[2].data);
+    
     //** ADD ALL NORMALIZED VALUES TO CURVE, START AT ONE TO AVOID LABELS*/
     let step = 2;
     let cut = 100;
