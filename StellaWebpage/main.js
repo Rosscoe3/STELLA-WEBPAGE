@@ -120,6 +120,7 @@ var data = {
       showLine: true,
       label: "V",
       fill: false,
+      hidden: true,
       backgroundColor: infraredGradient,
       borderColor: "rgb(147,112,219)",
       lineTension: 0.25,  
@@ -134,6 +135,7 @@ var data = {
       showLine: true,
       label: "B",
       fill: false,
+      hidden: true,
       backgroundColor: infraredGradient,
       borderColor: "rgb(0,0,255)",
       lineTension: 0.25,  
@@ -148,6 +150,7 @@ var data = {
       showLine: true,
       label: "G",
       fill: false,
+      hidden: true,
       backgroundColor: infraredGradient,
       borderColor: "rgb(0,255,0)",
       lineTension: 0.25,  
@@ -162,6 +165,7 @@ var data = {
       showLine: true,
       label: "Y",
       fill: false,
+      hidden: true,
       backgroundColor: infraredGradient,
       borderColor: "rgb(255,255,0)",
       lineTension: 0.25,  
@@ -175,6 +179,7 @@ var data = {
       }],
       showLine: true,
       label: "O",
+      hidden: true,
       fill: false,
       backgroundColor: infraredGradient,
       borderColor: "rgb(255,140,0)",
@@ -190,6 +195,7 @@ var data = {
       showLine: true,
       label: "R",
       fill: false,
+      hidden: true,
       backgroundColor: infraredGradient,
       borderColor: "rgb(255,0,0)",
       lineTension: 0.25,  
@@ -197,6 +203,8 @@ var data = {
     },
   ], 
 };
+
+
 
 //** CONFIG SETUP FOR CHARTJS */
 const config = {
@@ -274,7 +282,7 @@ var calibrationArray;
 
 function init()
 {
-  calibrationData = readTextFile("Calibration-visible.csv");
+  calibrationData = readTextFile("/files/Calibration-visible.csv");
 }
 
 function readTextFile(file)
@@ -436,8 +444,8 @@ function updateChart(backward)
     console.log(myChart.data.datasets[2].data);
     
     //** ADD ALL NORMALIZED VALUES TO CURVE, START AT ONE TO AVOID LABELS*/
-    let step = 2;
-    let cut = 100;
+    let step = 1;
+    let cut = 200;
     for(let i = 0; i < (calibrationArray.length - cut)/step; i++)
     {
       myChart.data.datasets[2].data[i] = ({
