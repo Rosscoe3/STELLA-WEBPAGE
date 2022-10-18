@@ -36,6 +36,10 @@ var RESOURCE_LOADED = false;
 var animPlay = true;
 var animWaitFunc;
 
+//** VARIABLES FOR CONTROLLING DATA */
+let step = 5;
+let cut = 0;
+
 var visibleStartData = [2.4, 2.6, 2.2, 1.9, 2.0, 1.8];
 var infraredStartData = [5.4, 5.0, 5.4, 6.5, 5.0, 4.3];
 
@@ -47,6 +51,7 @@ var infrared = [...Array(1)].map(e => Array(1));
 var data = {
   // labels,
   datasets: [
+    //** VISIBLE */
     {
       data: [{
         x: 450,
@@ -76,9 +81,10 @@ var data = {
       label: "Visible",
       fill: true,
       backgroundColor: visibleGradient,
-      borderColor: "#fff", 
+      borderColor: visibleGradient, 
       pointBackgroundColor: 'rgb(189, 195, 199)',
     },
+    //** INFRARED */
     {
       data: [{
         x: 610,
@@ -108,9 +114,10 @@ var data = {
       label: "Infrared",
       fill: true,
       backgroundColor: infraredGradient,
-      borderColor: "#fff", 
+      borderColor: infraredGradient, 
       pointBackgroundColor: 'rgb(189, 195, 199)',
     },
+    //** V */
     {
       data: [
       {
@@ -121,11 +128,12 @@ var data = {
       label: "V",
       fill: false,
       hidden: true,
-      backgroundColor: infraredGradient,
+      backgroundColor: "rgb(147,112,219)",
       borderColor: "rgb(147,112,219)",
       lineTension: 0.25,  
       pointBackgroundColor: 'rgb(189, 195, 199)',
     },
+    //** B */
     {
       data: [
       {
@@ -136,11 +144,12 @@ var data = {
       label: "B",
       fill: false,
       hidden: true,
-      backgroundColor: infraredGradient,
+      backgroundColor: "rgb(0,0,255)",
       borderColor: "rgb(0,0,255)",
       lineTension: 0.25,  
       pointBackgroundColor: 'rgb(189, 195, 199)',
     },
+    //** G */
     {
       data: [
       {
@@ -151,11 +160,12 @@ var data = {
       label: "G",
       fill: false,
       hidden: true,
-      backgroundColor: infraredGradient,
+      backgroundColor: "rgb(0,255,0)",
       borderColor: "rgb(0,255,0)",
       lineTension: 0.25,  
       pointBackgroundColor: 'rgb(189, 195, 199)',
     },
+    //** Y */
     {
       data: [
       {
@@ -166,11 +176,12 @@ var data = {
       label: "Y",
       fill: false,
       hidden: true,
-      backgroundColor: infraredGradient,
+      backgroundColor: "rgb(255,255,0)",
       borderColor: "rgb(255,255,0)",
       lineTension: 0.25,  
       pointBackgroundColor: 'rgb(189, 195, 199)',
     },
+    //** O */
     {
       data: [
       {
@@ -181,11 +192,12 @@ var data = {
       label: "O",
       hidden: true,
       fill: false,
-      backgroundColor: infraredGradient,
+      backgroundColor: "rgb(255,140,0)",
       borderColor: "rgb(255,140,0)",
       lineTension: 0.25,  
       pointBackgroundColor: 'rgb(189, 195, 199)',
     },
+    //** R */
     {
       data: [
       {
@@ -196,15 +208,109 @@ var data = {
       label: "R",
       fill: false,
       hidden: true,
-      backgroundColor: infraredGradient,
+      backgroundColor: "rgb(255,0,0)",
       borderColor: "rgb(255,0,0)",
+      lineTension: 0.25,  
+      pointBackgroundColor: 'rgb(189, 195, 199)',
+    },
+    //** 610 */
+    {
+      data: [
+      {
+        x: 500,
+        y: 1,
+      }],
+      showLine: true,
+      label: "610nm",
+      fill: false,
+      hidden: true,
+      backgroundColor: "rgb(212.5,0,0)",
+      borderColor: "rgb(212.5,0,0)",
+      lineTension: 0.25,  
+      pointBackgroundColor: 'rgb(189, 195, 199)',
+    },
+    //** 680 */
+    {
+      data: [
+      {
+        x: 500,
+        y: 1,
+      }],
+      showLine: true,
+      label: "680nm",
+      fill: false,
+      hidden: true,
+      backgroundColor: "rgb(170,0,0)",
+      borderColor: "rgb(170,0,0)",
+      lineTension: 0.25,  
+      pointBackgroundColor: 'rgb(189, 195, 199)',
+    },
+    //** 730 */
+    {
+      data: [
+      {
+        x: 500,
+        y: 1,
+      }],
+      showLine: true,
+      label: "730nm",
+      fill: false,
+      hidden: true,
+      backgroundColor: "rgb(127.5,0,0)",
+      borderColor: "rgb(127.5,0,0)",
+      lineTension: 0.25,  
+      pointBackgroundColor: 'rgb(189, 195, 199)',
+    },
+    //** 760 */
+    {
+      data: [
+      {
+        x: 500,
+        y: 1,
+      }],
+      showLine: true,
+      label: "760nm",
+      fill: false,
+      hidden: true,
+      backgroundColor: "rgb(85,0,0)",
+      borderColor: "rgb(85,0,0)",
+      lineTension: 0.25,  
+      pointBackgroundColor: 'rgb(189, 195, 199)',
+    },
+    //** 810 */
+    {
+      data: [
+      {
+        x: 500,
+        y: 1,
+      }],
+      showLine: true,
+      label: "810nm",
+      fill: false,
+      hidden: true,
+      backgroundColor: "rgb(42.5,0,0)",
+      borderColor: "rgb(42.5,0,0)",
+      lineTension: 0.25,  
+      pointBackgroundColor: 'rgb(189, 195, 199)',
+    },
+    //** 860 */
+    {
+      data: [
+      {
+        x: 500,
+        y: 1,
+      }],
+      showLine: true,
+      label: "860nm",
+      fill: false,
+      hidden: true,
+      backgroundColor: "rgb(0,0,0)",
+      borderColor: "rgb(0,0,0)",
       lineTension: 0.25,  
       pointBackgroundColor: 'rgb(189, 195, 199)',
     },
   ], 
 };
-
-
 
 //** CONFIG SETUP FOR CHARTJS */
 const config = {
@@ -222,6 +328,14 @@ const config = {
         display: true,
         text: 'STELLA'
       },
+      legend: {
+        display: true,
+        labels: {
+            filter: function(legendItem, data) {
+                  return legendItem.index != 1 
+            }
+        }
+     },
     },
     //** ADDS NM to the Y axis lables */
     animation:{
@@ -276,16 +390,16 @@ const config = {
 const myChart = new Chart(ctx, config);
 
 init();
-var calibrationData;
-var Calibration;
-var calibrationArray;
+var calibrationData, calibrationData_Infrared;
+var calibrationArray_Visible, calibrationArray_Infrared;
 
 function init()
 {
-  calibrationData = readTextFile("/files/Calibration-visible.csv");
+  calibrationData = readTextFile("/files/Calibration-visible.csv", true);
+  calibrationData_Infrared = readTextFile("/files/Calibration-infrared.csv", false);
 }
 
-function readTextFile(file)
+function readTextFile(file, visible)
 {
     var rawFile = new XMLHttpRequest();
     rawFile.open("GET", file, false);
@@ -296,15 +410,24 @@ function readTextFile(file)
             if(rawFile.status === 200 || rawFile.status == 0)
             {
                 var allText = rawFile.responseText;
-                Calibration = allText;
-                calibrationArray = csvToArray(Calibration);
-                console.log(calibrationArray);
-                console.log(parseFloat(calibrationArray[0].wavelength));
+                var csvdata = allText;
+
+                if(visible)
+                {
+                  calibrationArray_Visible = csvToArray(csvdata);
+                  console.log(calibrationArray_Visible);
+                }
+                else
+                {
+                  calibrationArray_Infrared = csvToArray(csvdata);
+                  console.log(calibrationArray_Infrared);
+                }
+
+                //console.log(array);
+                //console.log(parseFloat(calibrationArray_Visible[0].wavelength));
             }
         }
     }
-
-    console.log(Calibration);
     rawFile.send(null);
 }
 
@@ -441,122 +564,61 @@ function updateChart(backward)
         y: newDataArray[dataTimeIndex].nir860_power,
       },];
     
-    console.log(myChart.data.datasets[2].data);
-    
     //** ADD ALL NORMALIZED VALUES TO CURVE, START AT ONE TO AVOID LABELS*/
-    let step = 1;
-    let cut = 200;
-    for(let i = 0; i < (calibrationArray.length - cut)/step; i++)
+    for(let i = 0; i < (calibrationArray_Visible.length - cut)/step; i++)
     {
       myChart.data.datasets[2].data[i] = ({
-        x: parseInt(calibrationArray[i * step].wavelength),
-        y: newDataArray[dataTimeIndex].V450_power * parseFloat(calibrationArray[i * step].V450_power)
+        x: parseInt(calibrationArray_Visible[i * step].wavelength),
+        y: newDataArray[dataTimeIndex].V450_power * parseFloat(calibrationArray_Visible[i * step].V450_power)
       });
       myChart.data.datasets[3].data[i] = ({
-        x: parseInt(calibrationArray[i * step].wavelength),
-        y: newDataArray[dataTimeIndex].B500_power * parseFloat(calibrationArray[i * step].B500_power)
+        x: parseInt(calibrationArray_Visible[i * step].wavelength),
+        y: newDataArray[dataTimeIndex].B500_power * parseFloat(calibrationArray_Visible[i * step].B500_power)
       });
       myChart.data.datasets[4].data[i] = ({
-        x: parseInt(calibrationArray[i * step].wavelength),
-        y: newDataArray[dataTimeIndex].G550_power * parseFloat(calibrationArray[i * step].G550_power)
+        x: parseInt(calibrationArray_Visible[i * step].wavelength),
+        y: newDataArray[dataTimeIndex].G550_power * parseFloat(calibrationArray_Visible[i * step].G550_power)
       });
       myChart.data.datasets[5].data[i] = ({
-        x: parseInt(calibrationArray[i * step].wavelength),
-        y: newDataArray[dataTimeIndex].Y570_power * parseFloat(calibrationArray[i * step].Y570_power)
+        x: parseInt(calibrationArray_Visible[i * step].wavelength),
+        y: newDataArray[dataTimeIndex].Y570_power * parseFloat(calibrationArray_Visible[i * step].Y570_power)
       });
       myChart.data.datasets[6].data[i] = ({
-        x: parseInt(calibrationArray[i * step].wavelength),
-        y: newDataArray[dataTimeIndex].O600_power * parseFloat(calibrationArray[i * step].O600_power)
+        x: parseInt(calibrationArray_Visible[i * step].wavelength),
+        y: newDataArray[dataTimeIndex].O600_power * parseFloat(calibrationArray_Visible[i * step].O600_power)
       });
       myChart.data.datasets[7].data[i] = ({
-        x: parseInt(calibrationArray[i * step].wavelength),
-        y: newDataArray[dataTimeIndex].R650_power * parseFloat(calibrationArray[i * step].R650_power)
+        x: parseInt(calibrationArray_Visible[i * step].wavelength),
+        y: newDataArray[dataTimeIndex].R650_power * parseFloat(calibrationArray_Visible[i * step].R650_power)
       });
     }
-
-    // myChart.data.datasets[2].data = [
-    //   {
-    //     x: 350,
-    //     y: newDataArray[dataTimeIndex].V450_power * 0.001028,
-    //   },
-    //   {
-    //     x: 400,
-    //     y: newDataArray[dataTimeIndex].V450_power * 0.03428,
-    //   },
-    //   {
-    //     x: 410,
-    //     y: newDataArray[dataTimeIndex].V450_power * 0.1138,
-    //   },
-    //   {
-    //     x: 420,
-    //     y: newDataArray[dataTimeIndex].V450_power * 0.2876,
-    //   },
-    //   {
-    //     x: 430,
-    //     y: newDataArray[dataTimeIndex].V450_power * 0.6349,
-    //   },
-    //   {
-    //     x: 440,
-    //     y: newDataArray[dataTimeIndex].V450_power * 0.9040,
-    //   },
-    //   {
-    //     x: 450,
-    //     y: newDataArray[dataTimeIndex].V450_power,
-    //   },
-    //   {
-    //     x: 460,
-    //     y: newDataArray[dataTimeIndex].V450_power * 0.7998,
-    //   },
-    //   {
-    //     x: 470,
-    //     y: newDataArray[dataTimeIndex].V450_power * 0.4594,
-    //   },
-    //   {
-    //     x: 480,
-    //     y: newDataArray[dataTimeIndex].V450_power * 0.1320,
-    //   },
-    //   {
-    //     x: 490,
-    //     y: newDataArray[dataTimeIndex].V450_power * 0.05965,
-    //   },
-    //   {
-    //     x: 500,
-    //     y: newDataArray[dataTimeIndex].V450_power * 0.01474,
-    //   },
-    //   {
-    //     x: 1100,
-    //     y: newDataArray[dataTimeIndex].V450_power * 0.001028,
-    //   },];
-     
-    // myChart.data.datasets[3].data = [
-    //   {
-    //     x: 350,
-    //     y: newDataArray[dataTimeIndex].B500_power * 0.0003141,
-    //   },
-    //   {
-    //     x: 400,
-    //     y: newDataArray[dataTimeIndex].B500_power * 0.003455,
-    //   },
-    //   {
-    //     x: 450,
-    //     y: newDataArray[dataTimeIndex].B500_power * 0.08323,
-    //   },
-    //   {
-    //     x: 500,
-    //     y: newDataArray[dataTimeIndex].B500_power,
-    //   },
-    //   {
-    //     x: 550,
-    //     y: newDataArray[dataTimeIndex].B500_power * 0.008794,
-    //   },
-    //   {
-    //     x: 600,
-    //     y: newDataArray[dataTimeIndex].B500_power * 0.003455,
-    //   },
-    //   {
-    //     x: 1100,
-    //     y: newDataArray[dataTimeIndex].B500_power * 0.0006281,
-    //   },];  
+    for(let i = 0; i < (calibrationArray_Infrared.length - cut)/step; i++)
+    {
+      myChart.data.datasets[8].data[i] = ({
+        x: parseInt(calibrationArray_Infrared[i * step].Lambda),
+        y: newDataArray[dataTimeIndex].nir610_power * parseFloat(calibrationArray_Infrared[i * step].nir610_power)
+      });
+      myChart.data.datasets[9].data[i] = ({
+        x: parseInt(calibrationArray_Infrared[i * step].Lambda),
+        y: newDataArray[dataTimeIndex].nir680_power * parseFloat(calibrationArray_Infrared[i * step].nir680_power)
+      });
+      myChart.data.datasets[10].data[i] = ({
+        x: parseInt(calibrationArray_Infrared[i * step].Lambda),
+        y: newDataArray[dataTimeIndex].nir730_power * parseFloat(calibrationArray_Infrared[i * step].nir730_power)
+      });
+      myChart.data.datasets[11].data[i] = ({
+        x: parseInt(calibrationArray_Infrared[i * step].Lambda),
+        y: newDataArray[dataTimeIndex].nir760_power * parseFloat(calibrationArray_Infrared[i * step].nir760_power)
+      });
+      myChart.data.datasets[12].data[i] = ({
+        x: parseInt(calibrationArray_Infrared[i * step].Lambda),
+        y: newDataArray[dataTimeIndex].nir810_power * parseFloat(calibrationArray_Infrared[i * step].nir810_power)
+      });
+      myChart.data.datasets[13].data[i] = ({
+        x: parseInt(calibrationArray_Infrared[i * step].Lambda),
+        y: newDataArray[dataTimeIndex].nir860_power * parseFloat(calibrationArray_Infrared[i * step].nir860_power)
+      });
+    }
     
     myChart.update();
 
@@ -621,7 +683,7 @@ const handleDrop = (e) => {
         newDataArray = csvToArray(reader.result);
         console.log(newDataArray);
         console.log(newDataArray[0].B500_power);
-        console.log(calibrationArray[1].wavelength);
+        console.log(calibrationArray_Visible[1].wavelength);
         
         //** CLEAR THE ARRAY IF IT IS FULL */  
         if(dataArray)
@@ -783,4 +845,9 @@ speedSlider.addEventListener("change", function(e){
   // number to have a single decimal
   animationTime = 200 * speedSlider.value;
   console.log(speedSlider.value);
+});
+
+document.getElementById('rawData').addEventListener('click', function() {
+  myChart.options.legend.display = !myChart.options.legend.display;
+  myChart.update();
 });
