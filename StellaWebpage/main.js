@@ -396,7 +396,7 @@ var calibrationArray_Visible, calibrationArray_Infrared;
 function init()
 {
   calibrationData = readTextFile("/files/Calibration-visible.csv", true);
-  calibrationData_Infrared = readTextFile("/files/Calibration-infrared.csv", false);
+  calibrationData_Infrared = readTextFile("/files/calibration-infrared.csv", false);
 }
 
 function readTextFile(file, visible)
