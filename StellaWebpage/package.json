@@ -9,5 +9,8 @@
   },
   "devDependencies": {
     "vite": "^2.8.0"
+  },
+  "dependencies": {
+    "usb": "^2.5.2"
   }
 }

@@ -31,10 +31,19 @@ let uploadNew = document.getElementById("newFile");
 let speedSlider = document.getElementById("myRange");
 let frameNumber = document.getElementById("frameNumber");
 
+//** SERIAL PORTS */
+
 //** VARIOUS VARIABLES */
 var RESOURCE_LOADED = false;
 var animPlay = true;
 var animWaitFunc;
+let excludeLabelList = [];
+let visible_filter_array = ['V', 'B', 'G', 'Y', 'O', 'R'];
+let infrared_filter_array = ['610nm', '680nm', '730nm', '760nm', '810nm', '860nm'];
+let rawData_array = ['Visible', 'Infrared'];
+
+excludeLabelList = excludeLabelList.concat(visible_filter_array, infrared_filter_array);
+console.log(excludeLabelList);
 
 //** VARIABLES FOR CONTROLLING DATA */
 let step = 5;
@@ -81,7 +90,7 @@ var data = {
       label: "Visible",
       fill: true,
       backgroundColor: visibleGradient,
-      borderColor: visibleGradient, 
+      borderColor: 'rgb(255, 255, 255)', 
       pointBackgroundColor: 'rgb(189, 195, 199)',
     },
     //** INFRARED */
@@ -114,7 +123,7 @@ var data = {
       label: "Infrared",
       fill: true,
       backgroundColor: infraredGradient,
-      borderColor: infraredGradient, 
+      borderColor: 'rgb(255, 255, 255)', 
       pointBackgroundColor: 'rgb(189, 195, 199)',
     },
     //** V */
@@ -240,8 +249,8 @@ var data = {
       label: "680nm",
       fill: false,
       hidden: true,
-      backgroundColor: "rgb(170,0,0)",
-      borderColor: "rgb(170,0,0)",
+      backgroundColor: "rgb(200, 40, 40)",
+      borderColor: "rgb(200, 40, 40)",
       lineTension: 0.25,  
       pointBackgroundColor: 'rgb(189, 195, 199)',
     },
@@ -256,8 +265,8 @@ var data = {
       label: "730nm",
       fill: false,
       hidden: true,
-      backgroundColor: "rgb(127.5,0,0)",
-      borderColor: "rgb(127.5,0,0)",
+      backgroundColor: "rgb(200, 80, 80)",
+      borderColor: "rgb(200, 80, 80)",
       lineTension: 0.25,  
       pointBackgroundColor: 'rgb(189, 195, 199)',
     },
@@ -272,8 +281,8 @@ var data = {
       label: "760nm",
       fill: false,
       hidden: true,
-      backgroundColor: "rgb(85,0,0)",
-      borderColor: "rgb(85,0,0)",
+      backgroundColor: "rgb(200, 120, 120)",
+      borderColor: "rgb(200, 120, 120)",
       lineTension: 0.25,  
       pointBackgroundColor: 'rgb(189, 195, 199)',
     },
@@ -288,8 +297,8 @@ var data = {
       label: "810nm",
       fill: false,
       hidden: true,
-      backgroundColor: "rgb(42.5,0,0)",
-      borderColor: "rgb(42.5,0,0)",
+      backgroundColor: "rgb(200, 160, 160)",
+      borderColor: "rgb(200, 160, 160)",
       lineTension: 0.25,  
       pointBackgroundColor: 'rgb(189, 195, 199)',
     },
@@ -304,8 +313,8 @@ var data = {
       label: "860nm",
       fill: false,
       hidden: true,
-      backgroundColor: "rgb(0,0,0)",
-      borderColor: "rgb(0,0,0)",
+      backgroundColor: "rgb(200, 200, 200)",
+      borderColor: "rgb(200, 200, 200)",
       lineTension: 0.25,  
       pointBackgroundColor: 'rgb(189, 195, 199)',
     },
@@ -331,9 +340,19 @@ const config = {
       legend: {
         display: true,
         labels: {
-            filter: function(legendItem, data) {
-                  return legendItem.index != 1 
+          filter: function( item, chart)
+          {                   
+            //** Function for filtering out legends. Chooses which Labels to exclude depending on the dataMode*/
+
+            if(excludeLabelList.includes(item.text))
+            {
+              return false;
             }
+            else
+            {
+              return item;
+            }
+          }
         }
      },
     },
@@ -773,6 +792,70 @@ function csvToArray(str, delimiter = ",") {
   return arr;
 }
 
+function updateChartLabels()
+{
+  excludeLabelList = [];
+
+  if(rawData_element.classList.contains('selected'))
+  {
+    console.log('Raw Data is Selected: ');
+    myChart.getDatasetMeta(0).hidden = false;
+    myChart.getDatasetMeta(1).hidden = false;
+  }
+  else
+  {
+    excludeLabelList = excludeLabelList.concat(rawData_array);
+    console.log('Raw Data is not selected: ' + excludeLabelList);
+    myChart.getDatasetMeta(0).hidden = true;
+    myChart.getDatasetMeta(1).hidden = true;
+  }
+  if(visible_filter_element.classList.contains('selected'))
+  {
+    console.log('Visible data is Selected: ');
+    myChart.getDatasetMeta(2).hidden = false;
+    myChart.getDatasetMeta(3).hidden = false;
+    myChart.getDatasetMeta(4).hidden = false;
+    myChart.getDatasetMeta(5).hidden = false;
+    myChart.getDatasetMeta(6).hidden = false;
+    myChart.getDatasetMeta(7).hidden = false;
+  }
+  else
+  {
+    excludeLabelList = excludeLabelList.concat(visible_filter_array);
+    console.log('Visible Data is not selected: ' + excludeLabelList);
+    myChart.getDatasetMeta(2).hidden = true;
+    myChart.getDatasetMeta(3).hidden = true;
+    myChart.getDatasetMeta(4).hidden = true;
+    myChart.getDatasetMeta(5).hidden = true;
+    myChart.getDatasetMeta(6).hidden = true;
+    myChart.getDatasetMeta(7).hidden = true;
+  }
+  if(infrared_filter_element.classList.contains('selected'))
+  {
+    console.log('Infrared data is Selected: ');
+    myChart.getDatasetMeta(8).hidden = false;
+    myChart.getDatasetMeta(9).hidden = false;
+    myChart.getDatasetMeta(10).hidden = false;
+    myChart.getDatasetMeta(11).hidden = false;
+    myChart.getDatasetMeta(12).hidden = false;
+    myChart.getDatasetMeta(13).hidden = false;
+  }
+  else
+  {
+    excludeLabelList = excludeLabelList.concat(infrared_filter_array);
+    console.log('Infrared Data is not selected: ' + excludeLabelList);
+    myChart.getDatasetMeta(8).hidden = true;
+    myChart.getDatasetMeta(9).hidden = true;
+    myChart.getDatasetMeta(10).hidden = true;
+    myChart.getDatasetMeta(11).hidden = true;
+    myChart.getDatasetMeta(12).hidden = true;
+    myChart.getDatasetMeta(13).hidden = true;
+  }
+
+
+  myChart.update();
+}
+
 uploadNew.addEventListener("click", function (ev) 
 {
   ev.stopPropagation(); // prevent event from bubbling up to .container
@@ -847,7 +930,30 @@ speedSlider.addEventListener("change", function(e){
   console.log(speedSlider.value);
 });
 
-document.getElementById('rawData').addEventListener('click', function() {
-  myChart.options.legend.display = !myChart.options.legend.display;
-  myChart.update();
+let rawData_element = document.getElementById('rawData');
+let visible_filter_element = document.getElementById('visible_filter');
+let infrared_filter_element = document.getElementById('infrared_filter');
+let visible_filter_range = document.getElementById('visibleFilter_range')
+
+rawData_element.addEventListener('click', function() {
+  console.log("Clicked Raw Data");
+  rawData_element.classList.toggle('selected');
+  updateChartLabels();
+});
+
+visible_filter_element.addEventListener('click', function() {
+  visible_filter_element.classList.toggle('selected');
+  document.getElementById('visibleFilter_rangeContainer').classList.toggle("active");
+  updateChartLabels();
+  console.log("Clicked visible_filter");
+});
+
+infrared_filter_element.addEventListener('click', function() {
+  infrared_filter_element.classList.toggle('selected');
+  updateChartLabels();
+});
+
+visible_filter_range.addEventListener("change", function(e){
+  step = visible_filter_range.value;
+  console.log(speedSlider.value);
 });
