@@ -127,8 +127,9 @@ body{
   font-size: 100%;
   color: rgb(75, 75, 75);
 
-  opacity: 100%;
-  border: 4px solid rgb(75, 75, 75);;
+  pointer-events: none;
+  opacity: 0%;
+  border: 4px solid rgb(75, 75, 75);
   border-radius: 15px;
   transition: all 0.5s ease;
 }
@@ -142,6 +143,11 @@ body{
 .dataMode.selected{
   background: rgb(75, 75, 75);;
   color: white;
+  transition: all 0.5s ease;
+}
+.dataMode.active{
+  pointer-events: auto;
+  opacity: 100%;
   transition: all 0.5s ease;
 }
 
@@ -276,6 +282,7 @@ body{
 }
 .resolutioncontainer.active{
   position: relative;
+  display: block;
   opacity: 100%;
   margin: 0.5vh;
   transition: 0.5s ease-in-out;

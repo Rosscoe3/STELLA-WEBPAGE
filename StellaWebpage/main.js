@@ -1,5 +1,6 @@
 import './style.css'
 
+
 // document.querySelector('#app').innerHTML = `
 //   <h1>Hello Vite!</h1>
 //   <a href="https://vitejs.dev/guide/features.html" target="_blank">Documentation</a>
@@ -30,6 +31,10 @@ let animationTime = 1500;
 let uploadNew = document.getElementById("newFile");
 let speedSlider = document.getElementById("myRange");
 let frameNumber = document.getElementById("frameNumber");
+let rawData_element = document.getElementById('rawData');
+let visible_filter_element = document.getElementById('visible_filter');
+let infrared_filter_element = document.getElementById('infrared_filter');
+let visible_filter_range = document.getElementById('visibleFilter_range');
 
 //** SERIAL PORTS */
 
@@ -58,72 +63,101 @@ var infrared = [...Array(1)].map(e => Array(1));
 
 //** DATA SETUP FOR CHARTJS */
 var data = {
-  // labels,
   datasets: [
-    //** VISIBLE */
+    //** 610 */
     {
-      data: [{
-        x: 450,
-        y: visibleStartData[0],
-      },
+      data: [
       {
         x: 500,
-        y: visibleStartData[1],
-      },
-      {
-        x: 550,
-        y: visibleStartData[2],
-      },
-      {
-        x: 570,
-        y: visibleStartData[3],
-      },
-      {
-        x: 600,
-        y: visibleStartData[4],
-      },
-      {
-        x: 650,
-        y: visibleStartData[5],
+        y: 1,
       }],
       showLine: true,
-      label: "Visible",
-      fill: true,
-      backgroundColor: visibleGradient,
-      borderColor: 'rgb(255, 255, 255)', 
+      label: "610nm",
+      fill: false,
+      hidden: true,
+      backgroundColor: "rgb(212.5,0,0)",
+      borderColor: "rgb(212.5,0,0)",
+      lineTension: 0.25,  
       pointBackgroundColor: 'rgb(189, 195, 199)',
     },
-    //** INFRARED */
+    //** 680 */
     {
-      data: [{
-        x: 610,
-        y: infraredStartData[0],
-      },
+      data: [
       {
-        x: 680,
-        y: infraredStartData[1],
-      },
-      {
-        x: 730,
-        y: infraredStartData[2],
-      },
-      {
-        x: 760,
-        y: infraredStartData[3],
-      },
-      {
-        x: 810,
-        y: infraredStartData[4],
-      },
-      {
-        x: 860,
-        y: infraredStartData[5],
+        x: 500,
+        y: 1,
       }],
       showLine: true,
-      label: "Infrared",
-      fill: true,
-      backgroundColor: infraredGradient,
-      borderColor: 'rgb(255, 255, 255)', 
+      label: "680nm",
+      fill: false,
+      hidden: true,
+      backgroundColor: "rgb(200, 40, 40)",
+      borderColor: "rgb(200, 40, 40)",
+      lineTension: 0.25,  
+      pointBackgroundColor: 'rgb(189, 195, 199)',
+    },
+    //** 730 */
+    {
+      data: [
+      {
+        x: 500,
+        y: 1,
+      }],
+      showLine: true,
+      label: "730nm",
+      fill: false,
+      hidden: true,
+      backgroundColor: "rgb(200, 80, 80)",
+      borderColor: "rgb(200, 80, 80)",
+      lineTension: 0.25,  
+      pointBackgroundColor: 'rgb(189, 195, 199)',
+    },
+    //** 760 */
+    {
+      data: [
+      {
+        x: 500,
+        y: 1,
+      }],
+      showLine: true,
+      label: "760nm",
+      fill: false,
+      hidden: true,
+      backgroundColor: "rgb(200, 120, 120)",
+      borderColor: "rgb(200, 120, 120)",
+      lineTension: 0.25,  
+      pointBackgroundColor: 'rgb(189, 195, 199)',
+    },
+    //** 810 */
+    {
+      data: [
+      {
+        x: 500,
+        y: 1,
+      }],
+      showLine: true,
+      label: "810nm",
+      fill: false,
+      hidden: true,
+      backgroundColor: "rgb(200, 160, 160)",
+      borderColor: "rgb(200, 160, 160)",
+      lineTension: 0.25,  
+      pointBackgroundColor: 'rgb(189, 195, 199)',
+    },
+    //** 860 */
+    {
+      data: [
+      {
+        x: 500,
+        y: 1,
+      }],
+      showLine: true,
+      label: "860nm",
+      fill: false,
+      hidden: true,
+      backgroundColor: "rgb(200, 200, 200)",
+      borderColor: "rgb(200, 200, 200)",
+      lineTension: 0.25,  
       pointBackgroundColor: 'rgb(189, 195, 199)',
     },
     //** V */
@@ -222,100 +256,70 @@ var data = {
       lineTension: 0.25,  
       pointBackgroundColor: 'rgb(189, 195, 199)',
     },
-    //** 610 */
+    //** INFRARED */
     {
-      data: [
+      data: [{
+        x: 610,
+        y: infraredStartData[0],
+      },
       {
-        x: 500,
-        y: 1,
+        x: 680,
+        y: infraredStartData[1],
+      },
+      {
+        x: 730,
+        y: infraredStartData[2],
+      },
+      {
+        x: 760,
+        y: infraredStartData[3],
+      },
+      {
+        x: 810,
+        y: infraredStartData[4],
+      },
+      {
+        x: 860,
+        y: infraredStartData[5],
       }],
       showLine: true,
-      label: "610nm",
-      fill: false,
-      hidden: true,
-      backgroundColor: "rgb(212.5,0,0)",
-      borderColor: "rgb(212.5,0,0)",
-      lineTension: 0.25,  
+      label: "Infrared",
+      fill: true,
+      backgroundColor: infraredGradient,
+      borderColor: 'rgb(255, 255, 255)', 
       pointBackgroundColor: 'rgb(189, 195, 199)',
     },
-    //** 680 */
+    //** VISIBLE */
     {
-      data: [
+      data: [{
+        x: 450,
+        y: visibleStartData[0],
+      },
       {
         x: 500,
-        y: 1,
-      }],
-      showLine: true,
-      label: "680nm",
-      fill: false,
-      hidden: true,
-      backgroundColor: "rgb(200, 40, 40)",
-      borderColor: "rgb(200, 40, 40)",
-      lineTension: 0.25,  
-      pointBackgroundColor: 'rgb(189, 195, 199)',
-    },
-    //** 730 */
-    {
-      data: [
+        y: visibleStartData[1],
+      },
       {
-        x: 500,
-        y: 1,
-      }],
-      showLine: true,
-      label: "730nm",
-      fill: false,
-      hidden: true,
-      backgroundColor: "rgb(200, 80, 80)",
-      borderColor: "rgb(200, 80, 80)",
-      lineTension: 0.25,  
-      pointBackgroundColor: 'rgb(189, 195, 199)',
-    },
-    //** 760 */
-    {
-      data: [
+        x: 550,
+        y: visibleStartData[2],
+      },
       {
-        x: 500,
-        y: 1,
-      }],
-      showLine: true,
-      label: "760nm",
-      fill: false,
-      hidden: true,
-      backgroundColor: "rgb(200, 120, 120)",
-      borderColor: "rgb(200, 120, 120)",
-      lineTension: 0.25,  
-      pointBackgroundColor: 'rgb(189, 195, 199)',
-    },
-    //** 810 */
-    {
-      data: [
+        x: 570,
+        y: visibleStartData[3],
+      },
       {
-        x: 500,
-        y: 1,
-      }],
-      showLine: true,
-      label: "810nm",
-      fill: false,
-      hidden: true,
-      backgroundColor: "rgb(200, 160, 160)",
-      borderColor: "rgb(200, 160, 160)",
-      lineTension: 0.25,  
-      pointBackgroundColor: 'rgb(189, 195, 199)',
-    },
-    //** 860 */
-    {
-      data: [
+        x: 600,
+        y: visibleStartData[4],
+      },
       {
-        x: 500,
-        y: 1,
+        x: 650,
+        y: visibleStartData[5],
       }],
       showLine: true,
-      label: "860nm",
-      fill: false,
-      hidden: true,
-      backgroundColor: "rgb(200, 200, 200)",
-      borderColor: "rgb(200, 200, 200)",
-      lineTension: 0.25,  
+      label: "Visible",
+      fill: true,
+      backgroundColor: visibleGradient,
+      borderColor: 'rgb(255, 255, 255)', 
       pointBackgroundColor: 'rgb(189, 195, 199)',
     },
   ], 
@@ -531,7 +535,7 @@ function updateChart(backward)
     console.log("PROGRESS: " + progress + " DATA INDEX: " + dataTimeIndex);
     frameNumber.innerHTML = dataTimeIndex + "/" + (newDataArray.length-2);
 
-    myChart.data.datasets[0].data = [
+    myChart.data.datasets[13].data = [
     {
       x: 450,
       y: newDataArray[dataTimeIndex].V450_power,
@@ -557,7 +561,7 @@ function updateChart(backward)
       y: newDataArray[dataTimeIndex].R650_power,
     },];
 
-    myChart.data.datasets[1].data = [
+    myChart.data.datasets[12].data = [
       {
         x: 610,
         y: newDataArray[dataTimeIndex].nir610_power,
@@ -586,54 +590,54 @@ function updateChart(backward)
     //** ADD ALL NORMALIZED VALUES TO CURVE, START AT ONE TO AVOID LABELS*/
     for(let i = 0; i < (calibrationArray_Visible.length - cut)/step; i++)
     {
-      myChart.data.datasets[2].data[i] = ({
+      myChart.data.datasets[6].data[i] = ({
         x: parseInt(calibrationArray_Visible[i * step].wavelength),
         y: newDataArray[dataTimeIndex].V450_power * parseFloat(calibrationArray_Visible[i * step].V450_power)
       });
-      myChart.data.datasets[3].data[i] = ({
+      myChart.data.datasets[7].data[i] = ({
         x: parseInt(calibrationArray_Visible[i * step].wavelength),
         y: newDataArray[dataTimeIndex].B500_power * parseFloat(calibrationArray_Visible[i * step].B500_power)
       });
-      myChart.data.datasets[4].data[i] = ({
+      myChart.data.datasets[8].data[i] = ({
         x: parseInt(calibrationArray_Visible[i * step].wavelength),
         y: newDataArray[dataTimeIndex].G550_power * parseFloat(calibrationArray_Visible[i * step].G550_power)
       });
-      myChart.data.datasets[5].data[i] = ({
+      myChart.data.datasets[9].data[i] = ({
         x: parseInt(calibrationArray_Visible[i * step].wavelength),
         y: newDataArray[dataTimeIndex].Y570_power * parseFloat(calibrationArray_Visible[i * step].Y570_power)
       });
-      myChart.data.datasets[6].data[i] = ({
+      myChart.data.datasets[10].data[i] = ({
         x: parseInt(calibrationArray_Visible[i * step].wavelength),
         y: newDataArray[dataTimeIndex].O600_power * parseFloat(calibrationArray_Visible[i * step].O600_power)
       });
-      myChart.data.datasets[7].data[i] = ({
+      myChart.data.datasets[11].data[i] = ({
         x: parseInt(calibrationArray_Visible[i * step].wavelength),
         y: newDataArray[dataTimeIndex].R650_power * parseFloat(calibrationArray_Visible[i * step].R650_power)
       });
     }
     for(let i = 0; i < (calibrationArray_Infrared.length - cut)/step; i++)
     {
-      myChart.data.datasets[8].data[i] = ({
+      myChart.data.datasets[0].data[i] = ({
         x: parseInt(calibrationArray_Infrared[i * step].Lambda),
         y: newDataArray[dataTimeIndex].nir610_power * parseFloat(calibrationArray_Infrared[i * step].nir610_power)
       });
-      myChart.data.datasets[9].data[i] = ({
+      myChart.data.datasets[1].data[i] = ({
         x: parseInt(calibrationArray_Infrared[i * step].Lambda),
         y: newDataArray[dataTimeIndex].nir680_power * parseFloat(calibrationArray_Infrared[i * step].nir680_power)
       });
-      myChart.data.datasets[10].data[i] = ({
+      myChart.data.datasets[2].data[i] = ({
         x: parseInt(calibrationArray_Infrared[i * step].Lambda),
         y: newDataArray[dataTimeIndex].nir730_power * parseFloat(calibrationArray_Infrared[i * step].nir730_power)
       });
-      myChart.data.datasets[11].data[i] = ({
+      myChart.data.datasets[3].data[i] = ({
         x: parseInt(calibrationArray_Infrared[i * step].Lambda),
         y: newDataArray[dataTimeIndex].nir760_power * parseFloat(calibrationArray_Infrared[i * step].nir760_power)
       });
-      myChart.data.datasets[12].data[i] = ({
+      myChart.data.datasets[4].data[i] = ({
         x: parseInt(calibrationArray_Infrared[i * step].Lambda),
         y: newDataArray[dataTimeIndex].nir810_power * parseFloat(calibrationArray_Infrared[i * step].nir810_power)
       });
-      myChart.data.datasets[13].data[i] = ({
+      myChart.data.datasets[5].data[i] = ({
         x: parseInt(calibrationArray_Infrared[i * step].Lambda),
         y: newDataArray[dataTimeIndex].nir860_power * parseFloat(calibrationArray_Infrared[i * step].nir860_power)
       });
@@ -658,7 +662,6 @@ graphGradients();
 function graphGradients()
 {
   console.log("HEIGHT: " + myChart.height + ", WIDTH: " + myChart.width);
-  console.log(myChart.data.datasets[0].backgroundColor);
 
   visibleGradient = ctx.createLinearGradient(0, 0, myChart.width/2, 0);
   visibleGradient.addColorStop(0.1, "rgba(0, 0, 255, 0.75)");
@@ -671,8 +674,8 @@ function graphGradients()
   infraredGradient.addColorStop(0, "rgba(255, 0, 0, 1)");
   infraredGradient.addColorStop(1, "rgba(173, 173, 173, 0.75)");
   
-  myChart.data.datasets[0].backgroundColor = visibleGradient;
-  myChart.data.datasets[1].backgroundColor = infraredGradient;
+  myChart.data.datasets[13].backgroundColor = visibleGradient;
+  myChart.data.datasets[12].backgroundColor = infraredGradient;
 
   myChart.update();
 }
@@ -694,6 +697,10 @@ const handleDrop = (e) => {
     {
       document.querySelector('.droparea').classList.toggle("active");
       document.getElementById("chart").classList.toggle("active");
+      rawData_element.classList.toggle("active");
+      visible_filter_element.classList.toggle("active");
+      infrared_filter_element.classList.toggle("active");
+
       newFile.classList.toggle("active");
       //** WHEN THE DATA FILE IS LOADED */
       reader.onload = function(event) 
@@ -799,57 +806,57 @@ function updateChartLabels()
   if(rawData_element.classList.contains('selected'))
   {
     console.log('Raw Data is Selected: ');
-    myChart.getDatasetMeta(0).hidden = false;
-    myChart.getDatasetMeta(1).hidden = false;
-  }
-  else
-  {
-    excludeLabelList = excludeLabelList.concat(rawData_array);
-    console.log('Raw Data is not selected: ' + excludeLabelList);
-    myChart.getDatasetMeta(0).hidden = true;
-    myChart.getDatasetMeta(1).hidden = true;
-  }
-  if(visible_filter_element.classList.contains('selected'))
-  {
-    console.log('Visible data is Selected: ');
-    myChart.getDatasetMeta(2).hidden = false;
-    myChart.getDatasetMeta(3).hidden = false;
-    myChart.getDatasetMeta(4).hidden = false;
-    myChart.getDatasetMeta(5).hidden = false;
-    myChart.getDatasetMeta(6).hidden = false;
-    myChart.getDatasetMeta(7).hidden = false;
-  }
-  else
-  {
-    excludeLabelList = excludeLabelList.concat(visible_filter_array);
-    console.log('Visible Data is not selected: ' + excludeLabelList);
-    myChart.getDatasetMeta(2).hidden = true;
-    myChart.getDatasetMeta(3).hidden = true;
-    myChart.getDatasetMeta(4).hidden = true;
-    myChart.getDatasetMeta(5).hidden = true;
-    myChart.getDatasetMeta(6).hidden = true;
-    myChart.getDatasetMeta(7).hidden = true;
-  }
-  if(infrared_filter_element.classList.contains('selected'))
-  {
-    console.log('Infrared data is Selected: ');
-    myChart.getDatasetMeta(8).hidden = false;
-    myChart.getDatasetMeta(9).hidden = false;
-    myChart.getDatasetMeta(10).hidden = false;
-    myChart.getDatasetMeta(11).hidden = false;
     myChart.getDatasetMeta(12).hidden = false;
     myChart.getDatasetMeta(13).hidden = false;
   }
   else
   {
-    excludeLabelList = excludeLabelList.concat(infrared_filter_array);
-    console.log('Infrared Data is not selected: ' + excludeLabelList);
+    excludeLabelList = excludeLabelList.concat(rawData_array);
+    console.log('Raw Data is not selected: ' + excludeLabelList);
+    myChart.getDatasetMeta(12).hidden = true;
+    myChart.getDatasetMeta(13).hidden = true;
+  }
+  if(visible_filter_element.classList.contains('selected'))
+  {
+    console.log('Visible data is Selected: ');
+    myChart.getDatasetMeta(6).hidden = false;
+    myChart.getDatasetMeta(7).hidden = false;
+    myChart.getDatasetMeta(8).hidden = false;
+    myChart.getDatasetMeta(9).hidden = false;
+    myChart.getDatasetMeta(10).hidden = false;
+    myChart.getDatasetMeta(11).hidden = false;
+  }
+  else
+  {
+    excludeLabelList = excludeLabelList.concat(visible_filter_array);
+    console.log('Visible Data is not selected: ' + excludeLabelList);
+    myChart.getDatasetMeta(6).hidden = true;
+    myChart.getDatasetMeta(7).hidden = true;
     myChart.getDatasetMeta(8).hidden = true;
     myChart.getDatasetMeta(9).hidden = true;
     myChart.getDatasetMeta(10).hidden = true;
     myChart.getDatasetMeta(11).hidden = true;
-    myChart.getDatasetMeta(12).hidden = true;
-    myChart.getDatasetMeta(13).hidden = true;
+  }
+  if(infrared_filter_element.classList.contains('selected'))
+  {
+    console.log('Infrared data is Selected: ');
+    myChart.getDatasetMeta(0).hidden = false;
+    myChart.getDatasetMeta(1).hidden = false;
+    myChart.getDatasetMeta(2).hidden = false;
+    myChart.getDatasetMeta(3).hidden = false;
+    myChart.getDatasetMeta(4).hidden = false;
+    myChart.getDatasetMeta(5).hidden = false;
+  }
+  else
+  {
+    excludeLabelList = excludeLabelList.concat(infrared_filter_array);
+    console.log('Infrared Data is not selected: ' + excludeLabelList);
+    myChart.getDatasetMeta(0).hidden = true;
+    myChart.getDatasetMeta(1).hidden = true;
+    myChart.getDatasetMeta(2).hidden = true;
+    myChart.getDatasetMeta(3).hidden = true;
+    myChart.getDatasetMeta(4).hidden = true;
+    myChart.getDatasetMeta(5).hidden = true;
   }
 
 
@@ -862,6 +869,9 @@ uploadNew.addEventListener("click", function (ev)
   newFile.classList.toggle("active");
   document.querySelector('.droparea').classList.toggle("active");
   document.getElementById("chart").classList.toggle("active");
+  rawData_element.classList.toggle("active");
+  visible_filter_element.classList.toggle("active");
+  infrared_filter_element.classList.toggle("active");
   RESOURCE_LOADED = false;
 });
 
@@ -930,12 +940,14 @@ speedSlider.addEventListener("change", function(e){
   console.log(speedSlider.value);
 });
 
-let rawData_element = document.getElementById('rawData');
-let visible_filter_element = document.getElementById('visible_filter');
-let infrared_filter_element = document.getElementById('infrared_filter');
-let visible_filter_range = document.getElementById('visibleFilter_range')
-
 rawData_element.addEventListener('click', function() {
+  const usbVendorId = 0xABCD;
+  navigator.serial.requestPort({ filters: [{ usbVendorId }]}).then((port) => {
+    // Connect to `port` or add it to the list of available ports.
+  }).catch((e) => {
+    // The user didn't select a port.
+  });
+  
   console.log("Clicked Raw Data");
   rawData_element.classList.toggle('selected');
   updateChartLabels();
@@ -943,7 +955,7 @@ rawData_element.addEventListener('click', function() {
 
 visible_filter_element.addEventListener('click', function() {
   visible_filter_element.classList.toggle('selected');
-  document.getElementById('visibleFilter_rangeContainer').classList.toggle("active");
+  //document.getElementById('visibleFilter_rangeContainer').classList.toggle("active");
   updateChartLabels();
   console.log("Clicked visible_filter");
 });
@@ -953,7 +965,19 @@ infrared_filter_element.addEventListener('click', function() {
   updateChartLabels();
 });
 
-visible_filter_range.addEventListener("change", function(e){
-  step = visible_filter_range.value;
-  console.log(speedSlider.value);
+navigator.serial.addEventListener('connect', (e) => {
+  // Connect to `e.target` or add it to a list of available ports.
 });
+
+navigator.serial.addEventListener('disconnect', (e) => {
+  // Remove `e.target` from the list of available ports.
+});
+
+navigator.serial.getPorts().then((ports) => {
+  // Initialize the list of available ports with `ports` on page load.
+});
+
+// visible_filter_range.addEventListener("change", function(e){
+//   //step = visible_filter_range.value;
+//   //console.log(speedSlider.value);
+// });
