@@ -865,23 +865,23 @@ function updateChartLabels()
 }
 
 //** USED TO REQUEST AVAILABLE PLUGGED IN DEVICES */
-async function requestSerialPort()
+function requestSerialPort()
 {
   
   // CODELAB: Add code to request & open port here.
   // - Request a port and open a connection.
-  port = await navigator.serial.requestPort();
-  // - Wait for the port to open.
-  await port.open({ baudRate: 9600 });
+  // port = navigator.serial.requestPort();
+  // // - Wait for the port to open.
+  // port.open({ baudRate: 9600 });
   
   const usbVendorId = 0xABCD;
 
   //filters: [{ usbVendorId }]
-  // port = navigator.serial.requestPort({ }).then((port) => {
-  //   // Connect to `port` or add it to the list of available ports.
-  // }).catch((e) => {
-  //   // The user didn't select a port.
-  // });
+  port = navigator.serial.requestPort({ }).then((port) => {
+    // Connect to `port` or add it to the list of available ports.
+  }).catch((e) => {
+    // The user didn't select a port.
+  });
 }
 
 //** CLICK EVENT FOR UPLOAD NEW BUTTON */
