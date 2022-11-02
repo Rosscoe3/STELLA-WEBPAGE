@@ -30,6 +30,40 @@ body{
   transition: all 2s ease;
 }
 
+.plugInDevice{
+  position: absolute;
+  /* pointer-events: none; */
+  margin: 1rem auto;
+  padding: 2vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: fit-content;
+  max-width: 100%;
+  height: fit-content;
+  border: 4px solid rgb(75, 75, 75);
+  color: rgb(75, 75, 75);
+
+  border-radius: 15px;
+  transition: all .5s ease;
+  opacity: 100%;
+  top: 100%;
+
+  transition: all .1s ease-in-out;
+}
+
+.plugInDevice.active{
+  pointer-events: auto;
+  opacity: 100%;
+  transition: all .1s ease-in-out;
+}
+
+.plugInDevice:hover{
+  opacity: 50%;
+  transition: all .1s ease-in-out;
+}
+
 .droparea {
   position: absolute;
   pointer-events: auto;
@@ -41,7 +75,8 @@ body{
   width: 30%;
   max-width: 100%;
   height: 15%;
-  border: 4px dashed rgb(184, 184, 184);
+  border: 4px dashed rgb(75, 75, 75);
+  color: rgb(75, 75, 75);
   border-radius: 15px;
   transition: all .5s ease;
   opacity: 100%;
@@ -60,8 +95,8 @@ body{
   padding-top: 1rem;
 }
 
-.green-border {
-  border-color: black;
+.-border {
+  border-color: rgb(185, 185, 185);
 }
 
 .newFile{

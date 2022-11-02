@@ -1,12 +1,6 @@
 import './style.css'
 
-
-// document.querySelector('#app').innerHTML = `
-//   <h1>Hello Vite!</h1>
-//   <a href="https://vitejs.dev/guide/features.html" target="_blank">Documentation</a>
-// `
 const ctx = document.getElementById('graph').getContext("2d");
-let delayed;
 
 //** GRADIENT FILL */
 let visibleGradient = ctx.createLinearGradient(0, 0, 500, 0);
@@ -15,7 +9,6 @@ visibleGradient.addColorStop(0.25, "rgba(0, 255, 0, 0.75)");
 visibleGradient.addColorStop(0.5, "rgba(255, 255, 0, 0.75)");
 visibleGradient.addColorStop(0.75, "rgba(255, 102, 0, 0.75)");
 visibleGradient.addColorStop(1, "rgba(255, 0, 0, 0.75)");
-
 let infraredGradient = ctx.createLinearGradient(0, 0, 800, 0);
 infraredGradient.addColorStop(0, "rgba(255, 0, 0, 1)");
 infraredGradient.addColorStop(1, "rgba(173, 173, 173, 0.75)");
@@ -34,9 +27,12 @@ let frameNumber = document.getElementById("frameNumber");
 let rawData_element = document.getElementById('rawData');
 let visible_filter_element = document.getElementById('visible_filter');
 let infrared_filter_element = document.getElementById('infrared_filter');
+let connectDevice = document.getElementById('plugInDevice');
+
 let visible_filter_range = document.getElementById('visibleFilter_range');
 
 //** SERIAL PORTS */
+let port;
 
 //** VARIOUS VARIABLES */
 var RESOURCE_LOADED = false;
@@ -46,6 +42,9 @@ let excludeLabelList = [];
 let visible_filter_array = ['V', 'B', 'G', 'Y', 'O', 'R'];
 let infrared_filter_array = ['610nm', '680nm', '730nm', '760nm', '810nm', '860nm'];
 let rawData_array = ['Visible', 'Infrared'];
+let delayed;
+var calibrationData, calibrationData_Infrared;
+var calibrationArray_Visible, calibrationArray_Infrared;
 
 excludeLabelList = excludeLabelList.concat(visible_filter_array, infrared_filter_array);
 console.log(excludeLabelList);
@@ -53,10 +52,8 @@ console.log(excludeLabelList);
 //** VARIABLES FOR CONTROLLING DATA */
 let step = 5;
 let cut = 0;
-
 var visibleStartData = [2.4, 2.6, 2.2, 1.9, 2.0, 1.8];
 var infraredStartData = [5.4, 5.0, 5.4, 6.5, 5.0, 4.3];
-
 var visible = [...Array(1)].map(e => Array(1));
 var infrared = [...Array(1)].map(e => Array(1));
 
@@ -410,18 +407,19 @@ const config = {
   },
 };
 
+//** CHART INSTANTIATION */
 const myChart = new Chart(ctx, config);
 
 init();
-var calibrationData, calibrationData_Infrared;
-var calibrationArray_Visible, calibrationArray_Infrared;
-
 function init()
 {
   calibrationData = readTextFile("/files/Calibration-visible.csv", true);
   calibrationData_Infrared = readTextFile("/files/calibration-infrared.csv", false);
+
+  graphGradients();
 }
 
+//** GRABS THE DATA FROM THE DROP AND SENDS IT TO BE CONVERTED INTO A CSV */
 function readTextFile(file, visible)
 {
     var rawFile = new XMLHttpRequest();
@@ -458,9 +456,9 @@ function readTextFile(file, visible)
 const initApp = () => {
   const droparea = document.querySelector('.droparea');
 
-  const active = () => droparea.classList.add("green-border");
+  const active = () => droparea.classList.add("-border");
 
-  const inactive = () => droparea.classList.remove("green-border");
+  const inactive = () => droparea.classList.remove("-border");
 
   const prevents = (e) => e.preventDefault();
 
@@ -480,6 +478,7 @@ const initApp = () => {
 
 }
 
+//** USED TO UPDATE THE CHART WITH THE CONTROLS */
 function updateChart(backward)
 { 
   if(RESOURCE_LOADED)
@@ -658,7 +657,7 @@ function updateChart(backward)
   }
 }
 
-graphGradients();
+//** UPDATES THE GRAPHS GRADIENTS */
 function graphGradients()
 {
   console.log("HEIGHT: " + myChart.height + ", WIDTH: " + myChart.width);
@@ -680,8 +679,8 @@ function graphGradients()
   myChart.update();
 }
 
-document.addEventListener("DOMContentLoaded", initApp);
 //** HANDLES THE FILE DROP */
+document.addEventListener("DOMContentLoaded", initApp);
 const handleDrop = (e) => {
 
   if(!RESOURCE_LOADED)
@@ -771,6 +770,7 @@ const handleDrop = (e) => {
   }
 }
 
+//** CONVERTS THE INCOMING TEXT FILE INTO A USABLE CSV ARRAY */
 function csvToArray(str, delimiter = ",") {
   // slice from start of text to the first \n index
   // use split to create an array from string by delimiter
@@ -799,6 +799,7 @@ function csvToArray(str, delimiter = ",") {
   return arr;
 }
 
+//** UPDATES THE CHART'S LEGENDS TO DISPLAY DEPENDING ON WHAT DATA IS SELECTED */
 function updateChartLabels()
 {
   excludeLabelList = [];
@@ -863,6 +864,20 @@ function updateChartLabels()
   myChart.update();
 }
 
+//** USED TO REQUEST AVAILABLE PLUGGED IN DEVICES */
+function requestSerialPort()
+{
+  const usbVendorId = 0xABCD;
+
+  //filters: [{ usbVendorId }]
+  port = navigator.serial.requestPort({ }).then((port) => {
+    // Connect to `port` or add it to the list of available ports.
+  }).catch((e) => {
+    // The user didn't select a port.
+  });
+}
+
+//** CLICK EVENT FOR UPLOAD NEW BUTTON */
 uploadNew.addEventListener("click", function (ev) 
 {
   ev.stopPropagation(); // prevent event from bubbling up to .container
@@ -875,6 +890,7 @@ uploadNew.addEventListener("click", function (ev)
   RESOURCE_LOADED = false;
 });
 
+//** CLICK EVENT FOR THE PLAY / PAUSE BUTTON */
 const box = document.querySelector('.box');
 box.addEventListener('click', (e)=>{
   e.target.classList.toggle('pause');
@@ -895,6 +911,7 @@ box.addEventListener('click', (e)=>{
   //clearTimeout(animWaitFunc);
 })
 
+//** CLICK EVENT FOR RIGHT ARROW BUTTON */
 const arrowRight = document.getElementById('arrowRight');
 arrowRight.addEventListener('click', (e)=>{
   
@@ -908,6 +925,7 @@ arrowRight.addEventListener('click', (e)=>{
   updateChart(false);
 })
 
+//** CLICK EVENT FOR LEFT ARROW BUTTON */
 const arrowLeft = document.getElementById('arrowLeft');
 arrowLeft.addEventListener('click', (e)=>{
   console.log("Left Button");
@@ -941,13 +959,6 @@ speedSlider.addEventListener("change", function(e){
 });
 
 rawData_element.addEventListener('click', function() {
-  const usbVendorId = 0xABCD;
-  navigator.serial.requestPort({ filters: [{ usbVendorId }]}).then((port) => {
-    // Connect to `port` or add it to the list of available ports.
-  }).catch((e) => {
-    // The user didn't select a port.
-  });
-  
   console.log("Clicked Raw Data");
   rawData_element.classList.toggle('selected');
   updateChartLabels();
@@ -965,12 +976,35 @@ infrared_filter_element.addEventListener('click', function() {
   updateChartLabels();
 });
 
+connectDevice.addEventListener('click', function() {
+  requestSerialPort();
+});
+
+const reader = port.readable.getReader();
+
+  // Listen to data coming from the serial device.
+  while (true) {
+    const { value, done } = await reader.read();
+    if (done) {
+      // Allow the serial port to be closed later.
+      reader.releaseLock();
+      break;
+    }
+    // value is a Uint8Array.
+    console.log(value);
+  }
+  readIncomingData();
+//** SERIAL PORT FUNCTIONALITY */
+
+//await port.open({ baudRate: 9600 });
 navigator.serial.addEventListener('connect', (e) => {
   // Connect to `e.target` or add it to a list of available ports.
+  console.log("CONNECT TO PORT: " + e);
 });
 
 navigator.serial.addEventListener('disconnect', (e) => {
   // Remove `e.target` from the list of available ports.
+  console.log("DISCONNECT TO PORT: " + e);
 });
 
 navigator.serial.getPorts().then((ports) => {
