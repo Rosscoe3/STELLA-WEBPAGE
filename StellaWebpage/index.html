@@ -6,16 +6,16 @@
     <title>STELLA - Data Viewer</title>
   </head>
   <body>
-    <div class="chart" id = "chart">
-      <canvas id = "graph">
-      </canvas>
+    <!-- <div class="chart" id = "chart"> -->
+      <!-- <canvas id = "graph">
+      </canvas> -->
       <!-- <div class="checkBoxContainer">
         NIV
         <input type="checkbox" checked="checked">
         <span class="checkmark"></span>
       </div> -->
 
-      <div class="progressContainer" id="progressContainer">
+      <!-- <div class="progressContainer" id="progressContainer">
         <div class="progress" id="progressBar">
           <div class="progress__fill" id="progress_fill">
           </div>
@@ -43,18 +43,72 @@
             1/100
           </div>
         </div>
+      </div> -->
+    <!-- </div> -->
+
+    <div class="chartCard">
+      <div class="chartBox" id = "mainGraph">
+        <canvas id="graph"></canvas>
+        <div class="progressContainer" id="progressContainer">
+          <div class="progress" id="progressBar">
+            <div class="progress__fill" id="progress_fill">
+            </div>
+            
+            <div class="boxContainer">
+              <div class="box center pause" id = "playPauseBtn">
+              </div>
+              <div class="slidecontainer">
+                <input type="range" min="1" max="10" value="5" class="slider" id="myRange">
+                <div class="speedLabel">
+                  speed
+                </div>
+                <div class="track">
+                  <div class="track-inner"></div>
+                </div>
+              </div>
+            </div>
+            <div class="arrow right" id="arrowRight">
+  
+            </div>
+            <div class="arrow left" id="arrowLeft">
+              
+            </div>
+            <div class="frameNumber" id="frameNumber">
+              1/100
+            </div>
+          </div>
+        </div>
+        <div class = "modeContainer">
+          <div class="dataMode selected" id="rawData">
+            <b>Raw Data</b>
+          </div>
+    
+          <div class="dataMode" id="visible_filter">
+            <b>Visible (filtered)</b>
+          </div>
+                
+          <div class="dataMode" id="infrared_filter">
+            <b>Infrared (filtered)</b>
+          </div>
+          <div class="dataMode" id="ndvi">
+            <b>NDVI</b>
+          </div>
+        </div>
+      </div>
+      <div class="chartBox" id = "calcGraph">
+        <canvas id="graph2"></canvas>
       </div>
     </div>
 
 
-    <div class = "modeContainer">
+    <!-- <div class = "modeContainer">
       <div class="dataMode selected" id="rawData">
         <b>Raw Data</b>
       </div>
 
       <div class="dataMode" id="visible_filter">
         <b>Visible (filtered)</b>
-        <!-- <div class="resolutioncontainer" id = "visibleFilter_rangeContainer">
+        <div class="resolutioncontainer" id = "visibleFilter_rangeContainer">
           <input type="range" min="1" max="5" value="5" class="slider" id="visibleFilter_range">
           <div class="speedLabel">
             resolution
@@ -62,14 +116,23 @@
           <div class="track">
             <div class="track-inner"></div>
           </div>
-        </div> -->
+        </div>
       </div>
             
       <div class="dataMode" id="infrared_filter">
         <b>Infrared (filtered)</b>
       </div>
+      <div class="dataMode" id="ndvi">
+        <b>NDVI</b>
+      </div>
     </div>
-
+    
+    <div class="newFile" id = "newFile">
+      <b>Upload new file</b>
+    </div>
+    <div class="newFile" id = "newFile2">
+      <b>Upload new file</b>
+    </div> -->
     
     <div class="newFile" id = "newFile">
       <b>Upload new file</b>
@@ -77,7 +140,7 @@
     <div class="newFile" id = "newFile2">
       <b>Upload new file</b>
     </div>
-    
+
     <section class="droparea">
         <img src="images/stellaSpin.gif" class = "introGif">
         <p><b>Drop your .txt file here</b></p>

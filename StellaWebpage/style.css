@@ -16,6 +16,33 @@ body{
   overflow: hidden;
 }
 
+.chartCard {
+  width: 75vw;
+  height: calc(100vh - 75vw);
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.chartBox {
+  width: 50%;
+  position: absolute;
+  transform: scale(0);
+  padding: 2vw;
+  margin: 1vw;
+  border-radius: 20px;
+  border: solid 3px rgba(75, 75, 104, 1);
+  background: white;
+  opacity: 0%;
+}
+
+.chartBox.active{
+  position: inherit;
+  transform: scale(1);
+  opacity: 100%;
+  transition: all 1s ease;
+}
+
 .chart{
   position: relative;
   top: -30%;
@@ -137,13 +164,12 @@ body{
 .modeContainer{
   position: absolute;
   left: 0%;
-  bottom: 0%;
+  top: calc(-15% - 1vw);
   display: flex;
   flex-wrap: nowrap;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: left;
   align-items: left;
-  margin: 1rem;
 
   width: fit-content;
   height: fit-content;
@@ -159,7 +185,7 @@ body{
   left: 0%;
   bottom: 0%;
 
-  font-size: 100%;
+  font-size: 0.9vw;
   color: rgb(75, 75, 75);
 
   pointer-events: none;
@@ -214,6 +240,8 @@ body{
   height: 1vh;
   z-index: 100;
   opacity: 100%;
+  top: 0%;
+  transform: translate(0%, 750%);
   transition: all 500ms ease-in-out;
 }
 

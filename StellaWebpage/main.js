@@ -1,6 +1,7 @@
 import './style.css'
 
 const ctx = document.getElementById('graph').getContext("2d");
+const ctx2 = document.getElementById('graph2').getContext("2d");
 
 //** GRADIENT FILL */
 let visibleGradient = ctx.createLinearGradient(0, 0, 500, 0);
@@ -17,6 +18,7 @@ infraredGradient.addColorStop(1, "rgba(173, 173, 173, 0.75)");
 let dropArea = document.getElementById('drop-area');
 let dataArray = [];
 let newDataArray = [];
+let ndviArray = [];
 let dataTimeIndex = 0;
 let animationTime = 1500;
 
@@ -27,6 +29,7 @@ let frameNumber = document.getElementById("frameNumber");
 let rawData_element = document.getElementById('rawData');
 let visible_filter_element = document.getElementById('visible_filter');
 let infrared_filter_element = document.getElementById('infrared_filter');
+let ndvi_element = document.getElementById('ndvi');
 let connectDevice = document.getElementById('plugInDevice');
 
 let visible_filter_range = document.getElementById('visibleFilter_range');
@@ -46,7 +49,7 @@ let delayed;
 var calibrationData, calibrationData_Infrared;
 var calibrationArray_Visible, calibrationArray_Infrared;
 
-excludeLabelList = excludeLabelList.concat(visible_filter_array, infrared_filter_array);
+excludeLabelList = excludeLabelList.concat(visible_filter_array, infrared_filter_array, "NDVI");
 console.log(excludeLabelList);
 
 //** VARIABLES FOR CONTROLLING DATA */
@@ -58,7 +61,7 @@ var visible = [...Array(1)].map(e => Array(1));
 var infrared = [...Array(1)].map(e => Array(1));
 
 
-//** DATA SETUP FOR CHARTJS */
+//** DATA SETUP FOR FIRST CHART */
 var data = {
   datasets: [
     //** 610 */
@@ -322,7 +325,29 @@ var data = {
   ], 
 };
 
-//** CONFIG SETUP FOR CHARTJS */
+//** DATA SETUP FOR SECOND CHART */
+var data2 = {
+  datasets: [
+    //** NDVI */
+    {
+      data: [
+      {
+        x: 500,
+        y: 1,
+      }],
+      showLine: true,
+      label: "NDVI",
+      fill: false,
+      hidden: false,
+      backgroundColor: "rgb(255,0,0)",
+      borderColor: "rgb(255,0,0)",
+      lineTension: 0.25,  
+      pointBackgroundColor: 'rgb(189, 195, 199)',
+    },
+  ], 
+};
+
+//** CONFIG SETUP FOR FIRST CHART */
 const config = {
   type: 'scatter', 
   data: data, 
@@ -407,8 +432,79 @@ const config = {
   },
 };
 
+//** CONFIG SETUP FOR SECOND CHART */
+const config2 = {
+  type: 'scatter', 
+  data: data2, 
+  options: {
+    radius: 3,
+    hitRadius: 10,
+    hoverRadius: 8,
+    spanGaps: true,
+    responsive: true,
+    tension: 0,
+    plugins: {
+      title: {
+        display: true,
+        text: 'NDVI'
+      },
+      legend: {
+        display: true,
+     },
+    },
+    //** ADDS NM to the Y axis lables */
+    animation:{
+      onComplete: () => {
+        delayed = true;
+      },
+      delay: (context) => {
+        let delay = 0;
+        if (context.type === "data" && context.mode === "default" && !delayed)
+        {
+          delay = context.dataIndex * 75 + context.datasetIndex * 25;
+        }
+        return delay;
+      },
+    },
+    scales: {
+      y:{
+        // ticks: {
+        //   callback: function (value){
+        //     return value + "μW/cm²";
+        //   }
+        // },
+        title: {
+          display: true,
+          text: 'NDVI',
+          font: {
+            size: 15
+          },
+        }
+      }, 
+      x:{
+        type: 'linear',
+        position: 'bottom',
+        // ticks: {
+        //   callback: function (value){
+        //     return value + " nm";
+        //   }
+        // },
+        title: {
+          display: true,
+          text: 'Decimal Hour', 
+          align: 'center',
+          font: {
+            size: 15
+          },
+        },
+      }
+    },
+  },
+};
+
 //** CHART INSTANTIATION */
-const myChart = new Chart(ctx, config);
+const mainChart = new Chart(ctx, config);
+const chart2 = new Chart(ctx2, config2);
 
 init();
 function init()
@@ -534,7 +630,8 @@ function updateChart(backward)
     console.log("PROGRESS: " + progress + " DATA INDEX: " + dataTimeIndex);
     frameNumber.innerHTML = dataTimeIndex + "/" + (newDataArray.length-2);
 
-    myChart.data.datasets[13].data = [
+    //** VISIBLE LIGHT RAW */
+    mainChart.data.datasets[13].data = [
     {
       x: 450,
       y: newDataArray[dataTimeIndex].V450_power,
@@ -560,7 +657,8 @@ function updateChart(backward)
       y: newDataArray[dataTimeIndex].R650_power,
     },];
 
-    myChart.data.datasets[12].data = [
+    //** INFRARED RAW */
+    mainChart.data.datasets[12].data = [
       {
         x: 610,
         y: newDataArray[dataTimeIndex].nir610_power,
@@ -587,62 +685,76 @@ function updateChart(backward)
       },];
     
     //** ADD ALL NORMALIZED VALUES TO CURVE, START AT ONE TO AVOID LABELS*/
+
+    //** NORMALIZED VISIBLE */
     for(let i = 0; i < (calibrationArray_Visible.length - cut)/step; i++)
     {
-      myChart.data.datasets[6].data[i] = ({
+      mainChart.data.datasets[6].data[i] = ({
         x: parseInt(calibrationArray_Visible[i * step].wavelength),
         y: newDataArray[dataTimeIndex].V450_power * parseFloat(calibrationArray_Visible[i * step].V450_power)
       });
-      myChart.data.datasets[7].data[i] = ({
+      mainChart.data.datasets[7].data[i] = ({
         x: parseInt(calibrationArray_Visible[i * step].wavelength),
         y: newDataArray[dataTimeIndex].B500_power * parseFloat(calibrationArray_Visible[i * step].B500_power)
       });
-      myChart.data.datasets[8].data[i] = ({
+      mainChart.data.datasets[8].data[i] = ({
         x: parseInt(calibrationArray_Visible[i * step].wavelength),
         y: newDataArray[dataTimeIndex].G550_power * parseFloat(calibrationArray_Visible[i * step].G550_power)
       });
-      myChart.data.datasets[9].data[i] = ({
+      mainChart.data.datasets[9].data[i] = ({
         x: parseInt(calibrationArray_Visible[i * step].wavelength),
         y: newDataArray[dataTimeIndex].Y570_power * parseFloat(calibrationArray_Visible[i * step].Y570_power)
       });
-      myChart.data.datasets[10].data[i] = ({
+      mainChart.data.datasets[10].data[i] = ({
         x: parseInt(calibrationArray_Visible[i * step].wavelength),
         y: newDataArray[dataTimeIndex].O600_power * parseFloat(calibrationArray_Visible[i * step].O600_power)
       });
-      myChart.data.datasets[11].data[i] = ({
+      mainChart.data.datasets[11].data[i] = ({
         x: parseInt(calibrationArray_Visible[i * step].wavelength),
         y: newDataArray[dataTimeIndex].R650_power * parseFloat(calibrationArray_Visible[i * step].R650_power)
       });
     }
+    //** NORMALIZED INFRARED */
     for(let i = 0; i < (calibrationArray_Infrared.length - cut)/step; i++)
     {
-      myChart.data.datasets[0].data[i] = ({
+      mainChart.data.datasets[0].data[i] = ({
         x: parseInt(calibrationArray_Infrared[i * step].Lambda),
         y: newDataArray[dataTimeIndex].nir610_power * parseFloat(calibrationArray_Infrared[i * step].nir610_power)
       });
-      myChart.data.datasets[1].data[i] = ({
+      mainChart.data.datasets[1].data[i] = ({
         x: parseInt(calibrationArray_Infrared[i * step].Lambda),
         y: newDataArray[dataTimeIndex].nir680_power * parseFloat(calibrationArray_Infrared[i * step].nir680_power)
       });
-      myChart.data.datasets[2].data[i] = ({
+      mainChart.data.datasets[2].data[i] = ({
         x: parseInt(calibrationArray_Infrared[i * step].Lambda),
         y: newDataArray[dataTimeIndex].nir730_power * parseFloat(calibrationArray_Infrared[i * step].nir730_power)
       });
-      myChart.data.datasets[3].data[i] = ({
+      mainChart.data.datasets[3].data[i] = ({
         x: parseInt(calibrationArray_Infrared[i * step].Lambda),
         y: newDataArray[dataTimeIndex].nir760_power * parseFloat(calibrationArray_Infrared[i * step].nir760_power)
       });
-      myChart.data.datasets[4].data[i] = ({
+      mainChart.data.datasets[4].data[i] = ({
         x: parseInt(calibrationArray_Infrared[i * step].Lambda),
         y: newDataArray[dataTimeIndex].nir810_power * parseFloat(calibrationArray_Infrared[i * step].nir810_power)
       });
-      myChart.data.datasets[5].data[i] = ({
+      mainChart.data.datasets[5].data[i] = ({
         x: parseInt(calibrationArray_Infrared[i * step].Lambda),
         y: newDataArray[dataTimeIndex].nir860_power * parseFloat(calibrationArray_Infrared[i * step].nir860_power)
       });
     }
+
+    //** udpate NDVI */
+    for(let i = 0; i < newDataArray.length; i++)
+    {
+      chart2.data.datasets[0].data[i] = ({
+        x: parseFloat(newDataArray[i].decimal_hour),
+        y: (calculateNDVI(i))
+      });
+      calculateNDVI(i);
+    }
     
-    myChart.update();
+    mainChart.update();
+    chart2.update();
 
     if(animPlay)
     {
@@ -660,23 +772,23 @@ function updateChart(backward)
 //** UPDATES THE GRAPHS GRADIENTS */
 function graphGradients()
 {
-  console.log("HEIGHT: " + myChart.height + ", WIDTH: " + myChart.width);
+  console.log("HEIGHT: " + mainChart.height + ", WIDTH: " + mainChart.width);
 
-  visibleGradient = ctx.createLinearGradient(0, 0, myChart.width/2, 0);
+  visibleGradient = ctx.createLinearGradient(0, 0, mainChart.width/2, 0);
   visibleGradient.addColorStop(0.1, "rgba(0, 0, 255, 0.75)");
   visibleGradient.addColorStop(0.25, "rgba(0, 255, 0, 0.75)");
   visibleGradient.addColorStop(0.5, "rgba(255, 255, 0, 0.75)");
   visibleGradient.addColorStop(0.75, "rgba(255, 102, 0, 0.75)");
   visibleGradient.addColorStop(1, "rgba(255, 0, 0, 0.75)");
   
-  infraredGradient = ctx.createLinearGradient(0, 0, myChart.width, 0);
+  infraredGradient = ctx.createLinearGradient(0, 0, mainChart.width, 0);
   infraredGradient.addColorStop(0, "rgba(255, 0, 0, 1)");
   infraredGradient.addColorStop(1, "rgba(173, 173, 173, 0.75)");
   
-  myChart.data.datasets[13].backgroundColor = visibleGradient;
-  myChart.data.datasets[12].backgroundColor = infraredGradient;
+  mainChart.data.datasets[13].backgroundColor = visibleGradient;
+  mainChart.data.datasets[12].backgroundColor = infraredGradient;
 
-  myChart.update();
+  mainChart.update();
 }
 
 //** HANDLES THE FILE DROP */
@@ -695,12 +807,15 @@ const handleDrop = (e) => {
     if(file.type == "text/plain")
     {
       document.querySelector('.droparea').classList.toggle("active");
-      document.getElementById("chart").classList.toggle("active");
+      document.getElementById("mainGraph").classList.toggle("active");
       rawData_element.classList.toggle("active");
       visible_filter_element.classList.toggle("active");
       infrared_filter_element.classList.toggle("active");
+      ndvi_element.classList.toggle("active");
 
       newFile.classList.toggle("active");
+      graphGradients();
+
       //** WHEN THE DATA FILE IS LOADED */
       reader.onload = function(event) 
       {
@@ -807,61 +922,78 @@ function updateChartLabels()
   if(rawData_element.classList.contains('selected'))
   {
     console.log('Raw Data is Selected: ');
-    myChart.getDatasetMeta(12).hidden = false;
-    myChart.getDatasetMeta(13).hidden = false;
+    mainChart.getDatasetMeta(12).hidden = false;
+    mainChart.getDatasetMeta(13).hidden = false;
   }
   else
   {
     excludeLabelList = excludeLabelList.concat(rawData_array);
     console.log('Raw Data is not selected: ' + excludeLabelList);
-    myChart.getDatasetMeta(12).hidden = true;
-    myChart.getDatasetMeta(13).hidden = true;
+    mainChart.getDatasetMeta(12).hidden = true;
+    mainChart.getDatasetMeta(13).hidden = true;
   }
   if(visible_filter_element.classList.contains('selected'))
   {
     console.log('Visible data is Selected: ');
-    myChart.getDatasetMeta(6).hidden = false;
-    myChart.getDatasetMeta(7).hidden = false;
-    myChart.getDatasetMeta(8).hidden = false;
-    myChart.getDatasetMeta(9).hidden = false;
-    myChart.getDatasetMeta(10).hidden = false;
-    myChart.getDatasetMeta(11).hidden = false;
+    mainChart.getDatasetMeta(6).hidden = false;
+    mainChart.getDatasetMeta(7).hidden = false;
+    mainChart.getDatasetMeta(8).hidden = false;
+    mainChart.getDatasetMeta(9).hidden = false;
+    mainChart.getDatasetMeta(10).hidden = false;
+    mainChart.getDatasetMeta(11).hidden = false;
   }
   else
   {
     excludeLabelList = excludeLabelList.concat(visible_filter_array);
     console.log('Visible Data is not selected: ' + excludeLabelList);
-    myChart.getDatasetMeta(6).hidden = true;
-    myChart.getDatasetMeta(7).hidden = true;
-    myChart.getDatasetMeta(8).hidden = true;
-    myChart.getDatasetMeta(9).hidden = true;
-    myChart.getDatasetMeta(10).hidden = true;
-    myChart.getDatasetMeta(11).hidden = true;
+    mainChart.getDatasetMeta(6).hidden = true;
+    mainChart.getDatasetMeta(7).hidden = true;
+    mainChart.getDatasetMeta(8).hidden = true;
+    mainChart.getDatasetMeta(9).hidden = true;
+    mainChart.getDatasetMeta(10).hidden = true;
+    mainChart.getDatasetMeta(11).hidden = true;
   }
   if(infrared_filter_element.classList.contains('selected'))
   {
     console.log('Infrared data is Selected: ');
-    myChart.getDatasetMeta(0).hidden = false;
-    myChart.getDatasetMeta(1).hidden = false;
-    myChart.getDatasetMeta(2).hidden = false;
-    myChart.getDatasetMeta(3).hidden = false;
-    myChart.getDatasetMeta(4).hidden = false;
-    myChart.getDatasetMeta(5).hidden = false;
+    mainChart.getDatasetMeta(0).hidden = false;
+    mainChart.getDatasetMeta(1).hidden = false;
+    mainChart.getDatasetMeta(2).hidden = false;
+    mainChart.getDatasetMeta(3).hidden = false;
+    mainChart.getDatasetMeta(4).hidden = false;
+    mainChart.getDatasetMeta(5).hidden = false;
   }
   else
   {
     excludeLabelList = excludeLabelList.concat(infrared_filter_array);
     console.log('Infrared Data is not selected: ' + excludeLabelList);
-    myChart.getDatasetMeta(0).hidden = true;
-    myChart.getDatasetMeta(1).hidden = true;
-    myChart.getDatasetMeta(2).hidden = true;
-    myChart.getDatasetMeta(3).hidden = true;
-    myChart.getDatasetMeta(4).hidden = true;
-    myChart.getDatasetMeta(5).hidden = true;
+    mainChart.getDatasetMeta(0).hidden = true;
+    mainChart.getDatasetMeta(1).hidden = true;
+    mainChart.getDatasetMeta(2).hidden = true;
+    mainChart.getDatasetMeta(3).hidden = true;
+    mainChart.getDatasetMeta(4).hidden = true;
+    mainChart.getDatasetMeta(5).hidden = true;
   }
 
 
-  myChart.update();
+  mainChart.update();
+}
+
+function calculateNDVI(index)
+{
+  var b1 = "nir860_power";
+  var b2 = "R650_power";
+  console.log(newDataArray);
+  console.log(index);
+
+  var ndvi = ((parseFloat(newDataArray[index][b1]) - parseFloat(newDataArray[index][b2]))
+  /(parseFloat(newDataArray[index][b1]) + parseFloat(newDataArray[index][b2])));
+  //console.log(ndvi);
+
+  return ndvi;
+  // for(var i = 0; i < newDataArray.length; i++)
+  // {
+  // }
 }
 
 //** USED TO REQUEST AVAILABLE PLUGGED IN DEVICES */
@@ -890,10 +1022,21 @@ uploadNew.addEventListener("click", function (ev)
   ev.stopPropagation(); // prevent event from bubbling up to .container
   newFile.classList.toggle("active");
   document.querySelector('.droparea').classList.toggle("active");
-  document.getElementById("chart").classList.toggle("active");
+  document.getElementById("mainGraph").classList.toggle("active");
+
+  if(document.getElementById("calcGraph").classList.contains("active"))
+  {
+    document.getElementById("calcGraph").classList.toggle("active");
+  }
+  if(ndvi_element.classList.contains("selected"))
+  {
+    ndvi_element.classList.toggle("selected");
+  }
+
   rawData_element.classList.toggle("active");
   visible_filter_element.classList.toggle("active");
   infrared_filter_element.classList.toggle("active");
+  ndvi_element.classList.toggle("active");
   RESOURCE_LOADED = false;
 });
 
@@ -981,6 +1124,13 @@ visible_filter_element.addEventListener('click', function() {
 infrared_filter_element.addEventListener('click', function() {
   infrared_filter_element.classList.toggle('selected');
   updateChartLabels();
+});
+
+ndvi_element.addEventListener('click', function() {
+  ndvi_element.classList.toggle('selected');
+  updateChartLabels();
+
+  document.getElementById("calcGraph").classList.toggle("active");
 });
 
 connectDevice.addEventListener('click', function() {
