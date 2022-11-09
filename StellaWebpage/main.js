@@ -24,6 +24,7 @@ let animationTime = 1500;
 
 //** HTML ELEMENTS */
 let uploadNew = document.getElementById("newFile");
+
 let speedSlider = document.getElementById("myRange");
 let frameNumber = document.getElementById("frameNumber");
 let rawData_element = document.getElementById('rawData');
@@ -369,7 +370,6 @@ const config = {
           filter: function( item, chart)
           {                   
             //** Function for filtering out legends. Chooses which Labels to exclude depending on the dataMode*/
-
             if(excludeLabelList.includes(item.text))
             {
               return false;
@@ -822,8 +822,6 @@ const handleDrop = (e) => {
         
         newDataArray = csvToArray(reader.result);
         console.log(newDataArray);
-        console.log(newDataArray[0].B500_power);
-        console.log(calibrationArray_Visible[1].wavelength);
         
         //** CLEAR THE ARRAY IF IT IS FULL */  
         if(dataArray)
@@ -840,41 +838,6 @@ const handleDrop = (e) => {
           dataArray.push(lineSplit[i].split(","));
         }
         //console.log(dataArray);
-    
-        //** SORT DATA TO VISIBLE AND INFRARED */
-        for(var x = 0; x < dataArray.length - 1; x++)
-        {
-          visible[x] = [];
-          infrared[x] = [];
-          //** OFFSET INDEX TO ONLY GRAB VALUES */
-          for(var y = 0; y < dataArray[x].length; y++)
-          {
-            
-            //** IF EVEN, FOR GETTING THE LABELS */
-            if(y % 2 == 0)
-            {
-              //infrared[x].push(dataArray[x][y]);
-            }
-            //** IF ODD, FOR GETTING THE DATA */
-            else
-            {
-              //** VISIBLE */
-              if(y < 12)
-              {
-                visible[x].push(parseFloat(dataArray[x][y]));
-              }
-              //** INFRARED */
-              else
-              {
-                //** ADD BLANK SPACE TO ARRAY FOR CHART.JS*/
-                infrared[x].push(parseFloat(dataArray[x][y]));
-                //infrared[x].push(parseFloat(dataArray[x][y]));
-              }
-              
-              //** IF ODD */
-            }
-          }
-        }
         RESOURCE_LOADED = true;
         updateChart();
         
@@ -1160,10 +1123,16 @@ navigator.usb.getDevices().then(devices => {
     console.log(device.manufacturerName); // "Arduino LLC"
   });
 })
+navigator.usb.onconnect = (event) => {
+  // Add event.device to the UI.
+  console.log("device Connected");
+};
+
 //await port.open({ baudRate: 9600 });
 navigator.serial.addEventListener('connect', (e) => {
   // Connect to `e.target` or add it to a list of available ports.
   console.log("CONNECT TO PORT: " + e);
+  console.log(e);
 });
 
 navigator.serial.addEventListener('disconnect', (e) => {
