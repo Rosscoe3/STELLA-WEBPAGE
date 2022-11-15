@@ -8,13 +8,16 @@
 }
 
 body{
+  position: absolute;
   display: flex;
   align-items: center;
   justify-content: center;
   height: 100vh;
+  width: 100vw;
   font-family: Arial;
   overflow: hidden;
 }
+
 
 .chartCard {
   width: 75vw;
@@ -34,6 +37,7 @@ body{
   border: solid 3px rgba(75, 75, 104, 1);
   background: white;
   opacity: 0%;
+  fill: white;
 }
 
 .chartBox.active{
@@ -163,6 +167,7 @@ body{
 
 .modeContainer{
   position: absolute;
+  pointer-events: none;
   left: 0%;
   top: calc(-15% - 1vw);
   display: flex;
@@ -195,10 +200,10 @@ body{
   transition: all 0.5s ease;
 }
 
-.dataMode:hover{
+.dataMode.active:hover{
   cursor: pointer;
-  opacity: 50%;
-  transition: all 0.5s ease;
+  opacity: 75%;
+  transition: all 0.25s ease;
 }
 
 .dataMode.selected{
@@ -456,3 +461,81 @@ background-color: rgb(75, 75, 75);
   right: -10%;
   bottom: 60%;
 }
+
+.record{
+  position: absolute;
+  pointer-events: none;
+  top: 0%;
+  left: 0%;
+  width: 35px;
+	height: 35px;
+	font-size: 0;
+	background-color: red;
+	border: 0;
+	border-radius: 35px;
+	margin: 18px;
+	outline: none;
+
+  opacity: 0%;
+  transition: all .5s ease-in-out;
+}
+
+.record.active{
+  pointer-events: auto;
+  opacity: 100%;
+  transition: all .5s ease-in-out;
+}
+
+.record.active:hover{
+  opacity: 50%;
+  transition: all .25s ease-in-out;
+}
+
+.record.active.recording{
+  animation-name: pulse;
+	animation-duration: 1.5s;
+	animation-iteration-count: infinite;
+	animation-timing-function: linear;
+}
+
+@keyframes pulse{
+	0%{
+		box-shadow: 0px 0px 5px 0px rgba(173,0,0,.3);
+	}
+	65%{
+		box-shadow: 0px 0px 5px 13px rgba(173,0,0,.3);
+	}
+	90%{
+		box-shadow: 0px 0px 5px 13px rgba(173,0,0,0);
+	}
+}
+
+.recordingText{
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 140%;
+  text-align: center;
+
+  color: black;
+  font-size: 3vh;
+  width: fit-content;
+  height: fit-content;
+  opacity: 0%;
+  transition: all .2s;
+}
+
+.recordingText.active{
+  opacity: 100%;
+  transition: all .2s;
+}
+
+.record.active:hover .recordingText{
+  opacity: 100%;
+  transition: all .2s;
+}
+
+.canvas{
+  border: 1px solid rgb(255, 255, 255);
+}
+

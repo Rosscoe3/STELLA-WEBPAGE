@@ -48,7 +48,9 @@
 
     <div class="chartCard">
       <div class="chartBox" id = "mainGraph">
-        <canvas id="graph"></canvas>
+        <canvas id="graph">
+          <div id="canvasBG"></div>
+        </canvas>
         <div class="progressContainer" id="progressContainer">
           <div class="progress" id="progressBar">
             <div class="progress__fill" id="progress_fill">
@@ -90,16 +92,12 @@
           <div class="dataMode" id="infrared_filter">
             <b>Infrared (filtered)</b>
           </div>
-          <!-- <div class="dataMode" id="ndvi">
-            <b>NDVI</b>
-          </div> -->
         </div>
       </div>
       <div class="chartBox" id = "calcGraph">
         <canvas id="graph2"></canvas>
       </div>
     </div>
-
 
     <!-- <div class = "modeContainer">
       <div class="dataMode selected" id="rawData">
@@ -135,10 +133,15 @@
     </div> -->
     
     <div class="newFile" id = "newFile">
-      <b>Upload new file</b>
+      <b>Menu</b>
     </div>
     <div class="newFile" id = "ndvi" style="left: 0%">
       <b>NDVI</b>
+    </div>
+    <div class ="record" id = "recordButton">
+      <div class="recordingText" id = "recordingText">
+        Record
+      </div>
     </div>
 
     <section class="droparea">
@@ -147,7 +150,12 @@
         <div class = "plugInDevice" id = "plugInDevice">
           <p><b>Connect a Device</b></p>
         </div>
+        <div class="newFile" id = "read" style="bottom: -75%; right: 0%;">
+          <b>read</b>
+        </div>
     </section>
+
+    <!-- <video autoplay controls></video> -->
     
     <script type="module" src="/main.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

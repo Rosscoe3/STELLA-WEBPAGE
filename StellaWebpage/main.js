@@ -32,11 +32,54 @@ let visible_filter_element = document.getElementById('visible_filter');
 let infrared_filter_element = document.getElementById('infrared_filter');
 let ndvi_element = document.getElementById('ndvi');
 let connectDevice = document.getElementById('plugInDevice');
-
+let recordButton = document.getElementById('recordButton');
+let recordingText = document.getElementById("recordingText");
+let readDeviceBtn = document.getElementById("read");
 let visible_filter_range = document.getElementById('visibleFilter_range');
 
 //** SERIAL PORTS */
-let port;
+class SerialScaleController {
+  constructor() {
+      this.encoder = new TextEncoder();
+      this.decoder = new TextDecoder();
+  }
+  async init() {
+      if ('serial' in navigator) {
+          try {
+              const port = await navigator.serial.requestPort();
+              await port.open({ baudRate: 19200 });
+              this.reader = port.readable.getReader();
+              let signals = await port.getSignals();
+              console.log("DEVICE PAIRED");
+              readDeviceBtn.classList.toggle("active");
+              console.log(signals);
+          }
+          catch (err) {
+              console.error('There was an error opening the serial port:', err);
+          }
+      }
+      else {
+          console.error('Web serial doesn\'t seem to be enabled in your browser. Try enabling it by visiting:');
+          console.error('chrome://flags/#enable-experimental-web-platform-features');
+          console.error('opera://flags/#enable-experimental-web-platform-features');
+          console.error('edge://flags/#enable-experimental-web-platform-features');
+      }
+  }
+  async read() {
+      try {
+          const readerData = await this.reader.read();
+          console.log(readerData)
+          return this.decoder.decode(readerData.value);
+      }
+      catch (err) {
+          const errorMessage = `error reading data: ${err}`;
+          console.error(errorMessage);
+          return errorMessage;
+      }
+  }
+}
+var serialTimeout;
+const serialScaleController = new SerialScaleController();
 
 //** VARIOUS VARIABLES */
 var RESOURCE_LOADED = false;
@@ -50,6 +93,11 @@ let delayed;
 var calibrationData, calibrationData_Infrared;
 var calibrationArray_Visible, calibrationArray_Infrared;
 
+//** VARIABLES FOR RECORDING */
+var recording;
+var timePassed = 0;
+let timerInterval = null;
+
 excludeLabelList = excludeLabelList.concat(visible_filter_array, infrared_filter_array, "NDVI");
 console.log(excludeLabelList);
 
@@ -61,6 +109,50 @@ var infraredStartData = [5.4, 5.0, 5.4, 6.5, 5.0, 4.3];
 var visible = [...Array(1)].map(e => Array(1));
 var infrared = [...Array(1)].map(e => Array(1));
 
+//** RECORD VIDEO */
+var recordedElement = document.getElementById("graph");
+//let video = document.querySelector("video");
+var videoStream = recordedElement.captureStream(30);
+var mediaRecorder = new MediaRecorder(videoStream);
+
+var chunks = [];
+mediaRecorder.ondataavailable = function(e) {
+  chunks.push(e.data);
+};
+mediaRecorder.onstop = function(e) {
+  var blob = new Blob(chunks, { 'type' : 'video/mp4' });
+  chunks = [];
+  var videoURL = URL.createObjectURL(blob);
+  window.open(videoURL, '_blank');
+  // video.src = videoURL;
+};
+mediaRecorder.ondataavailable = function(e) {
+  chunks.push(e.data);
+};
+
+const initCanvas = () => {
+  const canvas = document.getElementById("graph");
+  ctx.fillStyle = "white";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = "black";
+  ctx.font = "30px Arial";
+  ctx.fillText("Hello World", 10, 50);
+}
+
+initCanvas();
+
+//** WHITE BG ON CANVAS */
+const whiteBg = {
+  id: 'custom_canvas_background_color',
+  beforeDraw: (chart) => {
+    const ctx = chart.canvas.getContext('2d');
+    ctx.save();
+    ctx.globalCompositeOperation = 'destination-over';
+    ctx.fillStyle = 'black';
+    ctx.fillRect(0, 0, chart.width, chart.height);
+    ctx.restore();
+  }
+};
 
 //** DATA SETUP FOR FIRST CHART */
 var data = {
@@ -290,7 +382,7 @@ var data = {
       borderColor: 'rgb(255, 255, 255)', 
       pointBackgroundColor: 'rgb(189, 195, 199)',
     },
-    //** VISIBLE */
+    //** VISIBLE dataset 13*/
     {
       data: [{
         x: 450,
@@ -363,6 +455,9 @@ const config = {
       title: {
         display: true,
         text: 'STELLA'
+      },
+      background:{
+        color: 'black'
       },
       legend: {
         display: true,
@@ -580,7 +675,6 @@ function updateChart(backward)
   if(RESOURCE_LOADED)
   {
     
-    
     if(animPlay)
     {
       if(dataTimeIndex < newDataArray.length - 2)
@@ -623,7 +717,6 @@ function updateChart(backward)
         }
       }
     }
-    
 
     var progress = (dataTimeIndex/(newDataArray.length-2)) * 100;
     document.querySelector(".progress__fill").style.width = progress + "%";
@@ -812,6 +905,7 @@ const handleDrop = (e) => {
       visible_filter_element.classList.toggle("active");
       infrared_filter_element.classList.toggle("active");
       ndvi_element.classList.toggle("active");
+      recordButton.classList.toggle("active");
 
       newFile.classList.toggle("active");
       graphGradients();
@@ -950,7 +1044,7 @@ function calculateNDVI(index)
   console.log(index);
 
   var ndvi = ((parseFloat(newDataArray[index][b1]) - parseFloat(newDataArray[index][b2]))
-  /(parseFloat(newDataArray[index][b1]) + parseFloat(newDataArray[index][b2])));
+/(parseFloat(newDataArray[index][b1]) + parseFloat(newDataArray[index][b2])));
   //console.log(ndvi);
 
   return ndvi;
@@ -959,25 +1053,61 @@ function calculateNDVI(index)
   // }
 }
 
-//** USED TO REQUEST AVAILABLE PLUGGED IN DEVICES */
-function requestSerialPort()
-{
-  
-  // CODELAB: Add code to request & open port here.
-  // - Request a port and open a connection.
-  // port = navigator.serial.requestPort();
-  // // - Wait for the port to open.
-  // port.open({ baudRate: 9600 });
-  
-  const usbVendorId = 0xABCD;
+//READS MESSAGES BEING SENT THROUGH THE SERIAL PORT *//
+async function getSerialMessage() {
+  //getSerialMessage();
 
-  //filters: [{ usbVendorId }]
-  port = navigator.serial.requestPort({ }).then((port) => {
-    // Connect to `port` or add it to the list of available ports.
-  }).catch((e) => {
-    // The user didn't select a port.
-  });
+  clearTimeout(serialTimeout);
+  
+  //** IF THERE ARE NO ERRORS */
+  serialTimeout = setTimeout(async function()
+    {
+      var message = await serialScaleController.read();
+      console.log(message);
+      getSerialMessage();
+      console.log("update read");
+    }, 5000);
+  
+  //document.querySelector("#serial-messages-container .message").innerText += await serialScaleController.read()
 }
+
+//** TAKES A TIME VARIABLE AND CONVERTS IT INTO MINUTES / SECONDS */
+function formatTime(time) {
+  // The largest round integer less than or equal to the result of time divided being by 60.
+  const minutes = Math.floor(time / 60);
+  
+  // Seconds are the remainder of the time divided by 60 (modulus operator)
+  let seconds = time % 60;
+  
+  // If the value of seconds is less than 10, then display seconds with a leading zero
+  if (seconds < 10) {
+    seconds = `0${seconds}`;
+  }
+
+  // The output in MM:SS format
+  return `${minutes}:${seconds}`;
+}
+
+function startTimer() {
+  timerInterval = setInterval(() => {
+    
+    // The amount of time passed increments by one
+    timePassed = timePassed += 1;
+    
+    // The time left label is updated
+    recordingText.innerHTML = formatTime(timePassed);
+    console.log("TICK: " + formatTime(timePassed));
+
+  }, 1000);
+}
+
+function animate()
+{
+  ctx.fillStyle = "#FF0000"; // with your desired background color
+  ctx.fillRect(0, 0, 500, 500);
+  console.log("ANIMTE");
+}
+animate();
 
 //** CLICK EVENT FOR UPLOAD NEW BUTTON */
 uploadNew.addEventListener("click", function (ev) 
@@ -995,11 +1125,11 @@ uploadNew.addEventListener("click", function (ev)
   {
     ndvi_element.classList.toggle("selected");
   }
-
   rawData_element.classList.toggle("active");
   visible_filter_element.classList.toggle("active");
   infrared_filter_element.classList.toggle("active");
   ndvi_element.classList.toggle("active");
+  recordButton.classList.toggle("active");
   RESOURCE_LOADED = false;
 });
 
@@ -1092,43 +1222,33 @@ infrared_filter_element.addEventListener('click', function() {
 ndvi_element.addEventListener('click', function() {
   ndvi_element.classList.toggle('selected');
   updateChartLabels();
-
   document.getElementById("calcGraph").classList.toggle("active");
 });
 
 connectDevice.addEventListener('click', function() {
-  requestSerialPort();
+  serialScaleController.init();
 });
 
-
-// const reader = port.readable.getReader();
-
-//   // Listen to data coming from the serial device.
-//   while (true) {
-//     const { value, done } = await reader.read();
-//     if (done) {
-//       // Allow the serial port to be closed later.
-//       reader.releaseLock();
-//       break;
-//     }
-//     // value is a Uint8Array.
-//     console.log(value);
-//   }
-//   readIncomingData();
+recordButton.addEventListener('click', function() {
   
-//** SERIAL PORT FUNCTIONALITY */
-navigator.usb.getDevices().then(devices => {
-  devices.forEach(device => {
-    console.log(device.productName);      // "Arduino Micro"
-    console.log(device.manufacturerName); // "Arduino LLC"
-  });
-})
-navigator.usb.onconnect = (event) => {
-  // Add event.device to the UI.
-  console.log("device Connected");
-};
+  recordButton.classList.toggle("recording");
+  if(recordButton.classList.contains("recording"))
+  {
+    startTimer();
+    mediaRecorder.start();
+    recordingText.classList.toggle('active');
+  }
+  else
+  {
+    clearInterval(timerInterval);
+    recordingText.innerHTML = "Record";
+    mediaRecorder.stop();
+    timePassed = 0;
+    recordingText.classList.toggle('active');
+  }
+});
 
-//await port.open({ baudRate: 9600 });
+//** SERIAL PORT FUNCTIONALITY */
 navigator.serial.addEventListener('connect', (e) => {
   // Connect to `e.target` or add it to a list of available ports.
   console.log("CONNECT TO PORT: " + e);
@@ -1142,7 +1262,12 @@ navigator.serial.addEventListener('disconnect', (e) => {
 
 navigator.serial.getPorts().then((ports) => {
   // Initialize the list of available ports with `ports` on page load.
+  console.log(ports);
 });
+
+document.getElementById("read").addEventListener('pointerdown', async () => {
+  getSerialMessage();
+})
 
 // visible_filter_range.addEventListener("change", function(e){
 //   //step = visible_filter_range.value;
