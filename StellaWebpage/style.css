@@ -28,7 +28,7 @@ body{
   justify-content: center;
 }
 .chartBox {
-  width: 50%;
+  width: 75%;
   position: absolute;
   transform: scale(0);
   padding: 2vw;
@@ -537,5 +537,11 @@ background-color: rgb(75, 75, 75);
 
 .canvas{
   border: 1px solid rgb(255, 255, 255);
+}
+
+h2{
+  position: absolute;
+  text-align: center;
+  bottom: 2.5%;
 }
 

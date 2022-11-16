@@ -10,6 +10,12 @@ visibleGradient.addColorStop(0.25, "rgba(0, 255, 0, 0.75)");
 visibleGradient.addColorStop(0.5, "rgba(255, 255, 0, 0.75)");
 visibleGradient.addColorStop(0.75, "rgba(255, 102, 0, 0.75)");
 visibleGradient.addColorStop(1, "rgba(255, 0, 0, 0.75)");
+
+var graph = document.getElementById('graph');
+
+ctx.fillStyle = "green";
+ctx.fillRect(0, 0, graph.width, graph.height);
+
 let infraredGradient = ctx.createLinearGradient(0, 0, 800, 0);
 infraredGradient.addColorStop(0, "rgba(255, 0, 0, 1)");
 infraredGradient.addColorStop(1, "rgba(173, 173, 173, 0.75)");
@@ -120,7 +126,7 @@ mediaRecorder.ondataavailable = function(e) {
   chunks.push(e.data);
 };
 mediaRecorder.onstop = function(e) {
-  var blob = new Blob(chunks, { 'type' : 'video/mp4' });
+  var blob = new Blob(chunks, { 'type' : 'video/webm' });
   chunks = [];
   var videoURL = URL.createObjectURL(blob);
   window.open(videoURL, '_blank');
@@ -141,14 +147,22 @@ const initCanvas = () => {
 
 initCanvas();
 
-//** WHITE BG ON CANVAS */
-const whiteBg = {
-  id: 'custom_canvas_background_color',
-  beforeDraw: (chart) => {
-    const ctx = chart.canvas.getContext('2d');
+window.onload = function() {
+  var canvas = document.getElementById("graph");
+  var ctx = canvas.getContext("2d");
+  var img = document.getElementById("spin");
+ ctx.drawImage(img, 10, 10);
+ console.log("BG");
+};
+
+
+const plugin = {
+  id: 'customCanvasBackgroundColor',
+  beforeDraw: (chart, args, options) => {
+    const {ctx} = chart;
     ctx.save();
     ctx.globalCompositeOperation = 'destination-over';
-    ctx.fillStyle = 'black';
+    ctx.fillStyle = options.color || '#99ffff';
     ctx.fillRect(0, 0, chart.width, chart.height);
     ctx.restore();
   }
@@ -415,7 +429,7 @@ var data = {
       borderColor: 'rgb(255, 255, 255)', 
       pointBackgroundColor: 'rgb(189, 195, 199)',
     },
-  ], 
+  ],
 };
 
 //** DATA SETUP FOR SECOND CHART */
@@ -452,6 +466,9 @@ const config = {
     responsive: true,
     tension: 0,
     plugins: {
+      customCanvasBackgroundColor: {
+        color: 'white',
+      },
       title: {
         display: true,
         text: 'STELLA'
@@ -525,6 +542,7 @@ const config = {
       }
     },
   },
+  plugins: [plugin],
 };
 
 //** CONFIG SETUP FOR SECOND CHART */
@@ -539,6 +557,9 @@ const config2 = {
     responsive: true,
     tension: 0,
     plugins: {
+      customCanvasBackgroundColor: {
+        color: 'white',
+      },
       title: {
         display: true,
         text: 'NDVI'
@@ -595,6 +616,7 @@ const config2 = {
       }
     },
   },
+  plugins: [plugin],
 };
 
 //** CHART INSTANTIATION */
@@ -1221,6 +1243,18 @@ infrared_filter_element.addEventListener('click', function() {
 
 ndvi_element.addEventListener('click', function() {
   ndvi_element.classList.toggle('selected');
+
+  if(ndvi_element.classList.contains("selected"))
+  {
+    document.getElementById("mainGraph").style.width = "50%";
+    document.getElementById("calcGraph").style.width = "50%";
+  }
+  else
+  {
+    document.getElementById("mainGraph").style.width = "75%";
+    mainChart.update();
+  }
+
   updateChartLabels();
   document.getElementById("calcGraph").classList.toggle("active");
 });
@@ -1267,7 +1301,12 @@ navigator.serial.getPorts().then((ports) => {
 
 document.getElementById("read").addEventListener('pointerdown', async () => {
   getSerialMessage();
-})
+});
+
+window.addEventListener("mouseover", (event) => {
+  console.log(event.target.localName);
+  document.getElementById("descriptionText").innerHTML = event.target.localName;
+});
 
 // visible_filter_range.addEventListener("change", function(e){
 //   //step = visible_filter_range.value;
