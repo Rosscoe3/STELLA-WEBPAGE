@@ -7,7 +7,7 @@
   margin-top: 60px;
 }
 
-body{
+body {
   position: absolute;
   display: flex;
   align-items: center;
@@ -17,7 +17,6 @@ body{
   font-family: Arial;
   overflow: hidden;
 }
-
 
 .chartCard {
   width: 75vw;
@@ -40,14 +39,14 @@ body{
   fill: white;
 }
 
-.chartBox.active{
+.chartBox.active {
   position: inherit;
   transform: scale(1);
   opacity: 100%;
   transition: all 1s ease;
 }
 
-.chart{
+.chart {
   position: relative;
   top: -30%;
   width: 75vw;
@@ -56,12 +55,12 @@ body{
   transition: all 1s ease;
 }
 
-.chart.active{
+.chart.active {
   opacity: 100%;
   transition: all 2s ease;
 }
 
-.plugInDevice{
+.plugInDevice {
   position: absolute;
   /* pointer-events: none; */
   margin: 1rem auto;
@@ -77,22 +76,22 @@ body{
   color: rgb(75, 75, 75);
 
   border-radius: 15px;
-  transition: all .5s ease;
+  transition: all 0.5s ease;
   opacity: 100%;
   top: 100%;
 
-  transition: all .1s ease-in-out;
+  transition: all 0.1s ease-in-out;
 }
 
-.plugInDevice.active{
+.plugInDevice.active {
   pointer-events: auto;
   opacity: 100%;
-  transition: all .1s ease-in-out;
+  transition: all 0.1s ease-in-out;
 }
 
-.plugInDevice:hover{
+.plugInDevice:hover {
   opacity: 50%;
-  transition: all .1s ease-in-out;
+  transition: all 0.1s ease-in-out;
 }
 
 .droparea {
@@ -109,7 +108,7 @@ body{
   border: 4px dashed rgb(75, 75, 75);
   color: rgb(75, 75, 75);
   border-radius: 15px;
-  transition: all .5s ease;
+  transition: all 0.5s ease;
   opacity: 100%;
   top: 60%;
 }
@@ -130,7 +129,7 @@ body{
   border-color: rgb(185, 185, 185);
 }
 
-.newFile{
+.newFile {
   pointer-events: none;
   position: absolute;
   margin: 1rem;
@@ -154,18 +153,18 @@ body{
   transition: all 0.5s ease;
 }
 
-.newFile.active{
+.newFile.active {
   pointer-events: auto;
   transition: all 2s ease;
   opacity: 100%;
 }
 
-.newFile.active:hover{
+.newFile.active:hover {
   transition: all 0.5s ease;
   opacity: 50%;
 }
 
-.modeContainer{
+.modeContainer {
   position: absolute;
   pointer-events: none;
   left: 0%;
@@ -200,24 +199,24 @@ body{
   transition: all 0.5s ease;
 }
 
-.dataMode.active:hover{
+.dataMode.active:hover {
   cursor: pointer;
   opacity: 75%;
   transition: all 0.25s ease;
 }
 
-.dataMode.selected{
-  background: rgb(75, 75, 75);;
+.dataMode.selected {
+  background: rgb(75, 75, 75);
   color: white;
   transition: all 0.5s ease;
 }
-.dataMode.active{
+.dataMode.active {
   pointer-events: auto;
   opacity: 100%;
   transition: all 0.5s ease;
 }
 
-.progressContainer{
+.progressContainer {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -231,7 +230,7 @@ body{
   mix-blend-mode: normal;
 }
 
-.progressContainer.disabled{
+.progressContainer.disabled {
   opacity: 0%;
   pointer-events: none;
   transition: all 500ms ease-in-out;
@@ -250,7 +249,7 @@ body{
   transition: all 500ms ease-in-out;
 }
 
-.progress__fill{
+.progress__fill {
   width: 80%;
   height: 100%;
   background: rgb(220, 220, 220);
@@ -259,15 +258,15 @@ body{
   transition: all 250ms ease-in-out;
 }
 
-.center{
-	position: inherit;
-	top: 50%;
-	left: 50%;
-  
-	transform: translate(-50%, 50%);
+.center {
+  position: inherit;
+  top: 50%;
+  left: 50%;
+
+  transform: translate(-50%, 50%);
 }
 
-.box{
+.box {
   width: 2vw;
   height: 2vw;
 
@@ -278,17 +277,17 @@ body{
   border-color: transparent transparent transparent black;
   transition: all 100ms ease-in-out;
 }
-.pause{
+.pause {
   border-style: double;
-  border-width:0px 0px 0px 2vw;
+  border-width: 0px 0px 0px 2vw;
 }
 
-.box:hover{
+.box:hover {
   opacity: 50%;
   transition: all 100ms ease-in-out;
 }
 
-.arrow{
+.arrow {
   position: inherit;
   top: -10%;
   opacity: 100%;
@@ -301,7 +300,7 @@ body{
   transition: all 100ms ease-in-out;
 }
 
-.arrow:hover{
+.arrow:hover {
   size: 2;
   opacity: 50%;
   transition: all 100ms ease-in-out;
@@ -329,33 +328,33 @@ body{
   -webkit-transform: rotate(45deg);
 }
 
-.boxContainer{
+.boxContainer {
   position: relative;
   width: 100%;
   height: 500%;
   top: -200%;
 }
 
-.slidecontainer{
+.slidecontainer {
   position: relative;
   width: 40%;
   top: 30%;
   font-family: Arial;
 }
-.resolutioncontainer{
+.resolutioncontainer {
   position: absolute;
   opacity: 0%;
   width: 100%;
   font-family: Arial;
 }
-.resolutioncontainer.active{
+.resolutioncontainer.active {
   position: relative;
   display: block;
   opacity: 100%;
   margin: 0.5vh;
   transition: 0.5s ease-in-out;
 }
-.timelineSlider{
+.timelineSlider {
   position: relative;
   width: 40%;
   top: 30%;
@@ -370,14 +369,14 @@ body{
   background: #d3d3d3; /* Grey background */
   color: white;
   opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
-  -webkit-transition: .2s; /* 0.2 seconds transition on hover */
-  transition: all .2s;
+  -webkit-transition: 0.2s; /* 0.2 seconds transition on hover */
+  transition: all 0.2s;
 }
 .slider:hover {
   opacity: 0.5;
-  transition: all .2s;
+  transition: all 0.2s;
 }
-.speedLabel{
+.speedLabel {
   position: absolute;
   width: fit-content;
   top: 80%;
@@ -389,55 +388,54 @@ body{
   color: rgb(219, 219, 219);
   font-family: Avenir, Helvetica, Arial, sans-serif;
 }
-.slider:hover ~ .speedLabel{
+.slider:hover ~ .speedLabel {
   opacity: 100%;
-  transition: all .2s;
+  transition: all 0.2s;
 }
 
-@media screen and (-webkit-min-device-pixel-ratio:0) {
-  input[type='range'] {
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+  input[type="range"] {
     overflow: hidden;
     border-radius: 25px;
     -webkit-appearance: none;
     background-color: rgb(75, 75, 75);
   }
-  
-  input[type='range']::-webkit-slider-runnable-track {
+
+  input[type="range"]::-webkit-slider-runnable-track {
     height: 10px;
     -webkit-appearance: none;
     color: rgb(220, 220, 220);
     margin-top: -1px;
   }
-  
-  input[type='range']::-webkit-slider-thumb {
+
+  input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
     width: 10px;
     height: 110%;
     cursor: ew-resize;
     background: rgb(0, 0, 0);
-    box-shadow: -1000px 0 0 1000px rgb(220, 220, 220);;
+    box-shadow: -1000px 0 0 1000px rgb(220, 220, 220);
   }
-
 }
 /** FF*/
 input[type="range"]::-moz-range-progress {
-background-color: rgb(220, 220, 220);
+  background-color: rgb(220, 220, 220);
 }
-input[type="range"]::-moz-range-track {  
-background-color: rgb(75, 75, 75);
+input[type="range"]::-moz-range-track {
+  background-color: rgb(75, 75, 75);
 }
-input[type="range"]::-moz-range-track {  
-background-color: rgb(75, 75, 75);
+input[type="range"]::-moz-range-track {
+  background-color: rgb(75, 75, 75);
 }
 /* IE*/
 input[type="range"]::-ms-fill-lower {
-background-color: rgb(220, 220, 220);
+  background-color: rgb(220, 220, 220);
 }
-input[type="range"]::-ms-fill-upper {  
-background-color: rgb(75, 75, 75);
+input[type="range"]::-ms-fill-upper {
+  background-color: rgb(75, 75, 75);
 }
 
-.frameNumber{
+.frameNumber {
   position: inherit;
   top: 125%;
   right: 0%;
@@ -447,14 +445,14 @@ background-color: rgb(75, 75, 75);
   color: rgb(219, 219, 219);
   font-family: Avenir, Helvetica, Arial, sans-serif;
 }
-.introGif{
+.introGif {
   position: inherit;
   pointer-events: none;
   width: 125%;
   bottom: 120%;
 }
 
-.checkBoxContainer{
+.checkBoxContainer {
   position: absolute;
   width: 10%;
   height: 10%;
@@ -462,55 +460,55 @@ background-color: rgb(75, 75, 75);
   bottom: 60%;
 }
 
-.record{
+.record {
   position: absolute;
   pointer-events: none;
   top: 0%;
   left: 0%;
   width: 35px;
-	height: 35px;
-	font-size: 0;
-	background-color: red;
-	border: 0;
-	border-radius: 35px;
-	margin: 18px;
-	outline: none;
+  height: 35px;
+  font-size: 0;
+  background-color: red;
+  border: 0;
+  border-radius: 35px;
+  margin: 18px;
+  outline: none;
 
   opacity: 0%;
-  transition: all .5s ease-in-out;
+  transition: all 0.5s ease-in-out;
 }
 
-.record.active{
+.record.active {
   pointer-events: auto;
   opacity: 100%;
-  transition: all .5s ease-in-out;
+  transition: all 0.5s ease-in-out;
 }
 
-.record.active:hover{
+.record.active:hover {
   opacity: 50%;
-  transition: all .25s ease-in-out;
+  transition: all 0.25s ease-in-out;
 }
 
-.record.active.recording{
+.record.active.recording {
   animation-name: pulse;
-	animation-duration: 1.5s;
-	animation-iteration-count: infinite;
-	animation-timing-function: linear;
+  animation-duration: 1.5s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
 }
 
-@keyframes pulse{
-	0%{
-		box-shadow: 0px 0px 5px 0px rgba(173,0,0,.3);
-	}
-	65%{
-		box-shadow: 0px 0px 5px 13px rgba(173,0,0,.3);
-	}
-	90%{
-		box-shadow: 0px 0px 5px 13px rgba(173,0,0,0);
-	}
+@keyframes pulse {
+  0% {
+    box-shadow: 0px 0px 5px 0px rgba(173, 0, 0, 0.3);
+  }
+  65% {
+    box-shadow: 0px 0px 5px 13px rgba(173, 0, 0, 0.3);
+  }
+  90% {
+    box-shadow: 0px 0px 5px 13px rgba(173, 0, 0, 0);
+  }
 }
 
-.recordingText{
+.recordingText {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
@@ -522,26 +520,60 @@ background-color: rgb(75, 75, 75);
   width: fit-content;
   height: fit-content;
   opacity: 0%;
-  transition: all .2s;
+  transition: all 0.2s;
 }
 
-.recordingText.active{
+.recordingText.active {
   opacity: 100%;
-  transition: all .2s;
+  transition: all 0.2s;
 }
 
-.record.active:hover .recordingText{
+.record.active:hover .recordingText {
   opacity: 100%;
-  transition: all .2s;
+  transition: all 0.2s;
 }
 
-.canvas{
+.canvas {
   border: 1px solid rgb(255, 255, 255);
 }
 
-h2{
+h2 {
+  pointer-events: none;
   position: absolute;
   text-align: center;
   bottom: 2.5%;
 }
 
+.duplicateScreen {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+
+  outline: 5px solid red;
+
+  height: 75%;
+
+  aspect-ratio: 1 / 1;
+
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.duplicateScreen div {
+  margin: 1%;
+  font-size: 5.5vh;
+  color: blue;
+  text-align: justify;
+}
+
+.duplicateScreen .batchNmb {
+  position: absolute;
+  right: 0%;
+  text-align: end;
+  outline: 5px solid red;
+  margin: 0%;
+  width: fit-content;
+  height: fit-content;
+}
