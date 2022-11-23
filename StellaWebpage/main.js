@@ -20,6 +20,10 @@ let infraredGradient = ctx.createLinearGradient(0, 0, 800, 0);
 infraredGradient.addColorStop(0, "rgba(255, 0, 0, 1)");
 infraredGradient.addColorStop(1, "rgba(173, 173, 173, 0.75)");
 
+//** LIVE DATA */
+let visibleDataLive = [];
+let infraredDataLive = [];
+
 //** FILE DROP JS */
 let dropArea = document.getElementById("drop-area");
 let dataArray = [];
@@ -43,6 +47,8 @@ let recordingText = document.getElementById("recordingText");
 let readDeviceBtn = document.getElementById("read");
 let visible_filter_range = document.getElementById("visibleFilter_range");
 
+let duplicateScreen = document.getElementById("duplicateScreen");
+
 //** SERIAL PORTS */
 class SerialScaleController {
   constructor() {
@@ -53,7 +59,7 @@ class SerialScaleController {
     if ("serial" in navigator) {
       try {
         const port = await navigator.serial.requestPort();
-        await port.open({ baudRate: 19200 });
+        await port.open({ baudRate: 9600 });
         this.reader = port.readable.getReader();
         let signals = await port.getSignals();
         console.log("DEVICE PAIRED");
@@ -74,15 +80,19 @@ class SerialScaleController {
     }
   }
   async read() {
-    try {
-      const readerData = await this.reader.read();
-      console.log(readerData);
-      return this.decoder.decode(readerData.value);
-    } catch (err) {
-      const errorMessage = `error reading data: ${err}`;
-      console.error(errorMessage);
-      return errorMessage;
+    while (true)
+    {
+      try {
+        const readerData = await this.reader.read();
+        //console.log(readerData);
+        return this.decoder.decode(readerData.value);
+      } catch (err) {
+        const errorMessage = `error reading data: ${err}`;
+        console.error(errorMessage);
+        return errorMessage;
+      }
     }
+    
   }
 }
 var serialTimeout;
@@ -1084,10 +1094,200 @@ async function getSerialMessage() {
     var message = await serialScaleController.read();
     console.log(message);
     getSerialMessage();
-    console.log("update read");
-  }, 5000);
+    decipherSerialMessage(message);
+    //console.log("update read");
+  }, 500);
 
   //document.querySelector("#serial-messages-container .message").innerText += await serialScaleController.read()
+}
+
+function decipherSerialMessage(message)
+{
+  let messageSplit = message.split(" ");
+  if(message.includes("paused"))
+  {
+    //console.log("PAUSED");
+  }
+
+  //** IF THE FULL MESSAGE DIDN"T COME IN */
+  else if(message.length < 5)
+  {
+    if(message.includes('p') || message.includes('.'))
+    {
+      //console.log("PAUSED");
+    }
+  }
+  else
+  {
+    //** TOP LIVE VALUES */
+    
+    //** SURFACE TEMP */
+    if(messageSplit.includes("surface_temp:"))
+    {
+      let surface_temp = messageSplit[messageSplit.indexOf("surface_temp:")+1];
+      document.getElementById("surfaceTemp_label").innerHTML = "Surface: " + parseFloat(surface_temp) + "C";
+    }
+    //** AIR TEMP */
+    if(messageSplit.includes("air_temp:"))
+    {
+      let airTemp = messageSplit[messageSplit.indexOf("air_temp:")+1];
+      document.getElementById("airTemp_label").innerHTML = "Air: " + parseFloat(airTemp) + "C";
+    }
+    //** TIMESTAMP */
+    if(messageSplit.includes("hour:") && messageSplit.includes("min:") && messageSplit.includes("sec:"))
+    {
+      if(messageSplit.indexOf("hour:")+1 && messageSplit.indexOf("min:")+1 && messageSplit.indexOf("sec:")+1)
+      {
+        let hour = messageSplit[messageSplit.indexOf("hour:")+1];
+        let min = messageSplit[messageSplit.indexOf("min:")+1];
+        let sec = messageSplit[messageSplit.indexOf("sec:")+1];
+
+        if(parseInt(hour) < 10)
+        {
+          hour = "0" + hour.substring(0, hour.length - 1);
+        }
+        else
+        {
+          hour = hour.substring(0, hour.length - 1);
+        }
+        if(parseInt(min) < 10)
+        {
+          min = "0" + min.substring(0, min.length - 1);
+        }
+        else
+        {
+          min = min.substring(0, min.length - 1);
+        }
+        if(parseInt(sec) < 10)
+        {
+          sec = "0" + sec.substring(0, sec.length - 1);
+        }
+        else
+        {
+          sec = sec.substring(0, sec.length - 1);
+        }
+
+        document.getElementById("timestamp_label").innerHTML =  
+        hour + ":" 
+        + min + ":" 
+        + sec + "Z";
+      }
+    }
+    //** DATESTAMP */
+    if(messageSplit.includes("year:") && messageSplit.includes("month:") && messageSplit.includes("day:"))
+    {
+      if(messageSplit.indexOf("year:")+1 && messageSplit.indexOf("month:")+1 && messageSplit.indexOf("day:")+1)
+      {
+        let year = messageSplit[messageSplit.indexOf("year:")+1];
+        let month = messageSplit[messageSplit.indexOf("month:")+1];
+        let day = messageSplit[messageSplit.indexOf("day:")+1];
+
+        if(parseInt(year) < 10)
+        {
+          year = "0" + year.substring(0, year.length - 1);
+        }
+        else
+        {
+          year = year.substring(0, year.length - 1);
+        }
+        if(parseInt(month) < 10)
+        {
+          month = "0" + month.substring(0, month.length - 1);
+        }
+        else
+        {
+          month = month.substring(0, month.length - 1);
+        }
+        if(parseInt(day) < 10)
+        {
+          day = "0" + day.substring(0, day.length - 1);
+        }
+        else
+        {
+          day = day.substring(0, day.length - 1);
+        }
+
+        document.getElementById("date_label").innerHTML =  
+        year + "-" 
+        + month + "-" 
+        + day;
+      }
+    }
+    if(messageSplit.includes("batch:"))
+    {
+      let batchNmb = messageSplit[messageSplit.indexOf("batch:")+1];
+      document.getElementById("batchNmb_label").innerHTML = parseFloat(batchNmb);
+    }
+    if(messageSplit.includes("UID:"))
+    {
+      let uid = messageSplit[messageSplit.indexOf("UID:")+1];
+      document.getElementById("UID_label").innerHTML = "UID: " + parseFloat(uid);
+    }
+
+    //** UPDATE VISIBLE LIVE VALUES */
+    if(messageSplit.includes("v450:"))
+    {
+      let v450 = messageSplit[messageSplit.indexOf("v450:")+1];
+      document.getElementById("v450_label").innerHTML = "V450: " + parseFloat(v450);
+    }
+    if(messageSplit.includes("b500:"))
+    {
+      let b500 = messageSplit[messageSplit.indexOf("b500:")+1];
+      document.getElementById("b500_label").innerHTML = "B500: " + parseFloat(b500);
+    }
+    if(messageSplit.includes("g550:"))
+    {
+      let g550 = messageSplit[messageSplit.indexOf("g550:")+1];
+      document.getElementById("g550_label").innerHTML = "G550: " + parseFloat(g550);
+    }
+    if(messageSplit.includes("y570:"))
+    {
+      let y570 = messageSplit[messageSplit.indexOf("y570:")+1];
+      document.getElementById("y570_label").innerHTML = "Y570: " + parseFloat(y570);
+    }
+    if(messageSplit.includes("o600:"))
+    {
+      let o600 = messageSplit[messageSplit.indexOf("o600:")+1];
+      document.getElementById("o600_label").innerHTML = "O600: " + parseFloat(o600);
+    }
+    if(messageSplit.includes("r650:"))
+    {
+      let r650 = messageSplit[messageSplit.indexOf("r650:")+1];
+      document.getElementById("r650_label").innerHTML = "R650: " + parseFloat(r650);
+    }
+
+    //** UPDATE INFRARED VALUES */
+    if(messageSplit.includes("610:"))
+    {
+      let i610 = messageSplit[messageSplit.indexOf("610:")+1];
+      document.getElementById("610_label").innerHTML = "610: " + parseFloat(i610);
+    }
+    if(messageSplit.includes("680:"))
+    {
+      let i680 = messageSplit[messageSplit.indexOf("680:")+1];
+      document.getElementById("680_label").innerHTML = "680: " + parseFloat(i680);
+    }
+    if(messageSplit.includes("730:"))
+    {
+      let i730 = messageSplit[messageSplit.indexOf("730:")+1];
+      document.getElementById("730_label").innerHTML = "730: " + parseFloat(i730);
+    }
+    if(messageSplit.includes("760:"))
+    {
+      let i760 = messageSplit[messageSplit.indexOf("760:")+1];
+      document.getElementById("760_label").innerHTML = "760: " + parseFloat(i760);
+    }
+    if(messageSplit.includes("810:"))
+    {
+      let i810 = messageSplit[messageSplit.indexOf("810:")+1];
+      document.getElementById("810_label").innerHTML = "810: " + parseFloat(i810);
+    }
+    if(messageSplit.includes("860:"))
+    {
+      let i860 = messageSplit[messageSplit.indexOf("860:")+1];
+      document.getElementById("860_label").innerHTML = "860: " + parseFloat(i860);
+    }
+  }
 }
 
 //** TAKES A TIME VARIABLE AND CONVERTS IT INTO MINUTES / SECONDS */
@@ -1276,12 +1476,15 @@ navigator.serial.getPorts().then((ports) => {
   console.log(ports);
 });
 
+
 document.getElementById("read").addEventListener("pointerdown", async () => {
   getSerialMessage();
+  duplicateScreen.classList.toggle("active");
+  //await closedPromise;
 });
 
 window.addEventListener("mouseover", (event) => {
-  console.log(event.target.localName);
+  //console.log(event.target.localName);
   document.getElementById("descriptionText").innerHTML = event.target.localName;
 });
 

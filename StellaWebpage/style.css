@@ -546,12 +546,14 @@ h2 {
 
 .duplicateScreen {
   position: absolute;
+  pointer-events: none;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   background-color: white;
+  opacity: 0%;
 
-  outline: 5px solid red;
+  outline: 1vh solid red;
 
   height: 75%;
 
@@ -559,11 +561,18 @@ h2 {
 
   display: grid;
   grid-template-columns: 1fr 1fr;
+  transition: ease-in-out 1s;
+}
+
+.duplicateScreen.active {
+  opacity: 100%;
+  pointer-events: auto;
+  transition: ease-in-out 1s;
 }
 
 .duplicateScreen div {
-  margin: 1%;
-  font-size: 5.5vh;
+  margin: 3%;
+  font-size: 5vh;
   color: blue;
   text-align: justify;
 }
@@ -572,7 +581,7 @@ h2 {
   position: absolute;
   right: 0%;
   text-align: end;
-  outline: 5px solid red;
+  outline: 1vh solid red;
   margin: 0%;
   width: fit-content;
   height: fit-content;
