@@ -4,49 +4,28 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>STELLA - Data Viewer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
   </head>
   <body>
-    <!-- <div class="chart" id = "chart"> -->
-    <!-- <canvas id = "graph">
-      </canvas> -->
-    <!-- <div class="checkBoxContainer">
-        NIV
-        <input type="checkbox" checked="checked">
-        <span class="checkmark"></span>
-      </div> -->
 
-    <!-- <div class="progressContainer" id="progressContainer">
-        <div class="progress" id="progressBar">
-          <div class="progress__fill" id="progress_fill">
-          </div>
-          
-          <div class="boxContainer">
-            <div class="box center pause" id = "playPauseBtn">
-            </div>
-            <div class="slidecontainer">
-              <input type="range" min="1" max="10" value="5" class="slider" id="myRange">
-              <div class="speedLabel">
-                speed
-              </div>
-              <div class="track">
-                <div class="track-inner"></div>
-              </div>
-            </div>
-          </div>
-          <div class="arrow right" id="arrowRight">
-
-          </div>
-          <div class="arrow left" id="arrowLeft">
-            
-          </div>
-          <div class="frameNumber" id="frameNumber">
-            1/100
-          </div>
-        </div>
-      </div> -->
-    <!-- </div> -->
-
-    <div class="chartCard">
+    <!-- LANDING AND ALL ITS ELEMENTS -->
+    <div class="landing active" id ="landing">
+      <h1 id="title">stella_dataviewer</h1>
+      <img src="images/stellaSpin.gif" class="introGif" id="spin" />
+      <div class="landingNav">
+        <div>about</div>
+        <label class="custom-file-upload">
+            <input type="file" id="upload_file" accept=".txt" onclick="this.value=null;"/>
+            upload_file
+        </label>
+        <div id="plugInDevice">connect_device</div>
+      </div>
+    </div>
+    
+    <!-- GRAPHS AND GRAPH CONTROLLERS-->
+    <div class="chartCard" id="chartCard">
       <div class="chartBox" id="mainGraph">
         <canvas id="graph">
           <div id="canvasBG"></div>
@@ -92,49 +71,23 @@
         </div>
       </div>
       <div class="chartBox" id="calcGraph">
-        <canvas id="graph2"></canvas>
+        <canvas id="graph2">
+
+        </canvas>
       </div>
     </div>
 
-    <!-- <div class = "modeContainer">
-      <div class="dataMode selected" id="rawData">
-        <b>Raw Data</b>
-      </div>
-
-      <div class="dataMode" id="visible_filter">
-        <b>Visible (filtered)</b>
-        <div class="resolutioncontainer" id = "visibleFilter_rangeContainer">
-          <input type="range" min="1" max="5" value="5" class="slider" id="visibleFilter_range">
-          <div class="speedLabel">
-            resolution
-          </div>
-          <div class="track">
-            <div class="track-inner"></div>
-          </div>
-        </div>
-      </div>
-            
-      <div class="dataMode" id="infrared_filter">
-        <b>Infrared (filtered)</b>
-      </div>
-      <div class="dataMode" id="ndvi">
-        <b>NDVI</b>
-      </div>
-    </div>
-    
-    <div class="newFile" id = "newFile">
-      <b>Upload new file</b>
-    </div>
-    <div class="newFile" id = "newFile2">
-      <b>Upload new file</b>
-    </div> -->
-
-    <div class="newFile" id="newFile">
+    <!-- MENU BUTTON -->
+    <div class="newFile" id="menu" style = "top: 0%">
       <b>Menu</b>
     </div>
+
+    <!-- MENU BUTTON -->
     <div class="newFile" id="ndvi" style="left: 0%">
       <b>NDVI</b>
     </div>
+
+    <!-- SCREEN RECORDING -->
     <div class="record" id="recordButton">
       <div class="recordingText" id="recordingText">Record</div>
     </div>
@@ -143,21 +96,18 @@
       FILTERED VISIBLE LIGHT
     </h2>
 
-    <section class="droparea">
-      <img src="images/stellaSpin.gif" class="introGif" id="spin" />
-      <p><b>Drop your .txt file here</b></p>
-      <div class="plugInDevice" id="plugInDevice">
-        <p><b>Connect a Device</b></p>
-      </div>
-      <div class="newFile" id="read" style="bottom: -75%; right: 0%">
-        <b>read</b>
-      </div>
-    </section>
+    <!-- DATA_STREAM READ BUTTON -->
+    <div class="newFile" id="read" style="bottom: -75%; right: 0%">
+      <b>read</b>
+    </div>
 
+    <!-- LIVE DUPLICATE SCREEN-->
     <div class="duplicateScreen" id = "duplicateScreen">
+      <div id="batchNmb_label" class="batchNmb">0.9</div>
+      <div id="recording_label" class="recording pause"></div>
+      
       <div id="UID_label">UID: 8535</div>
       <div id="date_label">2020-12-07</div>
-      <div id="batchNmb_label" class="batchNmb">0.9</div>
       <div id="timestamp_label">13:35:19Z</div>
       <div id="surfaceTemp_label">Surface: 21.0C</div>
       <div>nm: uW/cm^2</div>
@@ -177,7 +127,6 @@
     </div>
 
     <!-- <video autoplay controls></video> -->
-
     <script type="module" src="/main.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </body>

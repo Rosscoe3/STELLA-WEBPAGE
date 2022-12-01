@@ -33,7 +33,9 @@ let dataTimeIndex = 0;
 let animationTime = 1500;
 
 //** HTML ELEMENTS */
-let uploadNew = document.getElementById("newFile");
+let menuElement = document.getElementById("menu");
+let upload_file = document.getElementById("upload_file");
+let landing = document.getElementById("landing");
 
 let speedSlider = document.getElementById("myRange");
 let frameNumber = document.getElementById("frameNumber");
@@ -45,6 +47,8 @@ let connectDevice = document.getElementById("plugInDevice");
 let recordButton = document.getElementById("recordButton");
 let recordingText = document.getElementById("recordingText");
 let readDeviceBtn = document.getElementById("read");
+let recording_live_label = document.getElementById("recording_label");
+
 let visible_filter_range = document.getElementById("visibleFilter_range");
 
 let duplicateScreen = document.getElementById("duplicateScreen");
@@ -58,15 +62,34 @@ class SerialScaleController {
   async init() {
     if ("serial" in navigator) {
       try {
-        const port = await navigator.serial.requestPort();
+        const usbVendorId = 0x239A;
+        const port = await navigator.serial.requestPort({ filters: [{ usbVendorId }]});
         await port.open({ baudRate: 9600 });
         this.reader = port.readable.getReader();
         let signals = await port.getSignals();
+        
         console.log("DEVICE PAIRED");
+        deviceConnected = true;
+        getSerialMessage();
+
+        menuElement.classList.toggle("active");
+        landing.classList.toggle("active");
+        duplicateScreen.classList.toggle("active");
         readDeviceBtn.classList.toggle("active");
         console.log(signals);
       } catch (err) {
         console.error("There was an error opening the serial port:", err);
+        
+        getSerialMessage();
+        menuElement.classList.toggle("active");
+        landing.classList.toggle("active");
+        duplicateScreen.classList.toggle("active");
+        readDeviceBtn.classList.toggle("active");
+        console.log("Port is already open");
+        if("The port is already open." in err)
+        {
+        }
+
       }
     } else {
       console.error(
@@ -80,7 +103,7 @@ class SerialScaleController {
     }
   }
   async read() {
-    while (true)
+    while (deviceConnected)
     {
       try {
         const readerData = await this.reader.read();
@@ -89,6 +112,7 @@ class SerialScaleController {
       } catch (err) {
         const errorMessage = `error reading data: ${err}`;
         console.error(errorMessage);
+        deviceConnected = false;
         return errorMessage;
       }
     }
@@ -97,6 +121,8 @@ class SerialScaleController {
 }
 var serialTimeout;
 const serialScaleController = new SerialScaleController();
+var deviceConnected = false;
+var paused = false;
 
 //** VARIOUS VARIABLES */
 var RESOURCE_LOADED = false;
@@ -692,30 +718,49 @@ function readTextFile(file, visible) {
   rawFile.send(null);
 }
 
-//** INITIALIZES DRAG AND DROP */
-const initApp = () => {
-  const droparea = document.querySelector(".droparea");
 
-  const active = () => droparea.classList.add("-border");
+upload_file.addEventListener('input', function(){
+  
+  console.log("CHANGE");
+  if (!RESOURCE_LOADED){
+    var reader = new FileReader();
+    document.getElementById("mainGraph").classList.toggle("active");
+    rawData_element.classList.toggle("active");
+    visible_filter_element.classList.toggle("active");
+    infrared_filter_element.classList.toggle("active");
+    ndvi_element.classList.toggle("active");
+    recordButton.classList.toggle("active");
+    menuElement.classList.toggle("active");
+    landing.classList.toggle("active");
+  
+    graphGradients();
+  
+    //** WHEN THE DATA FILE IS LOADED */
+    reader.onload = function (event) {
+      newDataArray = csvToArray(reader.result);
+      console.log(newDataArray);
+  
+      //** CLEAR THE ARRAY IF IT IS FULL */
+      if (dataArray) {
+        dataArray = [];
+      }
+  
+      //console.log(event.target);
+      const lineSplit = reader.result.split(/\r?\n/);
+      //console.log(lineSplit);
+  
+      for (var i = 0; i < lineSplit.length; i++) {
+        dataArray.push(lineSplit[i].split(","));
+      }
+      //console.log(dataArray);
+      RESOURCE_LOADED = true;
+      updateChart();
+    };
+    
+    reader.readAsText(this.files[0]);
+  }
+});
 
-  const inactive = () => droparea.classList.remove("-border");
-
-  const prevents = (e) => e.preventDefault();
-
-  ["dragenter", "dragover", "dragleave", "drop"].forEach((evtName) => {
-    droparea.addEventListener(evtName, prevents);
-  });
-
-  ["dragenter", "dragover"].forEach((evtName) => {
-    droparea.addEventListener(evtName, active);
-  });
-
-  ["dragleave", "drop"].forEach((evtName) => {
-    droparea.addEventListener(evtName, inactive);
-  });
-
-  droparea.addEventListener("drop", handleDrop);
-};
 
 //** USED TO UPDATE THE CHART WITH THE CONTROLS */
 function updateChart(backward) {
@@ -932,56 +977,6 @@ function graphGradients() {
   mainChart.update();
 }
 
-//** HANDLES THE FILE DROP */
-document.addEventListener("DOMContentLoaded", initApp);
-const handleDrop = (e) => {
-  if (!RESOURCE_LOADED) {
-    const dt = e.dataTransfer;
-    const files = dt.files;
-    const fileArray = [...files];
-
-    var file = e.dataTransfer.files[0],
-      reader = new FileReader();
-
-    if (file.type == "text/plain") {
-      document.querySelector(".droparea").classList.toggle("active");
-      document.getElementById("mainGraph").classList.toggle("active");
-      rawData_element.classList.toggle("active");
-      visible_filter_element.classList.toggle("active");
-      infrared_filter_element.classList.toggle("active");
-      ndvi_element.classList.toggle("active");
-      recordButton.classList.toggle("active");
-
-      newFile.classList.toggle("active");
-      graphGradients();
-
-      //** WHEN THE DATA FILE IS LOADED */
-      reader.onload = function (event) {
-        newDataArray = csvToArray(reader.result);
-        console.log(newDataArray);
-
-        //** CLEAR THE ARRAY IF IT IS FULL */
-        if (dataArray) {
-          dataArray = [];
-        }
-
-        //console.log(event.target);
-        const lineSplit = reader.result.split(/\r?\n/);
-        //console.log(lineSplit);
-
-        for (var i = 0; i < lineSplit.length; i++) {
-          dataArray.push(lineSplit[i].split(","));
-        }
-        //console.log(dataArray);
-        RESOURCE_LOADED = true;
-        updateChart();
-      };
-    }
-    console.log(file);
-    reader.readAsText(file);
-  }
-};
-
 //** CONVERTS THE INCOMING TEXT FILE INTO A USABLE CSV ARRAY */
 function csvToArray(str, delimiter = ",") {
   // slice from start of text to the first \n index
@@ -1090,14 +1085,17 @@ async function getSerialMessage() {
   clearTimeout(serialTimeout);
 
   //** IF THERE ARE NO ERRORS */
-  serialTimeout = setTimeout(async function () {
-    var message = await serialScaleController.read();
-    console.log(message);
-    getSerialMessage();
-    decipherSerialMessage(message);
-    //console.log("update read");
-  }, 500);
 
+  if(deviceConnected)
+  {
+    serialTimeout = setTimeout(async function () {
+      var message = await serialScaleController.read();
+      console.log(message);
+      getSerialMessage();
+      decipherSerialMessage(message);
+      //console.log("update read");
+    }, 500);
+  }
   //document.querySelector("#serial-messages-container .message").innerText += await serialScaleController.read()
 }
 
@@ -1107,31 +1105,56 @@ function decipherSerialMessage(message)
   if(message.includes("paused"))
   {
     //console.log("PAUSED");
+    paused = true;
+    if(!recording_live_label.classList.contains("pause"))
+    {
+      recording_live_label.classList.toggle("pause");
+      console.log("FIRE");
+    }
   }
-
   //** IF THE FULL MESSAGE DIDN"T COME IN */
   else if(message.length < 5)
   {
     if(message.includes('p') || message.includes('.'))
     {
-      //console.log("PAUSED");
+      paused = true;
+      if(!recording_live_label.classList.contains("pause"))
+      {
+        recording_live_label.classList.toggle("pause");
+        console.log("FIRE");
+      }
     }
   }
   else
   {
-    //** TOP LIVE VALUES */
-    
     //** SURFACE TEMP */
     if(messageSplit.includes("surface_temp:"))
     {
       let surface_temp = messageSplit[messageSplit.indexOf("surface_temp:")+1];
-      document.getElementById("surfaceTemp_label").innerHTML = "Surface: " + parseFloat(surface_temp) + "C";
+      let surface_temp_float = parseFloat(surface_temp);
+      
+      if(!isNaN(surface_temp_float))
+      {
+        let surface_temp_string = "Surface: " + surface_temp_float + "C";
+        document.getElementById("surfaceTemp_label").innerHTML = surface_temp_string.replace(/ /g,'');
+      }
+
+      if(recording_live_label.classList.contains("pause"))
+      {
+        recording_live_label.classList.toggle("pause");
+        console.log("FIRE");
+      }
     }
     //** AIR TEMP */
     if(messageSplit.includes("air_temp:"))
     {
       let airTemp = messageSplit[messageSplit.indexOf("air_temp:")+1];
-      document.getElementById("airTemp_label").innerHTML = "Air: " + parseFloat(airTemp) + "C";
+
+      if(!isNaN(parseFloat(airTemp)))
+      {
+        document.getElementById("airTemp_label").innerHTML = "Air: " + parseFloat(airTemp) + "C";
+      }
+
     }
     //** TIMESTAMP */
     if(messageSplit.includes("hour:") && messageSplit.includes("min:") && messageSplit.includes("sec:"))
@@ -1142,35 +1165,38 @@ function decipherSerialMessage(message)
         let min = messageSplit[messageSplit.indexOf("min:")+1];
         let sec = messageSplit[messageSplit.indexOf("sec:")+1];
 
-        if(parseInt(hour) < 10)
+        if(!isNaN(parseFloat(hour)) && !isNaN(parseFloat(min)) && !isNaN(parseFloat(sec)))
         {
-          hour = "0" + hour.substring(0, hour.length - 1);
+          if(parseInt(hour) < 10)
+          {
+            hour = "0" + hour.substring(0, hour.length - 1);
+          }
+          else
+          {
+            hour = hour.substring(0, hour.length - 1);
+          }
+          if(parseInt(min) < 10)
+          {
+            min = "0" + min.substring(0, min.length - 1);
+          }
+          else
+          {
+            min = min.substring(0, min.length - 1);
+          }
+          if(parseInt(sec) < 10)
+          {
+            sec = "0" + sec.substring(0, sec.length - 1);
+          }
+          else
+          {
+            sec = sec.substring(0, sec.length - 1);
+          }
+  
+          document.getElementById("timestamp_label").innerHTML =  
+          hour + ":" 
+          + min + ":" 
+          + sec + "Z";
         }
-        else
-        {
-          hour = hour.substring(0, hour.length - 1);
-        }
-        if(parseInt(min) < 10)
-        {
-          min = "0" + min.substring(0, min.length - 1);
-        }
-        else
-        {
-          min = min.substring(0, min.length - 1);
-        }
-        if(parseInt(sec) < 10)
-        {
-          sec = "0" + sec.substring(0, sec.length - 1);
-        }
-        else
-        {
-          sec = sec.substring(0, sec.length - 1);
-        }
-
-        document.getElementById("timestamp_label").innerHTML =  
-        hour + ":" 
-        + min + ":" 
-        + sec + "Z";
       }
     }
     //** DATESTAMP */
@@ -1181,111 +1207,169 @@ function decipherSerialMessage(message)
         let year = messageSplit[messageSplit.indexOf("year:")+1];
         let month = messageSplit[messageSplit.indexOf("month:")+1];
         let day = messageSplit[messageSplit.indexOf("day:")+1];
-
-        if(parseInt(year) < 10)
+        
+        if(!isNaN(parseInt(year)) && !isNaN(parseInt(year)) && !isNaN(parseInt(year)))
         {
-          year = "0" + year.substring(0, year.length - 1);
+          if(parseInt(year) < 10)
+          {
+            year = "0" + year.substring(0, year.length - 1);
+          }
+          else
+          {
+            year = year.substring(0, year.length - 1);
+          }
+          if(parseInt(month) < 10)
+          {
+            month = "0" + month.substring(0, month.length - 1);
+          }
+          else
+          {
+            month = month.substring(0, month.length - 1);
+          }
+          if(parseInt(day) < 10)
+          {
+            day = "0" + day.substring(0, day.length - 1);
+          }
+          else
+          {
+            day = day.substring(0, day.length - 1);
+          }
+  
+          document.getElementById("date_label").innerHTML =  
+          year + "-" 
+          + month + "-" 
+          + day;
         }
-        else
-        {
-          year = year.substring(0, year.length - 1);
-        }
-        if(parseInt(month) < 10)
-        {
-          month = "0" + month.substring(0, month.length - 1);
-        }
-        else
-        {
-          month = month.substring(0, month.length - 1);
-        }
-        if(parseInt(day) < 10)
-        {
-          day = "0" + day.substring(0, day.length - 1);
-        }
-        else
-        {
-          day = day.substring(0, day.length - 1);
-        }
-
-        document.getElementById("date_label").innerHTML =  
-        year + "-" 
-        + month + "-" 
-        + day;
       }
     }
     if(messageSplit.includes("batch:"))
     {
       let batchNmb = messageSplit[messageSplit.indexOf("batch:")+1];
-      document.getElementById("batchNmb_label").innerHTML = parseFloat(batchNmb);
+      
+      if(!isNaN(parseFloat(batchNmb)))
+      {
+        document.getElementById("batchNmb_label").innerHTML = parseFloat(batchNmb);
+      }
     }
     if(messageSplit.includes("UID:"))
     {
       let uid = messageSplit[messageSplit.indexOf("UID:")+1];
-      document.getElementById("UID_label").innerHTML = "UID: " + parseFloat(uid);
+      if(!isNaN(parseFloat(uid)))
+      {
+        document.getElementById("UID_label").innerHTML = "UID: " + parseFloat(uid);
+      }
     }
 
     //** UPDATE VISIBLE LIVE VALUES */
     if(messageSplit.includes("v450:"))
     {
       let v450 = messageSplit[messageSplit.indexOf("v450:")+1];
-      document.getElementById("v450_label").innerHTML = "V450: " + parseFloat(v450);
+      
+      if(!isNaN(parseFloat(v450)))
+      {
+        document.getElementById("v450_label").innerHTML = "V450: " + parseFloat(v450);
+      }
     }
     if(messageSplit.includes("b500:"))
     {
       let b500 = messageSplit[messageSplit.indexOf("b500:")+1];
-      document.getElementById("b500_label").innerHTML = "B500: " + parseFloat(b500);
+      
+      if(!isNaN(parseFloat(b500)))
+      {
+        document.getElementById("b500_label").innerHTML = "B500: " + parseFloat(b500);
+      }
     }
     if(messageSplit.includes("g550:"))
     {
       let g550 = messageSplit[messageSplit.indexOf("g550:")+1];
-      document.getElementById("g550_label").innerHTML = "G550: " + parseFloat(g550);
+
+      if(!isNaN(parseFloat(g550)))
+      {
+        document.getElementById("g550_label").innerHTML = "G550: " + parseFloat(g550);
+      }
     }
     if(messageSplit.includes("y570:"))
     {
       let y570 = messageSplit[messageSplit.indexOf("y570:")+1];
-      document.getElementById("y570_label").innerHTML = "Y570: " + parseFloat(y570);
+
+      if(!isNaN(parseFloat(y570)))
+      {
+        document.getElementById("y570_label").innerHTML = "Y570: " + parseFloat(y570);
+      }
     }
     if(messageSplit.includes("o600:"))
     {
       let o600 = messageSplit[messageSplit.indexOf("o600:")+1];
-      document.getElementById("o600_label").innerHTML = "O600: " + parseFloat(o600);
+
+      if(!isNaN(parseFloat(o600)))
+      {
+        document.getElementById("o600_label").innerHTML = "O600: " + parseFloat(o600);
+      }
     }
     if(messageSplit.includes("r650:"))
     {
       let r650 = messageSplit[messageSplit.indexOf("r650:")+1];
-      document.getElementById("r650_label").innerHTML = "R650: " + parseFloat(r650);
+
+      if(!isNaN(parseFloat(r650)))
+      {
+        document.getElementById("r650_label").innerHTML = "R650: " + parseFloat(r650);
+      }
     }
 
     //** UPDATE INFRARED VALUES */
     if(messageSplit.includes("610:"))
     {
       let i610 = messageSplit[messageSplit.indexOf("610:")+1];
-      document.getElementById("610_label").innerHTML = "610: " + parseFloat(i610);
+
+      if(!isNaN(parseFloat(i610)))
+      {
+        document.getElementById("610_label").innerHTML = "610: " + parseFloat(i610);
+      }
     }
     if(messageSplit.includes("680:"))
     {
       let i680 = messageSplit[messageSplit.indexOf("680:")+1];
-      document.getElementById("680_label").innerHTML = "680: " + parseFloat(i680);
+
+      if(!isNaN(parseFloat(i680)))
+      {
+        document.getElementById("680_label").innerHTML = "680: " + parseFloat(i680);
+      }
     }
     if(messageSplit.includes("730:"))
     {
       let i730 = messageSplit[messageSplit.indexOf("730:")+1];
-      document.getElementById("730_label").innerHTML = "730: " + parseFloat(i730);
+
+      if(!isNaN(parseFloat(i730)))
+      {
+        document.getElementById("730_label").innerHTML = "730: " + parseFloat(i730);
+      }
     }
     if(messageSplit.includes("760:"))
     {
       let i760 = messageSplit[messageSplit.indexOf("760:")+1];
-      document.getElementById("760_label").innerHTML = "760: " + parseFloat(i760);
+
+      if(!isNaN(parseFloat(i760)))
+      {
+        document.getElementById("760_label").innerHTML = "760: " + parseFloat(i760);
+      }
     }
     if(messageSplit.includes("810:"))
     {
       let i810 = messageSplit[messageSplit.indexOf("810:")+1];
-      document.getElementById("810_label").innerHTML = "810: " + parseFloat(i810);
+
+      if(!isNaN(parseFloat(i810)))
+      {
+        document.getElementById("810_label").innerHTML = "810: " + parseFloat(i810);
+      }
     }
     if(messageSplit.includes("860:"))
     {
       let i860 = messageSplit[messageSplit.indexOf("860:")+1];
-      document.getElementById("860_label").innerHTML = "860: " + parseFloat(i860);
+
+      if(!isNaN(parseFloat(i860)))
+      {
+        document.getElementById("860_label").innerHTML = "860: " + parseFloat(i860);
+      }
     }
   }
 }
@@ -1326,11 +1410,9 @@ function animate() {
 animate();
 
 //** CLICK EVENT FOR UPLOAD NEW BUTTON */
-uploadNew.addEventListener("click", function (ev) {
+menuElement.addEventListener("click", function (ev) {
   ev.stopPropagation(); // prevent event from bubbling up to .container
-  newFile.classList.toggle("active");
-  document.querySelector(".droparea").classList.toggle("active");
-  document.getElementById("mainGraph").classList.toggle("active");
+  menuElement.classList.toggle("active");
 
   if (document.getElementById("calcGraph").classList.contains("active")) {
     document.getElementById("calcGraph").classList.toggle("active");
@@ -1338,13 +1420,52 @@ uploadNew.addEventListener("click", function (ev) {
   if (ndvi_element.classList.contains("selected")) {
     ndvi_element.classList.toggle("selected");
   }
-  rawData_element.classList.toggle("active");
-  visible_filter_element.classList.toggle("active");
-  infrared_filter_element.classList.toggle("active");
-  ndvi_element.classList.toggle("active");
-  recordButton.classList.toggle("active");
+  if(duplicateScreen.classList.contains("active"))
+  {
+    duplicateScreen.classList.toggle("active");
+  }
+
+  if(rawData_element.classList.contains("active"))
+  {
+    rawData_element.classList.toggle("active");
+    visible_filter_element.classList.toggle("active");
+    infrared_filter_element.classList.toggle("active");
+    ndvi_element.classList.toggle("active");
+    recordButton.classList.toggle("active");
+    document.getElementById("mainGraph").classList.toggle("active");
+  }
+
+  landing.classList.toggle("active");
   RESOURCE_LOADED = false;
 });
+
+function updateGraphGrid()
+{
+  const myElement = document.getElementById('chartCard');
+  let counter = 0;
+  for (const child of myElement.children) {
+    if(child.classList.contains("active"))
+    {
+      counter++;
+    }
+  }
+
+  if(counter < 2)
+  {
+    myElement.style.gridTemplateColumns = "minmax(200px, 1fr)";
+  }
+  else if(counter == 2)
+  {
+    myElement.style.gridTemplateColumns = "minmax(200px, 1fr) minmax(200px, 1fr)";
+  }
+  else if(counter > 2)
+  {
+    myElement.style.gridTemplateColumns = "minmax(200px, 1fr) minmax(200px, 1fr)";
+    myElement.style.gridTemplateRows = "minmax(200px, 1fr) minmax(200px, 1fr)";
+  }
+
+  console.log(counter);
+}
 
 //** CLICK EVENT FOR THE PLAY / PAUSE BUTTON */
 const box = document.querySelector(".box");
@@ -1397,6 +1518,9 @@ window.onresize = function () {
   doit = setTimeout(function () {
     graphGradients();
   }, 1000);
+
+  mainChart.resize();
+  chart2.resize();
 };
 
 //** USED TO CONTROL SPEED OF ANIMATION */
@@ -1429,15 +1553,21 @@ ndvi_element.addEventListener("click", function () {
   ndvi_element.classList.toggle("selected");
 
   if (ndvi_element.classList.contains("selected")) {
-    document.getElementById("mainGraph").style.width = "50%";
-    document.getElementById("calcGraph").style.width = "50%";
+    // document.getElementById("mainGraph").style.width = "50%";
+    // document.getElementById("calcGraph").style.width = "50%";
+    //mainChart.resize();
+    //chart2.resize();
   } else {
-    document.getElementById("mainGraph").style.width = "75%";
+    // document.getElementById("mainGraph").style.width = "75%";
+    //mainChart.resize();
+    //chart2.resize();
+    
     mainChart.update();
   }
 
-  updateChartLabels();
   document.getElementById("calcGraph").classList.toggle("active");
+  updateGraphGrid();
+  updateChartLabels();
 });
 
 connectDevice.addEventListener("click", function () {
@@ -1469,6 +1599,11 @@ navigator.serial.addEventListener("connect", (e) => {
 navigator.serial.addEventListener("disconnect", (e) => {
   // Remove `e.target` from the list of available ports.
   console.log("DISCONNECT TO PORT: " + e);
+  deviceConnected = false;
+
+  duplicateScreen.classList.toggle("active");
+  menuElement.classList.toggle("active");
+  landing.classList.toggle("active");
 });
 
 navigator.serial.getPorts().then((ports) => {
@@ -1487,6 +1622,17 @@ window.addEventListener("mouseover", (event) => {
   //console.log(event.target.localName);
   document.getElementById("descriptionText").innerHTML = event.target.localName;
 });
+
+update();
+function update()
+{
+  mainChart.resize();
+  chart2.resize();
+
+  setTimeout(() => {
+    update();
+  }, 1000);
+}
 
 // visible_filter_range.addEventListener("change", function(e){
 //   //step = visible_filter_range.value;
