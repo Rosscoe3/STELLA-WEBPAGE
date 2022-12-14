@@ -30,32 +30,26 @@
         <canvas id="graph">
           <div id="canvasBG"></div>
         </canvas>
-        <div class="progressContainer" id="progressContainer">
-          <div class="progress" id="progressBar">
-            <div class="progress__fill" id="progress_fill"></div>
-
-            <div class="boxContainer">
-              <div class="box center pause" id="playPauseBtn"></div>
-              <div class="slidecontainer">
-                <input
-                  type="range"
-                  min="1"
-                  max="10"
-                  value="5"
-                  class="slider"
-                  id="myRange"
-                />
-                <div class="speedLabel">speed</div>
-                <div class="track">
-                  <div class="track-inner"></div>
-                </div>
-              </div>
+        <div class="boxContainer">
+          <div class="slidecontainer">
+            <input
+              type="range"
+              min="1"
+              max="10"
+              value="5"
+              class="slider"
+              id="myRange"
+            />
+            <div class="track">
+              <div class="track-inner"></div>
             </div>
-            <div class="arrow right" id="arrowRight"></div>
-            <div class="arrow left" id="arrowLeft"></div>
+            <div class="box center pause" id="playPauseBtn"></div>
             <div class="frameNumber" id="frameNumber">1/100</div>
           </div>
+          <div class="arrow right" id="arrowRight"></div>
+          <div class="arrow left" id="arrowLeft"></div>
         </div>
+        
         <div class="modeContainer">
           <div class="dataMode selected" id="rawData">
             <b>Raw Data</b>
@@ -78,12 +72,11 @@
     </div>
 
     <!-- MENU BUTTON -->
-    <div class="newFile" id="menu" style = "top: 0%">
+    <div class="newFile" id="menu" style = "bottom: 0%">
       <b>Menu</b>
     </div>
-
-    <!-- MENU BUTTON -->
-    <div class="newFile" id="ndvi" style="left: 0%">
+    <!-- NDVI BUTTON -->
+    <div class="newFile" style="left: 0%">
       <b>NDVI</b>
     </div>
 
@@ -102,32 +95,52 @@
     </div>
 
     <!-- LIVE DUPLICATE SCREEN-->
-    <div class="duplicateScreen" id = "duplicateScreen">
-      <div id="batchNmb_label" class="batchNmb">0.9</div>
-      <div id="recording_label" class="recording pause"></div>
-      
-      <div id="UID_label">UID: 8535</div>
-      <div id="date_label">2020-12-07</div>
-      <div id="timestamp_label">13:35:19Z</div>
-      <div id="surfaceTemp_label">Surface: 21.0C</div>
-      <div>nm: uW/cm^2</div>
-      <div id="airTemp_label">Air: 20.4C</div>
-      <div id="v450_label">V450: 8.9</div>
-      <div id="610_label">610: 1.4</div>
-      <div id="b500_label">B500: 11.8</div>
-      <div id="680_label">680: 1.1</div>
-      <div id="g550_label">G550: 10.2</div>
-      <div id="730_label">730: 1.1</div>
-      <div id="y570_label">Y570: 10.5</div>
-      <div id="760_label">760: 1.1</div>
-      <div id="o600_label">O600: 10.5</div>
-      <div id="810_label">810: 1.0</div>
-      <div id="r650_label">R650: 11.1</div>
-      <div id="860_label">860: 1.3</div>
+
+    <div class="chartCard" id="chartCardLive" style = "grid-template-columns: minmax(200px, 1fr) minmax(200px, 1fr)">
+      <div class="chartBox" id="liveGraph">
+        <canvas id="graph3">
+        </canvas>
+      </div>
+      <div class="duplicateScreen" id = "duplicateScreen">
+        <div id="batchNmb_label" class="batchNmb">0.9</div>
+        <div id="recording_label" class="recording pause"></div>
+        
+        <div id="UID_label">UID: 8535</div>
+        <div id="date_label">2020-12-07</div>
+        <div id="timestamp_label">13:35:19Z</div>
+        <div id="surfaceTemp_label">Surface: 21.0C</div>
+        <div>nm: uW/cm^2</div>
+        <div id="airTemp_label">Air: 20.4C</div>
+        <div id="v450_label">V450: 8.9</div>
+        <div id="610_label">610: 1.4</div>
+        <div id="b500_label">B500: 11.8</div>
+        <div id="680_label">680: 1.1</div>
+        <div id="g550_label">G550: 10.2</div>
+        <div id="730_label">730: 1.1</div>
+        <div id="y570_label">Y570: 10.5</div>
+        <div id="760_label">760: 1.1</div>
+        <div id="o600_label">O600: 10.5</div>
+        <div id="810_label">810: 1.0</div>
+        <div id="r650_label">R650: 11.1</div>
+        <div id="860_label">860: 1.3</div>
+      </div>
+    </div>
+
+    <div class="controlSidebar" id="uploadSidebar">
+      <h1>graphs</h1>
+      <h1>#batch</h1>
+      <div class="batchGrid" id = "graphs">
+        <div class="selected">RAW</div>
+        <div id="ndvi">NDVI</div>
+        <div>NIR</div>
+      </div>
+      <div class="batchGrid" id = "batchGrid">
+      </div>
     </div>
 
     <!-- <video autoplay controls></video> -->
     <script type="module" src="/main.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
   </body>
 </html>

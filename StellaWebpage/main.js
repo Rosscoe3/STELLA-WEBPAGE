@@ -2,6 +2,7 @@ import "./style.css";
 
 const ctx = document.getElementById("graph").getContext("2d");
 const ctx2 = document.getElementById("graph2").getContext("2d");
+const ctx3 = document.getElementById("graph3").getContext("2d");
 
 //** GRADIENT FILL */
 let visibleGradient = ctx.createLinearGradient(0, 0, 500, 0);
@@ -28,6 +29,8 @@ let infraredDataLive = [];
 let dropArea = document.getElementById("drop-area");
 let dataArray = [];
 let newDataArray = [];
+let dataArrayBatches = [[]];
+let currentBatchArray = [[]];
 let ndviArray = [];
 let dataTimeIndex = 0;
 let animationTime = 1500;
@@ -48,9 +51,11 @@ let recordButton = document.getElementById("recordButton");
 let recordingText = document.getElementById("recordingText");
 let readDeviceBtn = document.getElementById("read");
 let recording_live_label = document.getElementById("recording_label");
+let uploadSidebar = document.getElementById("uploadSidebar");
+let batchesContainer = document.getElementById("batchGrid");
+
 
 let visible_filter_range = document.getElementById("visibleFilter_range");
-
 let duplicateScreen = document.getElementById("duplicateScreen");
 
 //** SERIAL PORTS */
@@ -62,11 +67,15 @@ class SerialScaleController {
   async init() {
     if ("serial" in navigator) {
       try {
-        const usbVendorId = 0x239A;
-        const port = await navigator.serial.requestPort({ filters: [{ usbVendorId }]});
-        await port.open({ baudRate: 9600 });
-        this.reader = port.readable.getReader();
-        let signals = await port.getSignals();
+        
+        if(!deviceConnected)
+        {
+          const usbVendorId = 0x239A;
+          const port = await navigator.serial.requestPort({ filters: [{ usbVendorId }]});
+          await port.open({ baudRate: 9600 });
+          this.reader = port.readable.getReader();
+          let signals = await port.getSignals();
+        }
         
         console.log("DEVICE PAIRED");
         deviceConnected = true;
@@ -76,18 +85,27 @@ class SerialScaleController {
         landing.classList.toggle("active");
         duplicateScreen.classList.toggle("active");
         readDeviceBtn.classList.toggle("active");
-        console.log(signals);
+        
+        if (!document.getElementById("liveGraph").classList.contains("active")) 
+        {
+          document.getElementById("liveGraph").classList.toggle("active");
+        }
       } catch (err) {
         console.error("There was an error opening the serial port:", err);
         
-        getSerialMessage();
-        menuElement.classList.toggle("active");
-        landing.classList.toggle("active");
-        duplicateScreen.classList.toggle("active");
-        readDeviceBtn.classList.toggle("active");
-        console.log("Port is already open");
+        console.log(err == "DOMException: No port selected by the user.");
         if("The port is already open." in err)
         {
+          console.log("Port is already open");
+          getSerialMessage();
+          menuElement.classList.toggle("active");
+          landing.classList.toggle("active");
+          duplicateScreen.classList.toggle("active");
+          readDeviceBtn.classList.toggle("active");
+          if (!document.getElementById("liveGraph").classList.contains("active")) 
+          {
+            document.getElementById("liveGraph").classList.toggle("active");
+          }
         }
 
       }
@@ -123,6 +141,7 @@ var serialTimeout;
 const serialScaleController = new SerialScaleController();
 var deviceConnected = false;
 var paused = false;
+var readTime = 500;
 
 //** VARIOUS VARIABLES */
 var RESOURCE_LOADED = false;
@@ -501,10 +520,6 @@ var data2 = {
     //** NDVI */
     {
       data: [
-        {
-          x: 500,
-          y: 1,
-        },
       ],
       showLine: true,
       label: "NDVI",
@@ -513,6 +528,82 @@ var data2 = {
       backgroundColor: "rgb(255,0,0)",
       borderColor: "rgb(255,0,0)",
       lineTension: 0.25,
+      pointBackgroundColor: "rgb(189, 195, 199)",
+    },
+  ],
+};
+
+//** DATA SETUP FOR LIVE CHART */
+var data3 = {
+  datasets: [
+    //** VISIBLE dataset 13*/
+    {
+      data: [
+        {
+          x: 450,
+          y: visibleStartData[0],
+        },
+        {
+          x: 500,
+          y: visibleStartData[1],
+        },
+        {
+          x: 550,
+          y: visibleStartData[2],
+        },
+        {
+          x: 570,
+          y: visibleStartData[3],
+        },
+        {
+          x: 600,
+          y: visibleStartData[4],
+        },
+        {
+          x: 650,
+          y: visibleStartData[5],
+        },
+      ],
+      showLine: true,
+      label: "Visible",
+      fill: true,
+      backgroundColor: visibleGradient,
+      borderColor: "rgb(255, 255, 255)",
+      pointBackgroundColor: "rgb(189, 195, 199)",
+    },
+    //** INFRARED */
+    {
+      data: [
+        {
+          x: 610,
+          y: infraredStartData[0],
+        },
+        {
+          x: 680,
+          y: infraredStartData[1],
+        },
+        {
+          x: 730,
+          y: infraredStartData[2],
+        },
+        {
+          x: 760,
+          y: infraredStartData[3],
+        },
+        {
+          x: 810,
+          y: infraredStartData[4],
+        },
+        {
+          x: 860,
+          y: infraredStartData[5],
+        },
+      ],
+      showLine: true,
+      label: "Infrared",
+      fill: true,
+      backgroundColor: infraredGradient,
+      borderColor: "rgb(255, 255, 255)",
       pointBackgroundColor: "rgb(189, 195, 199)",
     },
   ],
@@ -612,7 +703,7 @@ const config2 = {
     radius: 3,
     hitRadius: 10,
     hoverRadius: 8,
-    spanGaps: true,
+    spanGaps: false,
     responsive: true,
     tension: 0,
     plugins: {
@@ -656,7 +747,6 @@ const config2 = {
         },
       },
       x: {
-        type: "linear",
         position: "bottom",
         // ticks: {
         //   callback: function (value){
@@ -671,6 +761,84 @@ const config2 = {
             size: 15,
           },
         },
+        // type: "time",
+        // time: {
+        //     unit: 'hour'
+        // },
+        parsing: false,
+      },
+    },
+  },
+  plugins: [plugin],
+};
+
+//** CONFIG SETUP FOR LIVE CHART */
+const config3 = {
+  type: "scatter",
+  data: data3,
+  options: {
+    radius: 3,
+    hitRadius: 10,
+    hoverRadius: 8,
+    spanGaps: true,
+    responsive: true,
+    tension: 0,
+    plugins: {
+      customCanvasBackgroundColor: {
+        color: "white",
+      },
+      title: {
+        display: true,
+        text: "Live Graph",
+      },
+      legend: {
+        display: true,
+      },
+    },
+    //** ADDS NM to the Y axis lables */
+    animation: {
+      onComplete: () => {
+        delayed = true;
+      },
+      delay: (context) => {
+        let delay = 0;
+        if (context.type === "data" && context.mode === "default" && !delayed) {
+          delay = context.dataIndex * 75 + context.datasetIndex * 25;
+        }
+        return delay;
+      },
+    },
+    scales: {
+      y: {
+        // ticks: {
+        //   callback: function (value){
+        //     return value + "μW/cm²";
+        //   }
+        // },
+        title: {
+          display: true,
+          text: "μW/cm²",
+          font: {
+            size: 15,
+          },
+        },
+      },
+      x: {
+        type: "linear",
+        position: "bottom",
+        // ticks: {
+        //   callback: function (value){
+        //     return value + " nm";
+        //   }
+        // },
+        title: {
+          display: true,
+          text: "Wavelength (nm)",
+          align: "center",
+          font: {
+            size: 15,
+          },
+        },
       },
     },
   },
@@ -679,7 +847,8 @@ const config2 = {
 
 //** CHART INSTANTIATION */
 const mainChart = new Chart(ctx, config);
-const chart2 = new Chart(ctx2, config2);
+var chart2 = new Chart(ctx2, config2);
+const liveChart = new Chart(ctx3, config3);
 
 init();
 function init() {
@@ -718,17 +887,16 @@ function readTextFile(file, visible) {
   rawFile.send(null);
 }
 
-
 upload_file.addEventListener('input', function(){
   
   console.log("CHANGE");
   if (!RESOURCE_LOADED){
     var reader = new FileReader();
     document.getElementById("mainGraph").classList.toggle("active");
+    uploadSidebar.classList.toggle("active");
     rawData_element.classList.toggle("active");
     visible_filter_element.classList.toggle("active");
     infrared_filter_element.classList.toggle("active");
-    ndvi_element.classList.toggle("active");
     recordButton.classList.toggle("active");
     menuElement.classList.toggle("active");
     landing.classList.toggle("active");
@@ -739,6 +907,35 @@ upload_file.addEventListener('input', function(){
     reader.onload = function (event) {
       newDataArray = csvToArray(reader.result);
       console.log(newDataArray);
+      let currentBatchNmb = newDataArray[0].batch_label;
+      dataArrayBatches = [[]];
+      
+      let batchIndex = 0;
+      for(let i = 0; i < newDataArray.length; i++)
+      {
+        //** MAKE SURE NONE OF THE DATA IS EMPTY */
+        if(newDataArray[i].batch_label != "" && typeof newDataArray[i].batch_label !== 'undefined')
+        {
+          //** SORT THE DATA INTO DISTINCT BATCHES */
+          if(currentBatchNmb != newDataArray[i].batch_label)
+          {
+            batchIndex++;
+            currentBatchNmb = newDataArray[i].batch_label;
+            dataArrayBatches.push(new Array());
+            console.log("DIFFERENT BATCH");
+          }
+          else
+          {
+            console.log("Same Batch");
+          }
+  
+          dataArrayBatches[batchIndex].push(newDataArray[i]);
+        }
+      }
+
+      batchesContainer.innerHTML = "";
+      addBatches(dataArrayBatches);
+      console.log(dataArrayBatches);
   
       //** CLEAR THE ARRAY IF IT IS FULL */
       if (dataArray) {
@@ -761,67 +958,89 @@ upload_file.addEventListener('input', function(){
   }
 });
 
-
 //** USED TO UPDATE THE CHART WITH THE CONTROLS */
-function updateChart(backward) {
+function updateChart(backward, index) {
   if (RESOURCE_LOADED) {
-    if (animPlay) {
-      if (dataTimeIndex < newDataArray.length - 2) {
-        dataTimeIndex++;
-      } else {
+    
+    speedSlider.max = currentBatchArray.length;
+    speedSlider.min = 1;
+    console.log(speedSlider.max);
+
+
+    if(!index)
+    {
+      if(currentBatchArray.length >= 2)
+      {
+        if (animPlay) {
+          if (dataTimeIndex < currentBatchArray.length - 1) {
+            dataTimeIndex++;
+          } else {
+            dataTimeIndex = 0;
+          }
+        } else {
+          //** BACKWARDS IN TIMELINE */
+          if (backward) {
+            if (dataTimeIndex < currentBatchArray.length - 1 && dataTimeIndex > 0) {
+              dataTimeIndex--;
+            } else if (dataTimeIndex == currentBatchArray.length - 1) {
+              dataTimeIndex--;
+            } else {
+              dataTimeIndex = currentBatchArray.length - 1;
+            }
+          }
+          //** FORWARDS IN TIMELINE */
+          else if (!backward) {
+            if (dataTimeIndex < currentBatchArray.length - 1) {
+              dataTimeIndex++;
+            } else {
+              dataTimeIndex = 0;
+            }
+          }
+        }
+      }
+      else
+      {
         dataTimeIndex = 0;
       }
-    } else {
-      //** BACKWARDS IN TIMELINE */
-      if (backward) {
-        if (dataTimeIndex < newDataArray.length - 2 && dataTimeIndex > 0) {
-          dataTimeIndex--;
-        } else if (dataTimeIndex == newDataArray.length - 2) {
-          dataTimeIndex--;
-        } else {
-          dataTimeIndex = newDataArray.length - 2;
-        }
-      }
-      //** FORWARDS IN TIMELINE */
-      else if (!backward) {
-        if (dataTimeIndex < newDataArray.length - 2) {
-          dataTimeIndex++;
-        } else {
-          dataTimeIndex = 0;
-        }
-      }
-    }
 
-    var progress = (dataTimeIndex / (newDataArray.length - 2)) * 100;
-    document.querySelector(".progress__fill").style.width = progress + "%";
+      speedSlider.value = dataTimeIndex + 1;
+    }
+    else
+    {
+      dataTimeIndex = parseInt(index) - 1;
+    }
+    
+    
+    console.log(dataTimeIndex);
+    var progress = (dataTimeIndex / (currentBatchArray.length - 1)) * 100;
     console.log("PROGRESS: " + progress + " DATA INDEX: " + dataTimeIndex);
-    frameNumber.innerHTML = dataTimeIndex + "/" + (newDataArray.length - 2);
+    frameNumber.innerHTML = (dataTimeIndex + 1) + "/" + (currentBatchArray.length);
 
     //** VISIBLE LIGHT RAW */
     mainChart.data.datasets[13].data = [
       {
         x: 450,
-        y: newDataArray[dataTimeIndex].V450_power,
+        y: currentBatchArray[dataTimeIndex].V450_irradiance,
       },
       {
         x: 500,
-        y: newDataArray[dataTimeIndex].B500_power,
+        y: currentBatchArray[dataTimeIndex].B500_irradiance,
       },
       {
         x: 550,
-        y: newDataArray[dataTimeIndex].G550_power,
+        y: currentBatchArray[dataTimeIndex].G550_irradiance,
       },
       {
         x: 570,
-        y: newDataArray[dataTimeIndex].Y570_power,
+        y: currentBatchArray[dataTimeIndex].Y570_irradiance,
       },
       {
         x: 600,
-        y: newDataArray[dataTimeIndex].O600_power,
+        y: currentBatchArray[dataTimeIndex].O600_irradiance,
       },
       {
         x: 650,
-        y: newDataArray[dataTimeIndex].R650_power,
+        y: currentBatchArray[dataTimeIndex].R650_irradiance,
       },
     ];
 
@@ -829,27 +1048,27 @@ function updateChart(backward) {
     mainChart.data.datasets[12].data = [
       {
         x: 610,
-        y: newDataArray[dataTimeIndex].nir610_power,
+        y: currentBatchArray[dataTimeIndex].nir610_irradiance,
       },
       {
         x: 680,
-        y: newDataArray[dataTimeIndex].nir680_power,
+        y: currentBatchArray[dataTimeIndex].nir680_irradiance,
       },
       {
         x: 730,
-        y: newDataArray[dataTimeIndex].nir730_power,
+        y: currentBatchArray[dataTimeIndex].nir730_irradiance,
       },
       {
         x: 760,
-        y: newDataArray[dataTimeIndex].nir760_power,
+        y: currentBatchArray[dataTimeIndex].nir760_irradiance,
       },
       {
         x: 810,
-        y: newDataArray[dataTimeIndex].nir810_power,
+        y: currentBatchArray[dataTimeIndex].nir810_irradiance,
       },
       {
         x: 860,
-        y: newDataArray[dataTimeIndex].nir860_power,
+        y: currentBatchArray[dataTimeIndex].nir860_irradiance,
       },
     ];
 
@@ -860,37 +1079,37 @@ function updateChart(backward) {
       mainChart.data.datasets[6].data[i] = {
         x: parseInt(calibrationArray_Visible[i * step].wavelength),
         y:
-          newDataArray[dataTimeIndex].V450_power *
+        currentBatchArray[dataTimeIndex].V450_irradiance *
           parseFloat(calibrationArray_Visible[i * step].V450_power),
       };
       mainChart.data.datasets[7].data[i] = {
         x: parseInt(calibrationArray_Visible[i * step].wavelength),
         y:
-          newDataArray[dataTimeIndex].B500_power *
+        currentBatchArray[dataTimeIndex].B500_irradiance *
           parseFloat(calibrationArray_Visible[i * step].B500_power),
       };
       mainChart.data.datasets[8].data[i] = {
         x: parseInt(calibrationArray_Visible[i * step].wavelength),
         y:
-          newDataArray[dataTimeIndex].G550_power *
+        currentBatchArray[dataTimeIndex].G550_irradiance *
           parseFloat(calibrationArray_Visible[i * step].G550_power),
       };
       mainChart.data.datasets[9].data[i] = {
         x: parseInt(calibrationArray_Visible[i * step].wavelength),
         y:
-          newDataArray[dataTimeIndex].Y570_power *
+        currentBatchArray[dataTimeIndex].Y570_irradiance *
           parseFloat(calibrationArray_Visible[i * step].Y570_power),
       };
       mainChart.data.datasets[10].data[i] = {
         x: parseInt(calibrationArray_Visible[i * step].wavelength),
         y:
-          newDataArray[dataTimeIndex].O600_power *
+        currentBatchArray[dataTimeIndex].O600_irradiance *
           parseFloat(calibrationArray_Visible[i * step].O600_power),
       };
       mainChart.data.datasets[11].data[i] = {
         x: parseInt(calibrationArray_Visible[i * step].wavelength),
         y:
-          newDataArray[dataTimeIndex].R650_power *
+        currentBatchArray[dataTimeIndex].R650_irradiance *
           parseFloat(calibrationArray_Visible[i * step].R650_power),
       };
     }
@@ -899,58 +1118,63 @@ function updateChart(backward) {
       mainChart.data.datasets[0].data[i] = {
         x: parseInt(calibrationArray_Infrared[i * step].Lambda),
         y:
-          newDataArray[dataTimeIndex].nir610_power *
+        currentBatchArray[dataTimeIndex].nir610_irradiance *
           parseFloat(calibrationArray_Infrared[i * step].nir610_power),
       };
       mainChart.data.datasets[1].data[i] = {
         x: parseInt(calibrationArray_Infrared[i * step].Lambda),
         y:
-          newDataArray[dataTimeIndex].nir680_power *
+        currentBatchArray[dataTimeIndex].nir680_irradiance *
           parseFloat(calibrationArray_Infrared[i * step].nir680_power),
       };
       mainChart.data.datasets[2].data[i] = {
         x: parseInt(calibrationArray_Infrared[i * step].Lambda),
         y:
-          newDataArray[dataTimeIndex].nir730_power *
+        currentBatchArray[dataTimeIndex].nir730_irradiance *
           parseFloat(calibrationArray_Infrared[i * step].nir730_power),
       };
       mainChart.data.datasets[3].data[i] = {
         x: parseInt(calibrationArray_Infrared[i * step].Lambda),
         y:
-          newDataArray[dataTimeIndex].nir760_power *
+        currentBatchArray[dataTimeIndex].nir760_irradiance *
           parseFloat(calibrationArray_Infrared[i * step].nir760_power),
       };
       mainChart.data.datasets[4].data[i] = {
         x: parseInt(calibrationArray_Infrared[i * step].Lambda),
         y:
-          newDataArray[dataTimeIndex].nir810_power *
+        currentBatchArray[dataTimeIndex].nir810_irradiance *
           parseFloat(calibrationArray_Infrared[i * step].nir810_power),
       };
       mainChart.data.datasets[5].data[i] = {
         x: parseInt(calibrationArray_Infrared[i * step].Lambda),
         y:
-          newDataArray[dataTimeIndex].nir860_power *
+        currentBatchArray[dataTimeIndex].nir860_irradiance *
           parseFloat(calibrationArray_Infrared[i * step].nir860_power),
       };
     }
 
     //** udpate NDVI */
-    for (let i = 0; i < newDataArray.length; i++) {
+    for (let i = 0; i < currentBatchArray.length; i++) {
       chart2.data.datasets[0].data[i] = {
-        x: parseFloat(newDataArray[i].decimal_hour),
+        // x: currentBatchArray[i].timestamp,
+        x: parseFloat(currentBatchArray[i].decimal_hour),
         y: calculateNDVI(i),
       };
-      calculateNDVI(i);
+      //console.log(chart2.data.datasets);
+      // calculateNDVI(i);
     }
 
     mainChart.update();
     chart2.update();
+    liveChart.update();
 
     if (animPlay) {
       animWaitFunc = setTimeout(function () {
-        updateChart();
-        console.log(newDataArray[dataTimeIndex]);
-        console.log("UPDATE: " + dataTimeIndex);
+        if (animPlay) {
+          updateChart();
+          console.log(currentBatchArray[dataTimeIndex]);
+          console.log("UPDATE: " + dataTimeIndex);
+        }
       }, animationTime);
     }
   }
@@ -1061,30 +1285,23 @@ function updateChartLabels() {
 }
 
 function calculateNDVI(index) {
-  var b1 = "nir860_power";
-  var b2 = "R650_power";
-  console.log(newDataArray);
-  console.log(index);
+  var b1 = "nir860_irradiance";
+  var b2 = "R650_irradiance";
+  //console.log(newDataArray);
+  //console.log(index);
 
   var ndvi =
-    (parseFloat(newDataArray[index][b1]) -
-      parseFloat(newDataArray[index][b2])) /
-    (parseFloat(newDataArray[index][b1]) + parseFloat(newDataArray[index][b2]));
-  //console.log(ndvi);
-
-  return ndvi;
-  // for(var i = 0; i < newDataArray.length; i++)
-  // {
-  // }
+    (parseFloat(currentBatchArray[index][b1]) -
+      parseFloat(currentBatchArray[index][b2])) /
+    (parseFloat(currentBatchArray[index][b1]) + parseFloat(currentBatchArray[index][b2]));
+  
+    return ndvi;
 }
 
 //READS MESSAGES BEING SENT THROUGH THE SERIAL PORT *//
 async function getSerialMessage() {
-  //getSerialMessage();
 
   clearTimeout(serialTimeout);
-
-  //** IF THERE ARE NO ERRORS */
 
   if(deviceConnected)
   {
@@ -1094,7 +1311,7 @@ async function getSerialMessage() {
       getSerialMessage();
       decipherSerialMessage(message);
       //console.log("update read");
-    }, 500);
+    }, readTime);
   }
   //document.querySelector("#serial-messages-container .message").innerText += await serialScaleController.read()
 }
@@ -1260,59 +1477,98 @@ function decipherSerialMessage(message)
       }
     }
 
+    var v450_value, b500_value, g550_value, y570_value, o600_value, r650_value,
+    i610_value, i680_value, i730_value, i760_value, i810_value, i860_value = 0;
+
     //** UPDATE VISIBLE LIVE VALUES */
     if(messageSplit.includes("v450:"))
     {
       let v450 = messageSplit[messageSplit.indexOf("v450:")+1];
-      
-      if(!isNaN(parseFloat(v450)))
+      v450_value = parseFloat(v450);
+
+      if(!isNaN(v450_value))
       {
-        document.getElementById("v450_label").innerHTML = "V450: " + parseFloat(v450);
+        document.getElementById("v450_label").innerHTML = "V450: " + v450_value;
+        liveChart.data.datasets[0].data[0] =  {
+            x: 450,
+            y: v450_value,
+        };
+        liveChart.update();
       }
     }
     if(messageSplit.includes("b500:"))
     {
       let b500 = messageSplit[messageSplit.indexOf("b500:")+1];
+      b500_value = parseFloat(b500);
       
-      if(!isNaN(parseFloat(b500)))
+      if(!isNaN(b500_value))
       {
-        document.getElementById("b500_label").innerHTML = "B500: " + parseFloat(b500);
+        document.getElementById("b500_label").innerHTML = "B500: " + b500_value;
+        liveChart.data.datasets[0].data[1] =  {
+            x: 500,
+            y: b500_value,
+        };
+        liveChart.update();
       }
     }
     if(messageSplit.includes("g550:"))
     {
       let g550 = messageSplit[messageSplit.indexOf("g550:")+1];
+      g550_value = parseFloat(g550);
 
-      if(!isNaN(parseFloat(g550)))
+      if(!isNaN(g550_value))
       {
-        document.getElementById("g550_label").innerHTML = "G550: " + parseFloat(g550);
+        document.getElementById("g550_label").innerHTML = "G550: " + g550_value;
+        liveChart.data.datasets[0].data[2] =  {
+            x: 550,
+            y: g550_value,
+        };
+        liveChart.update();
       }
     }
     if(messageSplit.includes("y570:"))
     {
       let y570 = messageSplit[messageSplit.indexOf("y570:")+1];
+      y570_value = parseFloat(y570);
 
-      if(!isNaN(parseFloat(y570)))
+      if(!isNaN(y570_value))
       {
-        document.getElementById("y570_label").innerHTML = "Y570: " + parseFloat(y570);
+        document.getElementById("y570_label").innerHTML = "Y570: " + y570_value;
+        liveChart.data.datasets[0].data[3] =  {
+            x: 570,
+            y: y570_value,
+        };
+        liveChart.update();
       }
     }
     if(messageSplit.includes("o600:"))
     {
       let o600 = messageSplit[messageSplit.indexOf("o600:")+1];
+      o600_value = parseFloat(o600);
 
       if(!isNaN(parseFloat(o600)))
       {
-        document.getElementById("o600_label").innerHTML = "O600: " + parseFloat(o600);
+        document.getElementById("o600_label").innerHTML = "O600: " + o600_value;
+        liveChart.data.datasets[0].data[4] =  {
+            x: 600,
+            y: o600_value,
+        };
+        liveChart.update();
       }
     }
     if(messageSplit.includes("r650:"))
     {
       let r650 = messageSplit[messageSplit.indexOf("r650:")+1];
+      r650_value = parseFloat(r650);
 
-      if(!isNaN(parseFloat(r650)))
+      if(!isNaN(r650_value))
       {
-        document.getElementById("r650_label").innerHTML = "R650: " + parseFloat(r650);
+        document.getElementById("r650_label").innerHTML = "R650: " + r650_value;
+        liveChart.data.datasets[0].data[5] =  {
+            x: 650,
+            y: r650_value,
+        };
+        liveChart.update();
       }
     }
 
@@ -1320,55 +1576,91 @@ function decipherSerialMessage(message)
     if(messageSplit.includes("610:"))
     {
       let i610 = messageSplit[messageSplit.indexOf("610:")+1];
+      i610_value = parseFloat(i610);
 
-      if(!isNaN(parseFloat(i610)))
+      if(!isNaN(i610_value))
       {
-        document.getElementById("610_label").innerHTML = "610: " + parseFloat(i610);
+        document.getElementById("610_label").innerHTML = "610: " + i610_value;
+        liveChart.data.datasets[1].data[0] =  {
+            x: 610,
+            y: i610_value,
+        };
+        liveChart.update();
       }
     }
     if(messageSplit.includes("680:"))
     {
       let i680 = messageSplit[messageSplit.indexOf("680:")+1];
+      i680_value = parseFloat(i680);
 
-      if(!isNaN(parseFloat(i680)))
+      if(!isNaN(i680_value))
       {
-        document.getElementById("680_label").innerHTML = "680: " + parseFloat(i680);
+        document.getElementById("680_label").innerHTML = "680: " + i680_value;
+        liveChart.data.datasets[1].data[1] =  {
+            x: 680,
+            y: i680_value,
+        };
+        liveChart.update();
       }
     }
     if(messageSplit.includes("730:"))
     {
       let i730 = messageSplit[messageSplit.indexOf("730:")+1];
+      i730_value = parseFloat(i730);
 
-      if(!isNaN(parseFloat(i730)))
+      if(!isNaN(i730_value))
       {
-        document.getElementById("730_label").innerHTML = "730: " + parseFloat(i730);
+        document.getElementById("730_label").innerHTML = "730: " + i730_value;
+        liveChart.data.datasets[1].data[2] =  {
+            x: 730,
+            y: i730_value,
+        };
+        liveChart.update();
       }
     }
     if(messageSplit.includes("760:"))
     {
       let i760 = messageSplit[messageSplit.indexOf("760:")+1];
+      i760_value = parseFloat(i760);
 
-      if(!isNaN(parseFloat(i760)))
+      if(!isNaN(i760_value))
       {
-        document.getElementById("760_label").innerHTML = "760: " + parseFloat(i760);
+        document.getElementById("760_label").innerHTML = "760: " + i760_value;
+        liveChart.data.datasets[1].data[3] =  {
+            x: 760,
+            y: i760_value,
+        };
+        liveChart.update();
       }
     }
     if(messageSplit.includes("810:"))
     {
       let i810 = messageSplit[messageSplit.indexOf("810:")+1];
+      i810_value = parseFloat(i810);
 
-      if(!isNaN(parseFloat(i810)))
+      if(!isNaN(i810_value))
       {
-        document.getElementById("810_label").innerHTML = "810: " + parseFloat(i810);
+        document.getElementById("810_label").innerHTML = "810: " + i810_value;
+        liveChart.data.datasets[1].data[4] =  {
+            x: 810,
+            y: i810_value,
+        };
+        liveChart.update();
       }
     }
     if(messageSplit.includes("860:"))
     {
       let i860 = messageSplit[messageSplit.indexOf("860:")+1];
+      i860_value = parseFloat(i860);
 
-      if(!isNaN(parseFloat(i860)))
+      if(!isNaN(i860_value))
       {
-        document.getElementById("860_label").innerHTML = "860: " + parseFloat(i860);
+        document.getElementById("860_label").innerHTML = "860: " + i860_value;
+        liveChart.data.datasets[1].data[5] =  {
+            x: 860,
+            y: i860_value,
+        };
+        liveChart.update();
       }
     }
   }
@@ -1409,14 +1701,89 @@ function animate() {
 }
 animate();
 
+function addBatches(dataArray)
+{
+  
+  for(var i = 0; i < dataArray.length; i++)
+  {
+    const div = document.createElement('div');
+    div.id = "batchNmb"
+    
+    //** BATCH NUMBER CLICK FUNCTION */
+    div.onclick = function () {
+      if(!this.classList.contains("selected"))
+      {
+        const batchGrid = document.querySelectorAll('[id=batchNmb]');
+
+        lastSliderValue = 0;
+        
+        batchGrid.forEach( (item) => 
+        {
+          if(item.classList.contains("selected"))
+          {
+            item.classList.toggle('selected');
+          }
+          //console.log(item);
+        });
+
+        this.classList.toggle("selected");
+        currentBatchArray = dataArray[this.index];
+        console.log(currentBatchArray);
+
+        mainChart.update();
+
+        chart2.data.labels = Object.keys(data);
+        chart2.data.datasets.forEach((dataset) => {
+            dataset.data = Object.values(data);
+        });
+
+        //chart2.data.datasets[0].data.pop();
+
+        chart2.update();
+
+        clearTimeout(animWaitFunc);
+        updateChart();
+      }
+    };
+
+    //** SELECT THE FIRST BATCH IN THE LIST */
+    if(i == 0)
+    {
+      div.classList.toggle("selected");
+      currentBatchArray = dataArray[0];
+      console.log(currentBatchArray);
+    }
+
+    div.innerHTML = dataArray[i][0].batch_label;
+    div.index = i;
+    document.getElementById("batchGrid").appendChild(div);
+  }
+}
+
+function removeBatches(input)
+{
+  document.getElementById("batchGrid").removeChild(input);
+  console.log("REMOVE: " + input)
+}
+
 //** CLICK EVENT FOR UPLOAD NEW BUTTON */
 menuElement.addEventListener("click", function (ev) {
   ev.stopPropagation(); // prevent event from bubbling up to .container
   menuElement.classList.toggle("active");
+  
+  
+  if(uploadSidebar.classList.contains("active"))
+  {
+    uploadSidebar.classList.toggle("active");
+  }
 
   if (document.getElementById("calcGraph").classList.contains("active")) {
     document.getElementById("calcGraph").classList.toggle("active");
   }
+  if (document.getElementById("liveGraph").classList.contains("active")) {
+    document.getElementById("liveGraph").classList.toggle("active");
+  }
+
   if (ndvi_element.classList.contains("selected")) {
     ndvi_element.classList.toggle("selected");
   }
@@ -1430,7 +1797,6 @@ menuElement.addEventListener("click", function (ev) {
     rawData_element.classList.toggle("active");
     visible_filter_element.classList.toggle("active");
     infrared_filter_element.classList.toggle("active");
-    ndvi_element.classList.toggle("active");
     recordButton.classList.toggle("active");
     document.getElementById("mainGraph").classList.toggle("active");
   }
@@ -1521,13 +1887,29 @@ window.onresize = function () {
 
   mainChart.resize();
   chart2.resize();
+  liveChart.resize();
 };
 
+var lastSliderValue = 0;
 //** USED TO CONTROL SPEED OF ANIMATION */
-speedSlider.addEventListener("change", function (e) {
+speedSlider.addEventListener("input", function (e) {
   // Force the string value of the range to a number and then force the
   // number to have a single decimal
-  animationTime = 200 * speedSlider.value;
+
+  updateChart(false, speedSlider.value);
+  
+  lastSliderValue = speedSlider.value;
+  clearTimeout(animWaitFunc);
+
+  if (animPlay) {
+    animPlay = false;
+    clearTimeout(animWaitFunc);
+    console.log("PAUSE");
+    box.classList.toggle("pause");
+  }
+
+  // animationTime = 200 * speedSlider.value;
+  animationTime = 1000;
   console.log(speedSlider.value);
 });
 
@@ -1552,16 +1934,8 @@ infrared_filter_element.addEventListener("click", function () {
 ndvi_element.addEventListener("click", function () {
   ndvi_element.classList.toggle("selected");
 
-  if (ndvi_element.classList.contains("selected")) {
-    // document.getElementById("mainGraph").style.width = "50%";
-    // document.getElementById("calcGraph").style.width = "50%";
-    //mainChart.resize();
-    //chart2.resize();
-  } else {
-    // document.getElementById("mainGraph").style.width = "75%";
-    //mainChart.resize();
-    //chart2.resize();
-    
+  if (!ndvi_element.classList.contains("selected")) 
+  {
     mainChart.update();
   }
 
@@ -1601,9 +1975,15 @@ navigator.serial.addEventListener("disconnect", (e) => {
   console.log("DISCONNECT TO PORT: " + e);
   deviceConnected = false;
 
-  duplicateScreen.classList.toggle("active");
-  menuElement.classList.toggle("active");
-  landing.classList.toggle("active");
+  if(duplicateScreen.classList.contains("active"))
+  {
+    document.getElementById("liveGraph").classList.toggle("active");
+    duplicateScreen.classList.toggle("active");
+    menuElement.classList.toggle("active");
+    landing.classList.toggle("active");
+  }
+
+
 });
 
 navigator.serial.getPorts().then((ports) => {
@@ -1628,6 +2008,7 @@ function update()
 {
   mainChart.resize();
   chart2.resize();
+  liveChart.resize();
 
   setTimeout(() => {
     update();

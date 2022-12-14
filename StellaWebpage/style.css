@@ -102,13 +102,14 @@ body {
 }
 
 .chartCard {
+  position: absolute;
+  pointer-events: none;
   width: 100vw;
   height: calc(100vh - 40px);
-  background: rgba(255, 255, 255, 0.2);
   display: grid;
   grid-template-columns: minmax(200px, 1fr);
   grid-template-rows: auto;
-  justify-content: center;
+  justify-content: left;
 }
 .chartBox {
   position: absolute;
@@ -287,7 +288,7 @@ body {
 .dataMode.active:hover {
   cursor: pointer;
   opacity: 100%;
-  background: rgb(0, 0, 0);
+  background: rgb(65, 65, 65);
   color: white;
   transition: all 0.25s ease;
 }
@@ -300,8 +301,8 @@ body {
 .dataMode.selected:hover {
   cursor: pointer;
   opacity: 100%;
-  background: white;
-  color: black;
+  background: rgb(65, 65, 65);
+  color: white;
   transition: all 0.25s ease;
 }
 .dataMode.active {
@@ -316,8 +317,8 @@ body {
   justify-content: center;
 
   position: relative;
-  width: fit-content;
-  height: 30%;
+  width: 50%;
+  height: fit-content;
   opacity: 100%;
   right: -50%;
   top: 0%;
@@ -354,7 +355,7 @@ body {
 
 .center {
   position: inherit;
-  top: 50%;
+  bottom: 0%;
   left: 50%;
 
   transform: translate(-50%, 50%);
@@ -364,6 +365,7 @@ body {
   width: 2vw;
   height: 2vw;
 
+  top: 100%;
   opacity: 100%;
   box-sizing: border-box;
   border-style: solid;
@@ -383,12 +385,12 @@ body {
 
 .arrow {
   position: inherit;
-  top: -10%;
+  top: 25%;
   opacity: 100%;
   size: 1;
 
   border: solid black;
-  border-width: 0 0.3vw 0.3vw 0;
+  border-width: 0 0.2vw 0.2vw 0;
   display: inline-block;
   padding: 0.3vw;
   transition: all 100ms ease-in-out;
@@ -423,23 +425,26 @@ body {
 }
 
 .boxContainer {
-  position: relative;
-  width: 100%;
-  height: 500%;
-  top: -200%;
+  position: absolute;
+  transform: translate(-50%, 150%);
+  bottom: 0%;
+  left: 50%;
+
+  width: 25%;
+  height: 5%;
+
+  /* outline: solid black; */
 }
 
 .slidecontainer {
-  position: relative;
-  width: 40%;
-  top: 30%;
-  font-family: Arial;
+  position: absolute;
+  width: 100%;
+  height: 40%;
 }
 .resolutioncontainer {
   position: absolute;
   opacity: 0%;
   width: 100%;
-  font-family: Arial;
 }
 .resolutioncontainer.active {
   position: relative;
@@ -452,10 +457,9 @@ body {
   position: relative;
   width: 40%;
   top: 30%;
-  font-family: Arial;
 }
 .slider {
-  direction: rtl;
+  direction: ltr;
   position: inherit;
   right: 1%;
   width: 100%; /* Full-width */
@@ -467,7 +471,7 @@ body {
   transition: all 0.25s;
 }
 .slider:hover {
-  opacity: 0.5;
+  opacity: 1;
   transition: all 0.2s;
 }
 .speedLabel {
@@ -490,6 +494,11 @@ body {
 @media screen and (-webkit-min-device-pixel-ratio: 0) {
   input[type="range"] {
     overflow: hidden;
+    width: 100%;
+    height: 100%;
+    left: -0.5%;
+    top: 50%;
+
     border-radius: 25px;
     -webkit-appearance: none;
     background-color: rgb(75, 75, 75);
@@ -530,14 +539,13 @@ input[type="range"]::-ms-fill-upper {
 }
 
 .frameNumber {
-  position: inherit;
-  top: 125%;
+  position: absolute;
+  top: 250%;
   right: 0%;
 
-  font-size: 1.15vw;
+  font-size: 100%;
 
-  color: rgb(219, 219, 219);
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  color: black;
 }
 .introGif {
   position: inherit;
@@ -639,11 +647,10 @@ h2 {
 }
 
 .duplicateScreen {
-  position: absolute;
   pointer-events: none;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  position: relative;
+  justify-self: center;
+  align-self: center;
   background-color: white;
   opacity: 0%;
 
@@ -678,6 +685,7 @@ h2 {
   margin: 0%;
   width: fit-content;
   height: fit-content;
+  
 }
 
 .duplicateScreen .recording {
@@ -707,4 +715,88 @@ h2 {
 
   border-style: double;
   border-width: 0px 0px 0px 3vh;
+}
+
+.controlSidebar{
+  position: absolute;
+  bottom: 0%;
+  left: 0%;
+  background-color: white;
+  margin: 1% 1%;
+
+  pointer-events: none;
+  opacity: 0%;
+
+  resize: horizontal;
+  overflow: auto;
+
+  display:grid;
+  grid-template-columns: minmax(1px, 1fr) minmax(1px, 1fr);
+  grid-template-rows: minmax(1px, 0.5fr) minmax(1px, 1fr);
+
+  border: solid 3px rgba(0, 0, 0, 1);
+  width: 20vh;
+  height: 20vh;
+
+  max-height: 15vh;
+  max-width: 32.5%;
+  min-width: 12.5%;
+}
+
+.controlSidebar.active{
+  pointer-events: auto;
+  opacity: 100%;
+  transition: all 0.25 ease-in-out;
+}
+.controlSidebar h1{
+  margin: 1%;
+  font-size: 150%;
+  text-align: left;
+  /* outline: solid 1px rgba(0, 0, 0, 1); */
+}
+.batchGrid{
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  outline: solid 1px rgba(0, 0, 0, 1);
+  align-items: center;
+  justify-content: center;
+
+  overflow: auto;
+}
+.batchGrid div{
+  width: 100%;
+  height: fit-content;
+  text-align: center;
+  margin: auto;
+  font-size: 100%;
+  padding: 10px;
+  cursor: pointer;
+  /* justify-self: center;
+  align-self: center; */
+
+  outline: solid 1px rgba(0, 0, 0, 1);
+}
+
+.batchGrid div:hover{
+  
+  background-color: rgb(65, 65, 65);
+  color: white;
+  transition: all 0.25s ease-in-out;
+}
+
+.batchGrid div.selected{
+  
+  background-color: black;
+  color: white;
+  transition: all 0.25s ease-in-out;
+  outline: solid 1px rgba(255, 255, 255, 1);
+}
+
+.batchGrid div.selected:hover{
+  
+  background-color: rgb(65, 65, 65);
+  color: white;
+  transition: all 0.25s ease-in-out;
 }
