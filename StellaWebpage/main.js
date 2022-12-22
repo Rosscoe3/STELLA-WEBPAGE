@@ -22,9 +22,6 @@ infraredGradient.addColorStop(0, "rgba(255, 0, 0, 1)");
 infraredGradient.addColorStop(1, "rgba(173, 173, 173, 0.75)");
 
 //** LIVE DATA */
-let visibleDataLive = [];
-let infraredDataLive = [];
-
 //** FILE DROP JS */
 let dropArea = document.getElementById("drop-area");
 let dataArray = [];
@@ -53,6 +50,8 @@ let readDeviceBtn = document.getElementById("read");
 let recording_live_label = document.getElementById("recording_label");
 let uploadSidebar = document.getElementById("uploadSidebar");
 let batchesContainer = document.getElementById("batchGrid");
+let about_button = document.getElementById("about");
+let live_chartCard = document.getElementById("chartCardLive")
 
 
 let visible_filter_range = document.getElementById("visibleFilter_range");
@@ -172,7 +171,6 @@ excludeLabelList = excludeLabelList.concat(
   infrared_filter_array,
   "NDVI"
 );
-console.log(excludeLabelList);
 
 //** VARIABLES FOR CONTROLLING DATA */
 let step = 5;
@@ -219,7 +217,6 @@ window.onload = function () {
   var ctx = canvas.getContext("2d");
   var img = document.getElementById("spin");
   ctx.drawImage(img, 10, 10);
-  console.log("BG");
 };
 
 const plugin = {
@@ -715,7 +712,7 @@ const config2 = {
         text: "NDVI",
       },
       legend: {
-        display: true,
+        display: false,
       },
     },
     //** ADDS NM to the Y axis lables */
@@ -755,16 +752,20 @@ const config2 = {
         // },
         title: {
           display: true,
-          text: "Decimal Hour",
+          text: "Time",
           align: "center",
           font: {
             size: 15,
           },
         },
-        // type: "time",
+        type: "time",
         // time: {
-        //     unit: 'hour'
+        //   displayFormats: {
+        //       quarter: 'MMM YYYY'
+        //   }
         // },
+        min: "20211017T143405Z",
+        max: "20221117T143405Z",
         parsing: false,
       },
     },
@@ -873,10 +874,8 @@ function readTextFile(file, visible) {
 
         if (visible) {
           calibrationArray_Visible = csvToArray(csvdata);
-          console.log(calibrationArray_Visible);
         } else {
           calibrationArray_Infrared = csvToArray(csvdata);
-          console.log(calibrationArray_Infrared);
         }
 
         //console.log(array);
@@ -887,9 +886,8 @@ function readTextFile(file, visible) {
   rawFile.send(null);
 }
 
-upload_file.addEventListener('input', function(){
-  
-  console.log("CHANGE");
+upload_file.addEventListener('input', function()
+{
   if (!RESOURCE_LOADED){
     var reader = new FileReader();
     document.getElementById("mainGraph").classList.toggle("active");
@@ -906,7 +904,6 @@ upload_file.addEventListener('input', function(){
     //** WHEN THE DATA FILE IS LOADED */
     reader.onload = function (event) {
       newDataArray = csvToArray(reader.result);
-      console.log(newDataArray);
       let currentBatchNmb = newDataArray[0].batch_label;
       dataArrayBatches = [[]];
       
@@ -922,11 +919,11 @@ upload_file.addEventListener('input', function(){
             batchIndex++;
             currentBatchNmb = newDataArray[i].batch_label;
             dataArrayBatches.push(new Array());
-            console.log("DIFFERENT BATCH");
+            //console.log("DIFFERENT BATCH");
           }
           else
           {
-            console.log("Same Batch");
+            //console.log("Same Batch");
           }
   
           dataArrayBatches[batchIndex].push(newDataArray[i]);
@@ -935,7 +932,6 @@ upload_file.addEventListener('input', function(){
 
       batchesContainer.innerHTML = "";
       addBatches(dataArrayBatches);
-      console.log(dataArrayBatches);
   
       //** CLEAR THE ARRAY IF IT IS FULL */
       if (dataArray) {
@@ -964,8 +960,6 @@ function updateChart(backward, index) {
     
     speedSlider.max = currentBatchArray.length;
     speedSlider.min = 1;
-    console.log(speedSlider.max);
-
 
     if(!index)
     {
@@ -1010,10 +1004,8 @@ function updateChart(backward, index) {
       dataTimeIndex = parseInt(index) - 1;
     }
     
-    
-    console.log(dataTimeIndex);
     var progress = (dataTimeIndex / (currentBatchArray.length - 1)) * 100;
-    console.log("PROGRESS: " + progress + " DATA INDEX: " + dataTimeIndex);
+    //console.log("PROGRESS: " + progress + " DATA INDEX: " + dataTimeIndex);
     frameNumber.innerHTML = (dataTimeIndex + 1) + "/" + (currentBatchArray.length);
 
     //** VISIBLE LIGHT RAW */
@@ -1155,25 +1147,34 @@ function updateChart(backward, index) {
 
     //** udpate NDVI */
     for (let i = 0; i < currentBatchArray.length; i++) {
+      
+      //** GRAB LAST VALUE OF ARRAY TO SET THE MAX TIMESTAMP OF CHART */
+      if(i == currentBatchArray.length - 1)
+      {
+        chart2.options.scales.x.max = currentBatchArray[i].timestamp;
+      }
+      //** GRAB FIRST VALUE OF ARRAY TO SET THE MIN TIMESTAMP OF CHART */
+      else if(i == 0)
+      {
+        chart2.options.scales.x.min = currentBatchArray[i].timestamp;
+      }
+
       chart2.data.datasets[0].data[i] = {
-        // x: currentBatchArray[i].timestamp,
-        x: parseFloat(currentBatchArray[i].decimal_hour),
+        x: currentBatchArray[i].timestamp,
+        // x: parseFloat(currentBatchArray[i].decimal_hour),
         y: calculateNDVI(i),
       };
-      //console.log(chart2.data.datasets);
-      // calculateNDVI(i);
     }
 
     mainChart.update();
     chart2.update();
     liveChart.update();
 
+    //** CALLS AN UPDATE FUNCTION */
     if (animPlay) {
       animWaitFunc = setTimeout(function () {
         if (animPlay) {
           updateChart();
-          console.log(currentBatchArray[dataTimeIndex]);
-          console.log("UPDATE: " + dataTimeIndex);
         }
       }, animationTime);
     }
@@ -1182,8 +1183,7 @@ function updateChart(backward, index) {
 
 //** UPDATES THE GRAPHS GRADIENTS */
 function graphGradients() {
-  console.log("HEIGHT: " + mainChart.height + ", WIDTH: " + mainChart.width);
-
+  // console.log("HEIGHT: " + mainChart.height + ", WIDTH: " + mainChart.width);
   visibleGradient = ctx.createLinearGradient(0, 0, mainChart.width / 2, 0);
   visibleGradient.addColorStop(0.1, "rgba(0, 0, 255, 0.75)");
   visibleGradient.addColorStop(0.25, "rgba(0, 255, 0, 0.75)");
@@ -1285,17 +1285,15 @@ function updateChartLabels() {
 }
 
 function calculateNDVI(index) {
-  var b1 = "nir860_irradiance";
-  var b2 = "R650_irradiance";
-  //console.log(newDataArray);
-  //console.log(index);
-
-  var ndvi =
-    (parseFloat(currentBatchArray[index][b1]) -
-      parseFloat(currentBatchArray[index][b2])) /
-    (parseFloat(currentBatchArray[index][b1]) + parseFloat(currentBatchArray[index][b2]));
+  var b1 = "nir810_irradiance";
+  var b2 = "nir680_irradiance";
   
-    return ndvi;
+  var ndvi =
+  (parseFloat(currentBatchArray[index][b1]) - parseFloat(currentBatchArray[index][b2])) 
+  /
+  (parseFloat(currentBatchArray[index][b1]) + parseFloat(currentBatchArray[index][b2]));
+  
+  return ndvi;
 }
 
 //READS MESSAGES BEING SENT THROUGH THE SERIAL PORT *//
@@ -1303,17 +1301,16 @@ async function getSerialMessage() {
 
   clearTimeout(serialTimeout);
 
-  if(deviceConnected)
-  {
-    serialTimeout = setTimeout(async function () {
+  serialTimeout = setTimeout(async function () {
+    if(deviceConnected)
+    {
       var message = await serialScaleController.read();
       console.log(message);
       getSerialMessage();
       decipherSerialMessage(message);
       //console.log("update read");
-    }, readTime);
-  }
-  //document.querySelector("#serial-messages-container .message").innerText += await serialScaleController.read()
+    }
+  }, readTime);
 }
 
 function decipherSerialMessage(message)
@@ -1689,17 +1686,10 @@ function startTimer() {
     timePassed = timePassed += 1;
 
     // The time left label is updated
-    recordingText.innerHTML = formatTime(timePassed);
+    recordingText.innerHTML = "<b>" + formatTime(timePassed) + "</b>";
     console.log("TICK: " + formatTime(timePassed));
   }, 1000);
 }
-
-function animate() {
-  ctx.fillStyle = "#FF0000"; // with your desired background color
-  ctx.fillRect(0, 0, 500, 500);
-  console.log("ANIMTE");
-}
-animate();
 
 function addBatches(dataArray)
 {
@@ -1723,13 +1713,11 @@ function addBatches(dataArray)
           {
             item.classList.toggle('selected');
           }
-          //console.log(item);
         });
 
         this.classList.toggle("selected");
         currentBatchArray = dataArray[this.index];
         console.log(currentBatchArray);
-
         mainChart.update();
 
         chart2.data.labels = Object.keys(data);
@@ -1751,11 +1739,15 @@ function addBatches(dataArray)
     {
       div.classList.toggle("selected");
       currentBatchArray = dataArray[0];
-      console.log(currentBatchArray);
     }
+
+    var date = dataArray[i][0].timestamp.substr(0, 4) + "/" 
+            + dataArray[i][0].timestamp.substr(4, 2) + "/" + 
+              dataArray[i][0].timestamp.substr(9, 2);
 
     div.innerHTML = dataArray[i][0].batch_label;
     div.index = i;
+    div.title = date;
     document.getElementById("batchGrid").appendChild(div);
   }
 }
@@ -1764,6 +1756,55 @@ function removeBatches(input)
 {
   document.getElementById("batchGrid").removeChild(input);
   console.log("REMOVE: " + input)
+}
+
+function saveCSV () {
+  let csv = "";
+  let headers = "";
+  let firstHeader = true;
+  
+  for (var index1 in currentBatchArray) {
+    var row = currentBatchArray[index1];
+    
+    // Row is the row of array at index "index1"
+    var string = "";
+
+    // Empty string which will be added later
+    for (var index in row) {
+      // Traversing each element in the row
+      var w = row[index];
+
+      if(firstHeader)
+      {
+        headers+= index + ',';
+        console.log(headers);
+      }
+      
+      // Adding the element at index "index" to the string
+      string += w;
+      if (index != row.length - 1) {
+        string += ",";
+        // If the element is not the last element , then add a comma
+      }
+    }
+    string += "\n";
+    firstHeader = false;
+    
+    // Adding next line at the end
+    csv += string;
+    // adding the string to the final string "csv"
+  }
+  
+  //** ADDS HEADERS BASED ON THE HEADERS IN THE DATA.TXT*/
+  csv = "data:text/csv;charset=utf-8," + headers + "\n" + csv;
+  console.log(headers);
+
+  var encodedUri = encodeURI(csv);
+  var link = document.createElement("a");
+  link.setAttribute("href", encodedUri);
+  link.setAttribute("download", "my_data.txt");
+  document.body.appendChild(link); 
+  link.click();
 }
 
 //** CLICK EVENT FOR UPLOAD NEW BUTTON */
@@ -1841,14 +1882,10 @@ box.addEventListener("click", (e) => {
   if (animPlay) {
     animPlay = false;
     clearTimeout(animWaitFunc);
-    console.log("PAUSE");
   } else {
     animPlay = true;
     updateChart();
-    console.log("PLAY");
   }
-
-  //clearTimeout(animWaitFunc);
 });
 
 //** CLICK EVENT FOR RIGHT ARROW BUTTON */
@@ -1907,10 +1944,7 @@ speedSlider.addEventListener("input", function (e) {
     console.log("PAUSE");
     box.classList.toggle("pause");
   }
-
-  // animationTime = 200 * speedSlider.value;
   animationTime = 1000;
-  console.log(speedSlider.value);
 });
 
 rawData_element.addEventListener("click", function () {
@@ -1942,10 +1976,17 @@ ndvi_element.addEventListener("click", function () {
   document.getElementById("calcGraph").classList.toggle("active");
   updateGraphGrid();
   updateChartLabels();
+
+  mainChart.resize();
+  chart2.resize();
 });
 
 connectDevice.addEventListener("click", function () {
   serialScaleController.init();
+});
+
+about_button.addEventListener("click", function () {
+  window.open("https://landsat.gsfc.nasa.gov/stella/", '_blank');
 });
 
 recordButton.addEventListener("click", function () {
@@ -1956,7 +1997,7 @@ recordButton.addEventListener("click", function () {
     recordingText.classList.toggle("active");
   } else {
     clearInterval(timerInterval);
-    recordingText.innerHTML = "Record";
+    recordingText.innerHTML = "<b>Record</b>";
     mediaRecorder.stop();
     timePassed = 0;
     recordingText.classList.toggle("active");
@@ -1972,8 +2013,8 @@ navigator.serial.addEventListener("connect", (e) => {
 
 navigator.serial.addEventListener("disconnect", (e) => {
   // Remove `e.target` from the list of available ports.
-  console.log("DISCONNECT TO PORT: " + e);
   deviceConnected = false;
+  alert("STELLA Disconnected");
 
   if(duplicateScreen.classList.contains("active"))
   {

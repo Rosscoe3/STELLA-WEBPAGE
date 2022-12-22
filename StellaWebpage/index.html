@@ -15,7 +15,7 @@
       <h1 id="title">stella_dataviewer</h1>
       <img src="images/stellaSpin.gif" class="introGif" id="spin" />
       <div class="landingNav">
-        <div>about</div>
+        <div id="about">about</div>
         <label class="custom-file-upload">
             <input type="file" id="upload_file" accept=".txt" onclick="this.value=null;"/>
             upload_file
@@ -45,22 +45,27 @@
             </div>
             <div class="box center pause" id="playPauseBtn"></div>
             <div class="frameNumber" id="frameNumber">1/100</div>
+            <!-- <div class="frameNumber" id="timeStamp" style ="left: 0%">1/100</div> -->
           </div>
           <div class="arrow right" id="arrowRight"></div>
           <div class="arrow left" id="arrowLeft"></div>
         </div>
         
         <div class="modeContainer">
-          <div class="dataMode selected" id="rawData">
+          <div class="dataMode selected" id="rawData" title="Raw output from device">
             <b>Raw Data</b>
           </div>
 
-          <div class="dataMode" id="visible_filter">
+          <div class="dataMode" id="visible_filter" title="Visible Calibration Curve">
             <b>Visible (filtered)</b>
           </div>
 
-          <div class="dataMode" id="infrared_filter">
+          <div class="dataMode" id="infrared_filter" title="Infrared Calibration Curve">
             <b>Infrared (filtered)</b>
+          </div>
+
+          <div class="record" id="recordButton">
+            <div class="recordingText" id="recordingText"><b>Record</b></div>
           </div>
         </div>
       </div>
@@ -81,9 +86,9 @@
     </div>
 
     <!-- SCREEN RECORDING -->
-    <div class="record" id="recordButton">
+    <!-- <div class="record" id="recordButton">
       <div class="recordingText" id="recordingText">Record</div>
-    </div>
+    </div> -->
 
     <h2 class="" id="descriptionText" style="opacity: 0%">
       FILTERED VISIBLE LIGHT
@@ -95,7 +100,6 @@
     </div>
 
     <!-- LIVE DUPLICATE SCREEN-->
-
     <div class="chartCard" id="chartCardLive" style = "grid-template-columns: minmax(200px, 1fr) minmax(200px, 1fr)">
       <div class="chartBox" id="liveGraph">
         <canvas id="graph3">
@@ -129,12 +133,21 @@
     <div class="controlSidebar" id="uploadSidebar">
       <h1>graphs</h1>
       <h1>#batch</h1>
+      <h1>UID: 8735</h1>
       <div class="batchGrid" id = "graphs">
-        <div class="selected">RAW</div>
-        <div id="ndvi">NDVI</div>
+        <div class="selected" title="Raw output from device">RAW</div>
+        <div id="ndvi" title="An indicator of density and health in vegetation">NDVI</div>
         <div>NIR</div>
       </div>
       <div class="batchGrid" id = "batchGrid">
+      </div>
+      <div class="batchGrid">
+        <div>2022/12/05 10:20:30:40</div>
+        <div>air_temperature: 23.7 C</div>
+        <div>surface_temperature: 20.8 C</div>
+        <div>altitude_uncalibrated:</div>
+        <div>relative_humidity: 3%</div>
+        <div>battery_voltage: 3.81 V</div>
       </div>
     </div>
 
