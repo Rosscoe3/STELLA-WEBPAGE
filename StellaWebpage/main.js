@@ -49,7 +49,6 @@ let infrared_filter_element = document.getElementById("infrared_filter");
 let ndvi_element = document.getElementById("graphs_ndvi");
 let raw_element = document.getElementById("graphs_raw");
 
-
 let connectDevice = document.getElementById("plugInDevice");
 let recordButton = document.getElementById("recordButton");
 let recordingText = document.getElementById("recordingText");
@@ -1895,9 +1894,6 @@ menuElement.addEventListener("click", function (ev) {
   if (controlSidebar.classList.contains("active")) {
     controlSidebar.classList.toggle("active");
   }
-  if (!document.getElementById("mainGraph").classList.contains("active")) {
-    document.getElementById("mainGraph").classList.toggle("active");
-  }
   if (document.getElementById("calcGraph").classList.contains("active")) {
     document.getElementById("calcGraph").classList.toggle("active");
   }
@@ -1917,7 +1913,10 @@ menuElement.addEventListener("click", function (ev) {
     visible_filter_element.classList.toggle("active");
     infrared_filter_element.classList.toggle("active");
     recordButton.classList.toggle("active");
-    document.getElementById("mainGraph").classList.toggle("active");
+    // document.getElementById("mainGraph").classList.toggle("active");
+    if (document.getElementById("mainGraph").classList.contains("active")) {
+      document.getElementById("mainGraph").classList.toggle("active");
+    }
   }
 
   updateGraphGrid();
