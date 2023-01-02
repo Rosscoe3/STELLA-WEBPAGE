@@ -4,26 +4,38 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>STELLA - Data Viewer</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../lib/w3.css" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    />
   </head>
   <body>
-
     <!-- LANDING AND ALL ITS ELEMENTS -->
-    <div class="landing active" id ="landing">
+    <div class="landing active" id="landing">
       <h1 id="title">stella_dataviewer</h1>
       <img src="images/stellaSpin.gif" class="introGif" id="spin" />
       <div class="landingNav">
         <div id="about">about</div>
         <label class="custom-file-upload">
-            <input type="file" id="upload_file" accept=".txt" onclick="this.value=null;"/>
-            upload_file
+          <input
+            type="file"
+            id="upload_file"
+            accept=".txt"
+            onclick="this.value=null;"
+          />
+          upload_file
         </label>
         <div id="plugInDevice">connect_device</div>
       </div>
     </div>
-    
+
     <!-- GRAPHS AND GRAPH CONTROLLERS-->
     <div class="chartCard" id="chartCard">
       <div class="chartBox" id="mainGraph">
@@ -50,17 +62,38 @@
           <div class="arrow right" id="arrowRight"></div>
           <div class="arrow left" id="arrowLeft"></div>
         </div>
-        
+
+        <div class="editContainer">
+          <div class="editIcon">
+            <i class="material-icons w3-xlarge"> content_cut </i>
+          </div>
+          <div class="editIcon" id="downloadBtn">
+            <i class="material-icons w3-xlarge"> download </i>
+          </div>
+        </div>
+
         <div class="modeContainer">
-          <div class="dataMode selected" id="rawData" title="Raw output from device">
+          <div
+            class="dataMode selected"
+            id="rawData"
+            title="Raw output from device"
+          >
             <b>Raw Data</b>
           </div>
 
-          <div class="dataMode" id="visible_filter" title="Visible Calibration Curve">
+          <div
+            class="dataMode"
+            id="visible_filter"
+            title="Visible Calibration Curve"
+          >
             <b>Visible (filtered)</b>
           </div>
 
-          <div class="dataMode" id="infrared_filter" title="Infrared Calibration Curve">
+          <div
+            class="dataMode"
+            id="infrared_filter"
+            title="Infrared Calibration Curve"
+          >
             <b>Infrared (filtered)</b>
           </div>
 
@@ -70,16 +103,16 @@
         </div>
       </div>
       <div class="chartBox" id="calcGraph">
-        <canvas id="graph2">
-
-        </canvas>
+        <canvas id="graph2"> </canvas>
       </div>
     </div>
 
     <!-- MENU BUTTON -->
-    <div class="newFile" id="menu" style = "bottom: 0%">
-      <b>Menu</b>
+    <div class="newFile" id="menu" style="top: 0%">
+      <!-- <b>Menu</b> -->
+      <i class="material-icons w3-xlarge"> home </i>
     </div>
+
     <!-- NDVI BUTTON -->
     <div class="newFile" style="left: 0%">
       <b>NDVI</b>
@@ -100,15 +133,18 @@
     </div>
 
     <!-- LIVE DUPLICATE SCREEN-->
-    <div class="chartCard" id="chartCardLive" style = "grid-template-columns: minmax(200px, 1fr) minmax(200px, 1fr)">
+    <div
+      class="chartCard"
+      id="chartCardLive"
+      style="grid-template-columns: minmax(200px, 1fr) minmax(200px, 1fr)"
+    >
       <div class="chartBox" id="liveGraph">
-        <canvas id="graph3">
-        </canvas>
+        <canvas id="graph3"> </canvas>
       </div>
-      <div class="duplicateScreen" id = "duplicateScreen">
+      <div class="duplicateScreen" id="duplicateScreen">
         <div id="batchNmb_label" class="batchNmb">0.9</div>
         <div id="recording_label" class="recording pause"></div>
-        
+
         <div id="UID_label">UID: 8535</div>
         <div id="date_label">2020-12-07</div>
         <div id="timestamp_label">13:35:19Z</div>
@@ -130,24 +166,25 @@
       </div>
     </div>
 
-    <div class="controlSidebar" id="uploadSidebar">
-      <h1>graphs</h1>
+    <div class="controlSidebar" id="controlSidebar">
+      <h1 id="controlSidebarheader">graphs</h1>
       <h1>#batch</h1>
-      <h1>UID: 8735</h1>
-      <div class="batchGrid" id = "graphs">
+      <h1 id="dateHeader">2022/12/05</h1>
+      <div class="batchGrid" id="graphs">
         <div class="selected" title="Raw output from device">RAW</div>
-        <div id="ndvi" title="An indicator of density and health in vegetation">NDVI</div>
+        <div id="ndvi" title="An indicator of density and health in vegetation">
+          NDVI
+        </div>
         <div>NIR</div>
       </div>
-      <div class="batchGrid" id = "batchGrid">
-      </div>
-      <div class="batchGrid">
-        <div>2022/12/05 10:20:30:40</div>
-        <div>air_temperature: 23.7 C</div>
-        <div>surface_temperature: 20.8 C</div>
-        <div>altitude_uncalibrated:</div>
-        <div>relative_humidity: 3%</div>
-        <div>battery_voltage: 3.81 V</div>
+      <div class="batchGrid" id="batchGrid"></div>
+      <div class="extraInfo">
+        <div id="UID">UID: 3875</div>
+        <div id="Time">time: 10:20:30:40</div>
+        <div id="air_temp">air_temp: 23.7 C</div>
+        <div id="surface_temp">surface_temp: 20.8 C</div>
+        <div id="relative_humidity">relative_humidity: 3%</div>
+        <div id="battery_voltage">battery_voltage: 3.81 V</div>
       </div>
     </div>
 
@@ -155,5 +192,6 @@
     <script type="module" src="/main.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
   </body>
 </html>

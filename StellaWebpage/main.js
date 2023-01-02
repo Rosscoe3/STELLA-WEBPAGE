@@ -14,6 +14,10 @@ visibleGradient.addColorStop(1, "rgba(255, 0, 0, 0.75)");
 
 var graph = document.getElementById("graph");
 
+Chart.defaults.set("plugins.datalabels", {
+  color: "black",
+});
+
 ctx.fillStyle = "green";
 ctx.fillRect(0, 0, graph.width, graph.height);
 
@@ -48,11 +52,20 @@ let recordButton = document.getElementById("recordButton");
 let recordingText = document.getElementById("recordingText");
 let readDeviceBtn = document.getElementById("read");
 let recording_live_label = document.getElementById("recording_label");
-let uploadSidebar = document.getElementById("uploadSidebar");
+let controlSidebar = document.getElementById("controlSidebar");
 let batchesContainer = document.getElementById("batchGrid");
 let about_button = document.getElementById("about");
-let live_chartCard = document.getElementById("chartCardLive")
+let live_chartCard = document.getElementById("chartCardLive");
 
+let download_label = document.getElementById("downloadBtn");
+
+let dateHeader_label = document.getElementById("dateHeader");
+let uid_label = document.getElementById("UID");
+let time_label = document.getElementById("Time");
+let airTemp_label = document.getElementById("air_temp");
+let surfaceTemp_label = document.getElementById("surface_temp");
+let relativeHumidity_label = document.getElementById("relative_humidity");
+let batteryVoltage_label = document.getElementById("battery_voltage");
 
 let visible_filter_range = document.getElementById("visibleFilter_range");
 let duplicateScreen = document.getElementById("duplicateScreen");
@@ -66,16 +79,16 @@ class SerialScaleController {
   async init() {
     if ("serial" in navigator) {
       try {
-        
-        if(!deviceConnected)
-        {
-          const usbVendorId = 0x239A;
-          const port = await navigator.serial.requestPort({ filters: [{ usbVendorId }]});
+        if (!deviceConnected) {
+          const usbVendorId = 0x239a;
+          const port = await navigator.serial.requestPort({
+            filters: [{ usbVendorId }],
+          });
           await port.open({ baudRate: 9600 });
           this.reader = port.readable.getReader();
           let signals = await port.getSignals();
         }
-        
+
         console.log("DEVICE PAIRED");
         deviceConnected = true;
         getSerialMessage();
@@ -84,29 +97,29 @@ class SerialScaleController {
         landing.classList.toggle("active");
         duplicateScreen.classList.toggle("active");
         readDeviceBtn.classList.toggle("active");
-        
-        if (!document.getElementById("liveGraph").classList.contains("active")) 
-        {
+
+        if (
+          !document.getElementById("liveGraph").classList.contains("active")
+        ) {
           document.getElementById("liveGraph").classList.toggle("active");
         }
       } catch (err) {
         console.error("There was an error opening the serial port:", err);
-        
+
         console.log(err == "DOMException: No port selected by the user.");
-        if("The port is already open." in err)
-        {
+        if ("The port is already open." in err) {
           console.log("Port is already open");
           getSerialMessage();
           menuElement.classList.toggle("active");
           landing.classList.toggle("active");
           duplicateScreen.classList.toggle("active");
           readDeviceBtn.classList.toggle("active");
-          if (!document.getElementById("liveGraph").classList.contains("active")) 
-          {
+          if (
+            !document.getElementById("liveGraph").classList.contains("active")
+          ) {
             document.getElementById("liveGraph").classList.toggle("active");
           }
         }
-
       }
     } else {
       console.error(
@@ -120,8 +133,7 @@ class SerialScaleController {
     }
   }
   async read() {
-    while (deviceConnected)
-    {
+    while (deviceConnected) {
       try {
         const readerData = await this.reader.read();
         //console.log(readerData);
@@ -133,7 +145,6 @@ class SerialScaleController {
         return errorMessage;
       }
     }
-    
   }
 }
 var serialTimeout;
@@ -516,8 +527,7 @@ var data2 = {
   datasets: [
     //** NDVI */
     {
-      data: [
-      ],
+      data: [],
       showLine: true,
       label: "NDVI",
       fill: false,
@@ -690,6 +700,7 @@ const config = {
     },
   },
   plugins: [plugin],
+  plugins: [ChartDataLabels],
 };
 
 //** CONFIG SETUP FOR SECOND CHART */
@@ -886,62 +897,59 @@ function readTextFile(file, visible) {
   rawFile.send(null);
 }
 
-upload_file.addEventListener('input', function()
-{
-  if (!RESOURCE_LOADED){
+upload_file.addEventListener("input", function () {
+  if (!RESOURCE_LOADED) {
     var reader = new FileReader();
     document.getElementById("mainGraph").classList.toggle("active");
-    uploadSidebar.classList.toggle("active");
+    controlSidebar.classList.toggle("active");
     rawData_element.classList.toggle("active");
     visible_filter_element.classList.toggle("active");
     infrared_filter_element.classList.toggle("active");
     recordButton.classList.toggle("active");
     menuElement.classList.toggle("active");
     landing.classList.toggle("active");
-  
+
     graphGradients();
-  
+
     //** WHEN THE DATA FILE IS LOADED */
     reader.onload = function (event) {
       newDataArray = csvToArray(reader.result);
       let currentBatchNmb = newDataArray[0].batch_label;
       dataArrayBatches = [[]];
-      
+
       let batchIndex = 0;
-      for(let i = 0; i < newDataArray.length; i++)
-      {
+      for (let i = 0; i < newDataArray.length; i++) {
         //** MAKE SURE NONE OF THE DATA IS EMPTY */
-        if(newDataArray[i].batch_label != "" && typeof newDataArray[i].batch_label !== 'undefined')
-        {
+        if (
+          newDataArray[i].batch_label != "" &&
+          typeof newDataArray[i].batch_label !== "undefined"
+        ) {
           //** SORT THE DATA INTO DISTINCT BATCHES */
-          if(currentBatchNmb != newDataArray[i].batch_label)
-          {
+          if (currentBatchNmb != newDataArray[i].batch_label) {
             batchIndex++;
             currentBatchNmb = newDataArray[i].batch_label;
             dataArrayBatches.push(new Array());
             //console.log("DIFFERENT BATCH");
-          }
-          else
-          {
+          } else {
             //console.log("Same Batch");
           }
-  
+
           dataArrayBatches[batchIndex].push(newDataArray[i]);
         }
       }
 
       batchesContainer.innerHTML = "";
       addBatches(dataArrayBatches);
-  
+
       //** CLEAR THE ARRAY IF IT IS FULL */
       if (dataArray) {
         dataArray = [];
       }
-  
+
       //console.log(event.target);
       const lineSplit = reader.result.split(/\r?\n/);
       //console.log(lineSplit);
-  
+
       for (var i = 0; i < lineSplit.length; i++) {
         dataArray.push(lineSplit[i].split(","));
       }
@@ -949,7 +957,7 @@ upload_file.addEventListener('input', function()
       RESOURCE_LOADED = true;
       updateChart();
     };
-    
+
     reader.readAsText(this.files[0]);
   }
 });
@@ -957,14 +965,11 @@ upload_file.addEventListener('input', function()
 //** USED TO UPDATE THE CHART WITH THE CONTROLS */
 function updateChart(backward, index) {
   if (RESOURCE_LOADED) {
-    
     speedSlider.max = currentBatchArray.length;
     speedSlider.min = 1;
 
-    if(!index)
-    {
-      if(currentBatchArray.length >= 2)
-      {
+    if (!index) {
+      if (currentBatchArray.length >= 2) {
         if (animPlay) {
           if (dataTimeIndex < currentBatchArray.length - 1) {
             dataTimeIndex++;
@@ -974,7 +979,10 @@ function updateChart(backward, index) {
         } else {
           //** BACKWARDS IN TIMELINE */
           if (backward) {
-            if (dataTimeIndex < currentBatchArray.length - 1 && dataTimeIndex > 0) {
+            if (
+              dataTimeIndex < currentBatchArray.length - 1 &&
+              dataTimeIndex > 0
+            ) {
               dataTimeIndex--;
             } else if (dataTimeIndex == currentBatchArray.length - 1) {
               dataTimeIndex--;
@@ -991,22 +999,18 @@ function updateChart(backward, index) {
             }
           }
         }
-      }
-      else
-      {
+      } else {
         dataTimeIndex = 0;
       }
 
       speedSlider.value = dataTimeIndex + 1;
-    }
-    else
-    {
+    } else {
       dataTimeIndex = parseInt(index) - 1;
     }
-    
+
     var progress = (dataTimeIndex / (currentBatchArray.length - 1)) * 100;
     //console.log("PROGRESS: " + progress + " DATA INDEX: " + dataTimeIndex);
-    frameNumber.innerHTML = (dataTimeIndex + 1) + "/" + (currentBatchArray.length);
+    frameNumber.innerHTML = dataTimeIndex + 1 + "/" + currentBatchArray.length;
 
     //** VISIBLE LIGHT RAW */
     mainChart.data.datasets[13].data = [
@@ -1071,37 +1075,37 @@ function updateChart(backward, index) {
       mainChart.data.datasets[6].data[i] = {
         x: parseInt(calibrationArray_Visible[i * step].wavelength),
         y:
-        currentBatchArray[dataTimeIndex].V450_irradiance *
+          currentBatchArray[dataTimeIndex].V450_irradiance *
           parseFloat(calibrationArray_Visible[i * step].V450_power),
       };
       mainChart.data.datasets[7].data[i] = {
         x: parseInt(calibrationArray_Visible[i * step].wavelength),
         y:
-        currentBatchArray[dataTimeIndex].B500_irradiance *
+          currentBatchArray[dataTimeIndex].B500_irradiance *
           parseFloat(calibrationArray_Visible[i * step].B500_power),
       };
       mainChart.data.datasets[8].data[i] = {
         x: parseInt(calibrationArray_Visible[i * step].wavelength),
         y:
-        currentBatchArray[dataTimeIndex].G550_irradiance *
+          currentBatchArray[dataTimeIndex].G550_irradiance *
           parseFloat(calibrationArray_Visible[i * step].G550_power),
       };
       mainChart.data.datasets[9].data[i] = {
         x: parseInt(calibrationArray_Visible[i * step].wavelength),
         y:
-        currentBatchArray[dataTimeIndex].Y570_irradiance *
+          currentBatchArray[dataTimeIndex].Y570_irradiance *
           parseFloat(calibrationArray_Visible[i * step].Y570_power),
       };
       mainChart.data.datasets[10].data[i] = {
         x: parseInt(calibrationArray_Visible[i * step].wavelength),
         y:
-        currentBatchArray[dataTimeIndex].O600_irradiance *
+          currentBatchArray[dataTimeIndex].O600_irradiance *
           parseFloat(calibrationArray_Visible[i * step].O600_power),
       };
       mainChart.data.datasets[11].data[i] = {
         x: parseInt(calibrationArray_Visible[i * step].wavelength),
         y:
-        currentBatchArray[dataTimeIndex].R650_irradiance *
+          currentBatchArray[dataTimeIndex].R650_irradiance *
           parseFloat(calibrationArray_Visible[i * step].R650_power),
       };
     }
@@ -1110,52 +1114,49 @@ function updateChart(backward, index) {
       mainChart.data.datasets[0].data[i] = {
         x: parseInt(calibrationArray_Infrared[i * step].Lambda),
         y:
-        currentBatchArray[dataTimeIndex].nir610_irradiance *
+          currentBatchArray[dataTimeIndex].nir610_irradiance *
           parseFloat(calibrationArray_Infrared[i * step].nir610_power),
       };
       mainChart.data.datasets[1].data[i] = {
         x: parseInt(calibrationArray_Infrared[i * step].Lambda),
         y:
-        currentBatchArray[dataTimeIndex].nir680_irradiance *
+          currentBatchArray[dataTimeIndex].nir680_irradiance *
           parseFloat(calibrationArray_Infrared[i * step].nir680_power),
       };
       mainChart.data.datasets[2].data[i] = {
         x: parseInt(calibrationArray_Infrared[i * step].Lambda),
         y:
-        currentBatchArray[dataTimeIndex].nir730_irradiance *
+          currentBatchArray[dataTimeIndex].nir730_irradiance *
           parseFloat(calibrationArray_Infrared[i * step].nir730_power),
       };
       mainChart.data.datasets[3].data[i] = {
         x: parseInt(calibrationArray_Infrared[i * step].Lambda),
         y:
-        currentBatchArray[dataTimeIndex].nir760_irradiance *
+          currentBatchArray[dataTimeIndex].nir760_irradiance *
           parseFloat(calibrationArray_Infrared[i * step].nir760_power),
       };
       mainChart.data.datasets[4].data[i] = {
         x: parseInt(calibrationArray_Infrared[i * step].Lambda),
         y:
-        currentBatchArray[dataTimeIndex].nir810_irradiance *
+          currentBatchArray[dataTimeIndex].nir810_irradiance *
           parseFloat(calibrationArray_Infrared[i * step].nir810_power),
       };
       mainChart.data.datasets[5].data[i] = {
         x: parseInt(calibrationArray_Infrared[i * step].Lambda),
         y:
-        currentBatchArray[dataTimeIndex].nir860_irradiance *
+          currentBatchArray[dataTimeIndex].nir860_irradiance *
           parseFloat(calibrationArray_Infrared[i * step].nir860_power),
       };
     }
 
-    //** udpate NDVI */
+    //** UPDATE NDVI */
     for (let i = 0; i < currentBatchArray.length; i++) {
-      
       //** GRAB LAST VALUE OF ARRAY TO SET THE MAX TIMESTAMP OF CHART */
-      if(i == currentBatchArray.length - 1)
-      {
+      if (i == currentBatchArray.length - 1) {
         chart2.options.scales.x.max = currentBatchArray[i].timestamp;
       }
       //** GRAB FIRST VALUE OF ARRAY TO SET THE MIN TIMESTAMP OF CHART */
-      else if(i == 0)
-      {
+      else if (i == 0) {
         chart2.options.scales.x.min = currentBatchArray[i].timestamp;
       }
 
@@ -1165,6 +1166,42 @@ function updateChart(backward, index) {
         y: calculateNDVI(i),
       };
     }
+
+    //** UPDATE EXTRA INFO LABELS */
+
+    dateHeader_label.innerHTML =
+      currentBatchArray[dataTimeIndex].timestamp.substring(0, 4) +
+      "/" +
+      currentBatchArray[dataTimeIndex].timestamp.substring(4, 6) +
+      "/" +
+      currentBatchArray[dataTimeIndex].timestamp.substring(6, 8);
+
+    uid_label.innerHTML = "UID: " + currentBatchArray[dataTimeIndex].UID;
+
+    var string = currentBatchArray[dataTimeIndex].timestamp,
+      date = new Date(
+        string.replace(/(....)(..)(.....)(..)(.*)/, "$1-$2-$3:$4:$5")
+      );
+    console.log(date.toLocaleTimeString("en-US"));
+    var dateTime_time = date.toLocaleTimeString("en-US");
+
+    time_label.innerHTML = "time: " + dateTime_time;
+    airTemp_label.innerHTML =
+      "air_temp: " +
+      currentBatchArray[dataTimeIndex].air_temperature +
+      "&#8451";
+    surfaceTemp_label.innerHTML =
+      "surface_temp: " +
+      currentBatchArray[dataTimeIndex].surface_temperature +
+      "&#8451";
+    relativeHumidity_label.innerHTML =
+      "relative_humidity: " +
+      currentBatchArray[dataTimeIndex].relative_humidity +
+      "%";
+    batteryVoltage_label.innerHTML =
+      "battery_voltage: " +
+      currentBatchArray[dataTimeIndex].battery_voltage +
+      "V";
 
     mainChart.update();
     chart2.update();
@@ -1287,23 +1324,22 @@ function updateChartLabels() {
 function calculateNDVI(index) {
   var b1 = "nir810_irradiance";
   var b2 = "nir680_irradiance";
-  
+
   var ndvi =
-  (parseFloat(currentBatchArray[index][b1]) - parseFloat(currentBatchArray[index][b2])) 
-  /
-  (parseFloat(currentBatchArray[index][b1]) + parseFloat(currentBatchArray[index][b2]));
-  
+    (parseFloat(currentBatchArray[index][b1]) -
+      parseFloat(currentBatchArray[index][b2])) /
+    (parseFloat(currentBatchArray[index][b1]) +
+      parseFloat(currentBatchArray[index][b2]));
+
   return ndvi;
 }
 
 //READS MESSAGES BEING SENT THROUGH THE SERIAL PORT *//
 async function getSerialMessage() {
-
   clearTimeout(serialTimeout);
 
   serialTimeout = setTimeout(async function () {
-    if(deviceConnected)
-    {
+    if (deviceConnected) {
       var message = await serialScaleController.read();
       console.log(message);
       getSerialMessage();
@@ -1313,349 +1349,318 @@ async function getSerialMessage() {
   }, readTime);
 }
 
-function decipherSerialMessage(message)
-{
+function decipherSerialMessage(message) {
   let messageSplit = message.split(" ");
-  if(message.includes("paused"))
-  {
+  if (message.includes("paused")) {
     //console.log("PAUSED");
     paused = true;
-    if(!recording_live_label.classList.contains("pause"))
-    {
+    if (!recording_live_label.classList.contains("pause")) {
       recording_live_label.classList.toggle("pause");
       console.log("FIRE");
     }
   }
   //** IF THE FULL MESSAGE DIDN"T COME IN */
-  else if(message.length < 5)
-  {
-    if(message.includes('p') || message.includes('.'))
-    {
+  else if (message.length < 5) {
+    if (message.includes("p") || message.includes(".")) {
       paused = true;
-      if(!recording_live_label.classList.contains("pause"))
-      {
+      if (!recording_live_label.classList.contains("pause")) {
         recording_live_label.classList.toggle("pause");
         console.log("FIRE");
       }
     }
-  }
-  else
-  {
+  } else {
     //** SURFACE TEMP */
-    if(messageSplit.includes("surface_temp:"))
-    {
-      let surface_temp = messageSplit[messageSplit.indexOf("surface_temp:")+1];
+    if (messageSplit.includes("surface_temp:")) {
+      let surface_temp =
+        messageSplit[messageSplit.indexOf("surface_temp:") + 1];
       let surface_temp_float = parseFloat(surface_temp);
-      
-      if(!isNaN(surface_temp_float))
-      {
+
+      if (!isNaN(surface_temp_float)) {
         let surface_temp_string = "Surface: " + surface_temp_float + "C";
-        document.getElementById("surfaceTemp_label").innerHTML = surface_temp_string.replace(/ /g,'');
+        document.getElementById("surfaceTemp_label").innerHTML =
+          surface_temp_string.replace(/ /g, "");
       }
 
-      if(recording_live_label.classList.contains("pause"))
-      {
+      if (recording_live_label.classList.contains("pause")) {
         recording_live_label.classList.toggle("pause");
         console.log("FIRE");
       }
     }
     //** AIR TEMP */
-    if(messageSplit.includes("air_temp:"))
-    {
-      let airTemp = messageSplit[messageSplit.indexOf("air_temp:")+1];
+    if (messageSplit.includes("air_temp:")) {
+      let airTemp = messageSplit[messageSplit.indexOf("air_temp:") + 1];
 
-      if(!isNaN(parseFloat(airTemp)))
-      {
-        document.getElementById("airTemp_label").innerHTML = "Air: " + parseFloat(airTemp) + "C";
+      if (!isNaN(parseFloat(airTemp))) {
+        document.getElementById("airTemp_label").innerHTML =
+          "Air: " + parseFloat(airTemp) + "C";
       }
-
     }
     //** TIMESTAMP */
-    if(messageSplit.includes("hour:") && messageSplit.includes("min:") && messageSplit.includes("sec:"))
-    {
-      if(messageSplit.indexOf("hour:")+1 && messageSplit.indexOf("min:")+1 && messageSplit.indexOf("sec:")+1)
-      {
-        let hour = messageSplit[messageSplit.indexOf("hour:")+1];
-        let min = messageSplit[messageSplit.indexOf("min:")+1];
-        let sec = messageSplit[messageSplit.indexOf("sec:")+1];
+    if (
+      messageSplit.includes("hour:") &&
+      messageSplit.includes("min:") &&
+      messageSplit.includes("sec:")
+    ) {
+      if (
+        messageSplit.indexOf("hour:") + 1 &&
+        messageSplit.indexOf("min:") + 1 &&
+        messageSplit.indexOf("sec:") + 1
+      ) {
+        let hour = messageSplit[messageSplit.indexOf("hour:") + 1];
+        let min = messageSplit[messageSplit.indexOf("min:") + 1];
+        let sec = messageSplit[messageSplit.indexOf("sec:") + 1];
 
-        if(!isNaN(parseFloat(hour)) && !isNaN(parseFloat(min)) && !isNaN(parseFloat(sec)))
-        {
-          if(parseInt(hour) < 10)
-          {
+        if (
+          !isNaN(parseFloat(hour)) &&
+          !isNaN(parseFloat(min)) &&
+          !isNaN(parseFloat(sec))
+        ) {
+          if (parseInt(hour) < 10) {
             hour = "0" + hour.substring(0, hour.length - 1);
-          }
-          else
-          {
+          } else {
             hour = hour.substring(0, hour.length - 1);
           }
-          if(parseInt(min) < 10)
-          {
+          if (parseInt(min) < 10) {
             min = "0" + min.substring(0, min.length - 1);
-          }
-          else
-          {
+          } else {
             min = min.substring(0, min.length - 1);
           }
-          if(parseInt(sec) < 10)
-          {
+          if (parseInt(sec) < 10) {
             sec = "0" + sec.substring(0, sec.length - 1);
-          }
-          else
-          {
+          } else {
             sec = sec.substring(0, sec.length - 1);
           }
-  
-          document.getElementById("timestamp_label").innerHTML =  
-          hour + ":" 
-          + min + ":" 
-          + sec + "Z";
+
+          document.getElementById("timestamp_label").innerHTML =
+            hour + ":" + min + ":" + sec + "Z";
         }
       }
     }
     //** DATESTAMP */
-    if(messageSplit.includes("year:") && messageSplit.includes("month:") && messageSplit.includes("day:"))
-    {
-      if(messageSplit.indexOf("year:")+1 && messageSplit.indexOf("month:")+1 && messageSplit.indexOf("day:")+1)
-      {
-        let year = messageSplit[messageSplit.indexOf("year:")+1];
-        let month = messageSplit[messageSplit.indexOf("month:")+1];
-        let day = messageSplit[messageSplit.indexOf("day:")+1];
-        
-        if(!isNaN(parseInt(year)) && !isNaN(parseInt(year)) && !isNaN(parseInt(year)))
-        {
-          if(parseInt(year) < 10)
-          {
+    if (
+      messageSplit.includes("year:") &&
+      messageSplit.includes("month:") &&
+      messageSplit.includes("day:")
+    ) {
+      if (
+        messageSplit.indexOf("year:") + 1 &&
+        messageSplit.indexOf("month:") + 1 &&
+        messageSplit.indexOf("day:") + 1
+      ) {
+        let year = messageSplit[messageSplit.indexOf("year:") + 1];
+        let month = messageSplit[messageSplit.indexOf("month:") + 1];
+        let day = messageSplit[messageSplit.indexOf("day:") + 1];
+
+        if (
+          !isNaN(parseInt(year)) &&
+          !isNaN(parseInt(year)) &&
+          !isNaN(parseInt(year))
+        ) {
+          if (parseInt(year) < 10) {
             year = "0" + year.substring(0, year.length - 1);
-          }
-          else
-          {
+          } else {
             year = year.substring(0, year.length - 1);
           }
-          if(parseInt(month) < 10)
-          {
+          if (parseInt(month) < 10) {
             month = "0" + month.substring(0, month.length - 1);
-          }
-          else
-          {
+          } else {
             month = month.substring(0, month.length - 1);
           }
-          if(parseInt(day) < 10)
-          {
+          if (parseInt(day) < 10) {
             day = "0" + day.substring(0, day.length - 1);
-          }
-          else
-          {
+          } else {
             day = day.substring(0, day.length - 1);
           }
-  
-          document.getElementById("date_label").innerHTML =  
-          year + "-" 
-          + month + "-" 
-          + day;
+
+          document.getElementById("date_label").innerHTML =
+            year + "-" + month + "-" + day;
         }
       }
     }
-    if(messageSplit.includes("batch:"))
-    {
-      let batchNmb = messageSplit[messageSplit.indexOf("batch:")+1];
-      
-      if(!isNaN(parseFloat(batchNmb)))
-      {
-        document.getElementById("batchNmb_label").innerHTML = parseFloat(batchNmb);
+    if (messageSplit.includes("batch:")) {
+      let batchNmb = messageSplit[messageSplit.indexOf("batch:") + 1];
+
+      if (!isNaN(parseFloat(batchNmb))) {
+        document.getElementById("batchNmb_label").innerHTML =
+          parseFloat(batchNmb);
       }
     }
-    if(messageSplit.includes("UID:"))
-    {
-      let uid = messageSplit[messageSplit.indexOf("UID:")+1];
-      if(!isNaN(parseFloat(uid)))
-      {
-        document.getElementById("UID_label").innerHTML = "UID: " + parseFloat(uid);
+    if (messageSplit.includes("UID:")) {
+      let uid = messageSplit[messageSplit.indexOf("UID:") + 1];
+      if (!isNaN(parseFloat(uid))) {
+        document.getElementById("UID_label").innerHTML =
+          "UID: " + parseFloat(uid);
       }
     }
 
-    var v450_value, b500_value, g550_value, y570_value, o600_value, r650_value,
-    i610_value, i680_value, i730_value, i760_value, i810_value, i860_value = 0;
+    var v450_value,
+      b500_value,
+      g550_value,
+      y570_value,
+      o600_value,
+      r650_value,
+      i610_value,
+      i680_value,
+      i730_value,
+      i760_value,
+      i810_value,
+      i860_value = 0;
 
     //** UPDATE VISIBLE LIVE VALUES */
-    if(messageSplit.includes("v450:"))
-    {
-      let v450 = messageSplit[messageSplit.indexOf("v450:")+1];
+    if (messageSplit.includes("v450:")) {
+      let v450 = messageSplit[messageSplit.indexOf("v450:") + 1];
       v450_value = parseFloat(v450);
 
-      if(!isNaN(v450_value))
-      {
+      if (!isNaN(v450_value)) {
         document.getElementById("v450_label").innerHTML = "V450: " + v450_value;
-        liveChart.data.datasets[0].data[0] =  {
-            x: 450,
-            y: v450_value,
+        liveChart.data.datasets[0].data[0] = {
+          x: 450,
+          y: v450_value,
         };
         liveChart.update();
       }
     }
-    if(messageSplit.includes("b500:"))
-    {
-      let b500 = messageSplit[messageSplit.indexOf("b500:")+1];
+    if (messageSplit.includes("b500:")) {
+      let b500 = messageSplit[messageSplit.indexOf("b500:") + 1];
       b500_value = parseFloat(b500);
-      
-      if(!isNaN(b500_value))
-      {
+
+      if (!isNaN(b500_value)) {
         document.getElementById("b500_label").innerHTML = "B500: " + b500_value;
-        liveChart.data.datasets[0].data[1] =  {
-            x: 500,
-            y: b500_value,
+        liveChart.data.datasets[0].data[1] = {
+          x: 500,
+          y: b500_value,
         };
         liveChart.update();
       }
     }
-    if(messageSplit.includes("g550:"))
-    {
-      let g550 = messageSplit[messageSplit.indexOf("g550:")+1];
+    if (messageSplit.includes("g550:")) {
+      let g550 = messageSplit[messageSplit.indexOf("g550:") + 1];
       g550_value = parseFloat(g550);
 
-      if(!isNaN(g550_value))
-      {
+      if (!isNaN(g550_value)) {
         document.getElementById("g550_label").innerHTML = "G550: " + g550_value;
-        liveChart.data.datasets[0].data[2] =  {
-            x: 550,
-            y: g550_value,
+        liveChart.data.datasets[0].data[2] = {
+          x: 550,
+          y: g550_value,
         };
         liveChart.update();
       }
     }
-    if(messageSplit.includes("y570:"))
-    {
-      let y570 = messageSplit[messageSplit.indexOf("y570:")+1];
+    if (messageSplit.includes("y570:")) {
+      let y570 = messageSplit[messageSplit.indexOf("y570:") + 1];
       y570_value = parseFloat(y570);
 
-      if(!isNaN(y570_value))
-      {
+      if (!isNaN(y570_value)) {
         document.getElementById("y570_label").innerHTML = "Y570: " + y570_value;
-        liveChart.data.datasets[0].data[3] =  {
-            x: 570,
-            y: y570_value,
+        liveChart.data.datasets[0].data[3] = {
+          x: 570,
+          y: y570_value,
         };
         liveChart.update();
       }
     }
-    if(messageSplit.includes("o600:"))
-    {
-      let o600 = messageSplit[messageSplit.indexOf("o600:")+1];
+    if (messageSplit.includes("o600:")) {
+      let o600 = messageSplit[messageSplit.indexOf("o600:") + 1];
       o600_value = parseFloat(o600);
 
-      if(!isNaN(parseFloat(o600)))
-      {
+      if (!isNaN(parseFloat(o600))) {
         document.getElementById("o600_label").innerHTML = "O600: " + o600_value;
-        liveChart.data.datasets[0].data[4] =  {
-            x: 600,
-            y: o600_value,
+        liveChart.data.datasets[0].data[4] = {
+          x: 600,
+          y: o600_value,
         };
         liveChart.update();
       }
     }
-    if(messageSplit.includes("r650:"))
-    {
-      let r650 = messageSplit[messageSplit.indexOf("r650:")+1];
+    if (messageSplit.includes("r650:")) {
+      let r650 = messageSplit[messageSplit.indexOf("r650:") + 1];
       r650_value = parseFloat(r650);
 
-      if(!isNaN(r650_value))
-      {
+      if (!isNaN(r650_value)) {
         document.getElementById("r650_label").innerHTML = "R650: " + r650_value;
-        liveChart.data.datasets[0].data[5] =  {
-            x: 650,
-            y: r650_value,
+        liveChart.data.datasets[0].data[5] = {
+          x: 650,
+          y: r650_value,
         };
         liveChart.update();
       }
     }
 
     //** UPDATE INFRARED VALUES */
-    if(messageSplit.includes("610:"))
-    {
-      let i610 = messageSplit[messageSplit.indexOf("610:")+1];
+    if (messageSplit.includes("610:")) {
+      let i610 = messageSplit[messageSplit.indexOf("610:") + 1];
       i610_value = parseFloat(i610);
 
-      if(!isNaN(i610_value))
-      {
+      if (!isNaN(i610_value)) {
         document.getElementById("610_label").innerHTML = "610: " + i610_value;
-        liveChart.data.datasets[1].data[0] =  {
-            x: 610,
-            y: i610_value,
+        liveChart.data.datasets[1].data[0] = {
+          x: 610,
+          y: i610_value,
         };
         liveChart.update();
       }
     }
-    if(messageSplit.includes("680:"))
-    {
-      let i680 = messageSplit[messageSplit.indexOf("680:")+1];
+    if (messageSplit.includes("680:")) {
+      let i680 = messageSplit[messageSplit.indexOf("680:") + 1];
       i680_value = parseFloat(i680);
 
-      if(!isNaN(i680_value))
-      {
+      if (!isNaN(i680_value)) {
         document.getElementById("680_label").innerHTML = "680: " + i680_value;
-        liveChart.data.datasets[1].data[1] =  {
-            x: 680,
-            y: i680_value,
+        liveChart.data.datasets[1].data[1] = {
+          x: 680,
+          y: i680_value,
         };
         liveChart.update();
       }
     }
-    if(messageSplit.includes("730:"))
-    {
-      let i730 = messageSplit[messageSplit.indexOf("730:")+1];
+    if (messageSplit.includes("730:")) {
+      let i730 = messageSplit[messageSplit.indexOf("730:") + 1];
       i730_value = parseFloat(i730);
 
-      if(!isNaN(i730_value))
-      {
+      if (!isNaN(i730_value)) {
         document.getElementById("730_label").innerHTML = "730: " + i730_value;
-        liveChart.data.datasets[1].data[2] =  {
-            x: 730,
-            y: i730_value,
+        liveChart.data.datasets[1].data[2] = {
+          x: 730,
+          y: i730_value,
         };
         liveChart.update();
       }
     }
-    if(messageSplit.includes("760:"))
-    {
-      let i760 = messageSplit[messageSplit.indexOf("760:")+1];
+    if (messageSplit.includes("760:")) {
+      let i760 = messageSplit[messageSplit.indexOf("760:") + 1];
       i760_value = parseFloat(i760);
 
-      if(!isNaN(i760_value))
-      {
+      if (!isNaN(i760_value)) {
         document.getElementById("760_label").innerHTML = "760: " + i760_value;
-        liveChart.data.datasets[1].data[3] =  {
-            x: 760,
-            y: i760_value,
+        liveChart.data.datasets[1].data[3] = {
+          x: 760,
+          y: i760_value,
         };
         liveChart.update();
       }
     }
-    if(messageSplit.includes("810:"))
-    {
-      let i810 = messageSplit[messageSplit.indexOf("810:")+1];
+    if (messageSplit.includes("810:")) {
+      let i810 = messageSplit[messageSplit.indexOf("810:") + 1];
       i810_value = parseFloat(i810);
 
-      if(!isNaN(i810_value))
-      {
+      if (!isNaN(i810_value)) {
         document.getElementById("810_label").innerHTML = "810: " + i810_value;
-        liveChart.data.datasets[1].data[4] =  {
-            x: 810,
-            y: i810_value,
+        liveChart.data.datasets[1].data[4] = {
+          x: 810,
+          y: i810_value,
         };
         liveChart.update();
       }
     }
-    if(messageSplit.includes("860:"))
-    {
-      let i860 = messageSplit[messageSplit.indexOf("860:")+1];
+    if (messageSplit.includes("860:")) {
+      let i860 = messageSplit[messageSplit.indexOf("860:") + 1];
       i860_value = parseFloat(i860);
 
-      if(!isNaN(i860_value))
-      {
+      if (!isNaN(i860_value)) {
         document.getElementById("860_label").innerHTML = "860: " + i860_value;
-        liveChart.data.datasets[1].data[5] =  {
-            x: 860,
-            y: i860_value,
+        liveChart.data.datasets[1].data[5] = {
+          x: 860,
+          y: i860_value,
         };
         liveChart.update();
       }
@@ -1687,31 +1692,25 @@ function startTimer() {
 
     // The time left label is updated
     recordingText.innerHTML = "<b>" + formatTime(timePassed) + "</b>";
-    console.log("TICK: " + formatTime(timePassed));
+    // console.log("TICK: " + formatTime(timePassed));
   }, 1000);
 }
 
-function addBatches(dataArray)
-{
-  
-  for(var i = 0; i < dataArray.length; i++)
-  {
-    const div = document.createElement('div');
-    div.id = "batchNmb"
-    
+function addBatches(dataArray) {
+  for (var i = 0; i < dataArray.length; i++) {
+    const div = document.createElement("div");
+    div.id = "batchNmb";
+
     //** BATCH NUMBER CLICK FUNCTION */
     div.onclick = function () {
-      if(!this.classList.contains("selected"))
-      {
-        const batchGrid = document.querySelectorAll('[id=batchNmb]');
+      if (!this.classList.contains("selected")) {
+        const batchGrid = document.querySelectorAll("[id=batchNmb]");
 
         lastSliderValue = 0;
-        
-        batchGrid.forEach( (item) => 
-        {
-          if(item.classList.contains("selected"))
-          {
-            item.classList.toggle('selected');
+
+        batchGrid.forEach((item) => {
+          if (item.classList.contains("selected")) {
+            item.classList.toggle("selected");
           }
         });
 
@@ -1722,7 +1721,7 @@ function addBatches(dataArray)
 
         chart2.data.labels = Object.keys(data);
         chart2.data.datasets.forEach((dataset) => {
-            dataset.data = Object.values(data);
+          dataset.data = Object.values(data);
         });
 
         //chart2.data.datasets[0].data.pop();
@@ -1735,15 +1734,17 @@ function addBatches(dataArray)
     };
 
     //** SELECT THE FIRST BATCH IN THE LIST */
-    if(i == 0)
-    {
+    if (i == 0) {
       div.classList.toggle("selected");
       currentBatchArray = dataArray[0];
     }
 
-    var date = dataArray[i][0].timestamp.substr(0, 4) + "/" 
-            + dataArray[i][0].timestamp.substr(4, 2) + "/" + 
-              dataArray[i][0].timestamp.substr(9, 2);
+    var date =
+      dataArray[i][0].timestamp.substr(0, 4) +
+      "/" +
+      dataArray[i][0].timestamp.substr(4, 2) +
+      "/" +
+      dataArray[i][0].timestamp.substr(9, 2);
 
     div.innerHTML = dataArray[i][0].batch_label;
     div.index = i;
@@ -1752,20 +1753,19 @@ function addBatches(dataArray)
   }
 }
 
-function removeBatches(input)
-{
+function removeBatches(input) {
   document.getElementById("batchGrid").removeChild(input);
-  console.log("REMOVE: " + input)
+  console.log("REMOVE: " + input);
 }
 
-function saveCSV () {
+function saveCSV() {
   let csv = "";
   let headers = "";
   let firstHeader = true;
-  
+
   for (var index1 in currentBatchArray) {
     var row = currentBatchArray[index1];
-    
+
     // Row is the row of array at index "index1"
     var string = "";
 
@@ -1774,12 +1774,11 @@ function saveCSV () {
       // Traversing each element in the row
       var w = row[index];
 
-      if(firstHeader)
-      {
-        headers+= index + ',';
+      if (firstHeader) {
+        headers += index + ",";
         console.log(headers);
       }
-      
+
       // Adding the element at index "index" to the string
       string += w;
       if (index != row.length - 1) {
@@ -1789,12 +1788,12 @@ function saveCSV () {
     }
     string += "\n";
     firstHeader = false;
-    
+
     // Adding next line at the end
     csv += string;
     // adding the string to the final string "csv"
   }
-  
+
   //** ADDS HEADERS BASED ON THE HEADERS IN THE DATA.TXT*/
   csv = "data:text/csv;charset=utf-8," + headers + "\n" + csv;
   console.log(headers);
@@ -1803,7 +1802,7 @@ function saveCSV () {
   var link = document.createElement("a");
   link.setAttribute("href", encodedUri);
   link.setAttribute("download", "my_data.txt");
-  document.body.appendChild(link); 
+  document.body.appendChild(link);
   link.click();
 }
 
@@ -1811,11 +1810,9 @@ function saveCSV () {
 menuElement.addEventListener("click", function (ev) {
   ev.stopPropagation(); // prevent event from bubbling up to .container
   menuElement.classList.toggle("active");
-  
-  
-  if(uploadSidebar.classList.contains("active"))
-  {
-    uploadSidebar.classList.toggle("active");
+
+  if (controlSidebar.classList.contains("active")) {
+    controlSidebar.classList.toggle("active");
   }
 
   if (document.getElementById("calcGraph").classList.contains("active")) {
@@ -1828,13 +1825,11 @@ menuElement.addEventListener("click", function (ev) {
   if (ndvi_element.classList.contains("selected")) {
     ndvi_element.classList.toggle("selected");
   }
-  if(duplicateScreen.classList.contains("active"))
-  {
+  if (duplicateScreen.classList.contains("active")) {
     duplicateScreen.classList.toggle("active");
   }
 
-  if(rawData_element.classList.contains("active"))
-  {
+  if (rawData_element.classList.contains("active")) {
     rawData_element.classList.toggle("active");
     visible_filter_element.classList.toggle("active");
     infrared_filter_element.classList.toggle("active");
@@ -1846,28 +1841,23 @@ menuElement.addEventListener("click", function (ev) {
   RESOURCE_LOADED = false;
 });
 
-function updateGraphGrid()
-{
-  const myElement = document.getElementById('chartCard');
+function updateGraphGrid() {
+  const myElement = document.getElementById("chartCard");
   let counter = 0;
   for (const child of myElement.children) {
-    if(child.classList.contains("active"))
-    {
+    if (child.classList.contains("active")) {
       counter++;
     }
   }
 
-  if(counter < 2)
-  {
+  if (counter < 2) {
     myElement.style.gridTemplateColumns = "minmax(200px, 1fr)";
-  }
-  else if(counter == 2)
-  {
-    myElement.style.gridTemplateColumns = "minmax(200px, 1fr) minmax(200px, 1fr)";
-  }
-  else if(counter > 2)
-  {
-    myElement.style.gridTemplateColumns = "minmax(200px, 1fr) minmax(200px, 1fr)";
+  } else if (counter == 2) {
+    myElement.style.gridTemplateColumns =
+      "minmax(200px, 1fr) minmax(200px, 1fr)";
+  } else if (counter > 2) {
+    myElement.style.gridTemplateColumns =
+      "minmax(200px, 1fr) minmax(200px, 1fr)";
     myElement.style.gridTemplateRows = "minmax(200px, 1fr) minmax(200px, 1fr)";
   }
 
@@ -1934,7 +1924,7 @@ speedSlider.addEventListener("input", function (e) {
   // number to have a single decimal
 
   updateChart(false, speedSlider.value);
-  
+
   lastSliderValue = speedSlider.value;
   clearTimeout(animWaitFunc);
 
@@ -1965,11 +1955,14 @@ infrared_filter_element.addEventListener("click", function () {
   updateChartLabels();
 });
 
+download_label.addEventListener("click", function () {
+  saveCSV();
+});
+
 ndvi_element.addEventListener("click", function () {
   ndvi_element.classList.toggle("selected");
 
-  if (!ndvi_element.classList.contains("selected")) 
-  {
+  if (!ndvi_element.classList.contains("selected")) {
     mainChart.update();
   }
 
@@ -1986,7 +1979,7 @@ connectDevice.addEventListener("click", function () {
 });
 
 about_button.addEventListener("click", function () {
-  window.open("https://landsat.gsfc.nasa.gov/stella/", '_blank');
+  window.open("https://landsat.gsfc.nasa.gov/stella/", "_blank");
 });
 
 recordButton.addEventListener("click", function () {
@@ -2016,22 +2009,18 @@ navigator.serial.addEventListener("disconnect", (e) => {
   deviceConnected = false;
   alert("STELLA Disconnected");
 
-  if(duplicateScreen.classList.contains("active"))
-  {
+  if (duplicateScreen.classList.contains("active")) {
     document.getElementById("liveGraph").classList.toggle("active");
     duplicateScreen.classList.toggle("active");
     menuElement.classList.toggle("active");
     landing.classList.toggle("active");
   }
-
-
 });
 
 navigator.serial.getPorts().then((ports) => {
   // Initialize the list of available ports with `ports` on page load.
   console.log(ports);
 });
-
 
 document.getElementById("read").addEventListener("pointerdown", async () => {
   getSerialMessage();
@@ -2044,9 +2033,56 @@ window.addEventListener("mouseover", (event) => {
   document.getElementById("descriptionText").innerHTML = event.target.localName;
 });
 
+//** DRAGGABLE DIV */
+// Make the DIV element draggable:
+dragElement(controlSidebar);
+function dragElement(elmnt) {
+  var pos1 = 0,
+    pos2 = 0,
+    pos3 = 0,
+    pos4 = 0;
+  if (document.getElementById(elmnt.id + "header")) {
+    // if present, the header is where you move the DIV from:
+    document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
+  } else {
+    // otherwise, move the DIV from anywhere inside the DIV:
+    elmnt.onmousedown = dragMouseDown;
+  }
+
+  function dragMouseDown(e) {
+    e = e || window.event;
+    e.preventDefault();
+    // get the mouse cursor position at startup:
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    document.onmouseup = closeDragElement;
+    // call a function whenever the cursor moves:
+    document.onmousemove = elementDrag;
+  }
+
+  function elementDrag(e) {
+    e = e || window.event;
+    e.preventDefault();
+    // calculate the new cursor position:
+    pos1 = pos3 - e.clientX;
+    pos2 = pos4 - e.clientY;
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    // set the element's new position:
+    elmnt.style.top = elmnt.offsetTop - pos2 + "px";
+    elmnt.style.left = elmnt.offsetLeft - pos1 + "px";
+    console.log(elmnt.style.top);
+  }
+
+  function closeDragElement() {
+    // stop moving when mouse button is released:
+    document.onmouseup = null;
+    document.onmousemove = null;
+  }
+}
+
 update();
-function update()
-{
+function update() {
   mainChart.resize();
   chart2.resize();
   liveChart.resize();
