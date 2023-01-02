@@ -10,7 +10,7 @@
       href="https://fonts.googleapis.com/css2?family=Inter&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="../lib/w3.css" />
+    <!-- <link rel="stylesheet" href="../lib/w3.css" /> -->
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/icon?family=Material+Icons"
@@ -64,11 +64,11 @@
         </div>
 
         <div class="editContainer">
-          <div class="editIcon">
+          <!-- <div class="editIcon">
             <i class="material-icons w3-xlarge"> content_cut </i>
-          </div>
+          </div> -->
           <div class="editIcon" id="downloadBtn">
-            <i class="material-icons w3-xlarge"> download </i>
+            <i class="material-icons w3-large"> download </i>
           </div>
         </div>
 
@@ -167,7 +167,8 @@
     </div>
 
     <div class="controlSidebar" id="controlSidebar">
-      <h1 id="controlSidebarheader">graphs</h1>
+      <div class="controlSidebarheader" id="controlSidebarheader"></div>
+      <h1>graphs</h1>
       <h1>#batch</h1>
       <h1 id="dateHeader">2022/12/05</h1>
       <div class="batchGrid" id="graphs">
@@ -179,16 +180,15 @@
       </div>
       <div class="batchGrid" id="batchGrid"></div>
       <div class="extraInfo">
-        <div id="UID">UID: 3875</div>
         <div id="Time">time: 10:20:30:40</div>
         <div id="air_temp">air_temp: 23.7 C</div>
         <div id="surface_temp">surface_temp: 20.8 C</div>
         <div id="relative_humidity">relative_humidity: 3%</div>
         <div id="battery_voltage">battery_voltage: 3.81 V</div>
+        <div id="UID">UID: 3875</div>
       </div>
     </div>
 
-    <!-- <video autoplay controls></video> -->
     <script type="module" src="/main.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>

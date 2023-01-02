@@ -53,6 +53,7 @@ let recordingText = document.getElementById("recordingText");
 let readDeviceBtn = document.getElementById("read");
 let recording_live_label = document.getElementById("recording_label");
 let controlSidebar = document.getElementById("controlSidebar");
+let controlSidebarHeader = document.getElementById("controlSidebarheader");
 let batchesContainer = document.getElementById("batchGrid");
 let about_button = document.getElementById("about");
 let live_chartCard = document.getElementById("chartCardLive");
@@ -636,7 +637,7 @@ const config = {
         text: "STELLA",
       },
       background: {
-        color: "black",
+        color: "white",
       },
       legend: {
         display: true,
@@ -650,6 +651,34 @@ const config = {
             }
           },
         },
+      },
+      //** STYLING FOR DATA LABELS */
+      datalabels: {
+        formatter: (value, context) => {
+          if(context.datasetIndex === 12 || context.datasetIndex === 13)
+          {
+            return value.y;
+          }
+          else
+          {
+            return '';
+          }
+        },
+        color: 'white',
+        anchor: 'end',
+        align: 'top',
+        backgroundColor: function(context) {
+            if(context.datasetIndex === 12 || context.datasetIndex === 13) {
+                return 'rgba(0, 0, 0, 0.75)';
+            } else {
+                return 'rgba(0, 0, 0, 0)';
+            }
+        },
+        borderWidth: 0.5,
+        borderRadius: 5,
+        font:{
+          weight: 'bold',
+        }
       },
     },
     //** ADDS NM to the Y axis lables */
@@ -699,8 +728,7 @@ const config = {
       },
     },
   },
-  plugins: [plugin],
-  plugins: [ChartDataLabels],
+  plugins: [ChartDataLabels, plugin],
 };
 
 //** CONFIG SETUP FOR SECOND CHART */
@@ -770,11 +798,6 @@ const config2 = {
           },
         },
         type: "time",
-        // time: {
-        //   displayFormats: {
-        //       quarter: 'MMM YYYY'
-        //   }
-        // },
         min: "20211017T143405Z",
         max: "20221117T143405Z",
         parsing: false,
@@ -805,6 +828,23 @@ const config3 = {
       },
       legend: {
         display: true,
+      },
+      //** DATA LABEL STYLING */
+      datalabels: {
+        //** USED TO FORMAT DATA */
+        formatter: (value, context) => {
+          return value.y;
+        },
+        color: 'white',
+        anchor: 'end',
+        align: 'top',
+        backgroundColor: 'rgba(0, 0, 0, 0.75)',
+        borderColor: 'rgba(0, 0, 0, 0.75)',
+        borderWidth: 0.5,
+        borderRadius: 5,
+        font:{
+          weight: 'bold',
+        }
       },
     },
     //** ADDS NM to the Y axis lables */
@@ -854,7 +894,7 @@ const config3 = {
       },
     },
   },
-  plugins: [plugin],
+  plugins: [ChartDataLabels, plugin],
 };
 
 //** CHART INSTANTIATION */
@@ -1182,7 +1222,6 @@ function updateChart(backward, index) {
       date = new Date(
         string.replace(/(....)(..)(.....)(..)(.*)/, "$1-$2-$3:$4:$5")
       );
-    console.log(date.toLocaleTimeString("en-US"));
     var dateTime_time = date.toLocaleTimeString("en-US");
 
     time_label.innerHTML = "time: " + dateTime_time;
@@ -1776,7 +1815,6 @@ function saveCSV() {
 
       if (firstHeader) {
         headers += index + ",";
-        console.log(headers);
       }
 
       // Adding the element at index "index" to the string
@@ -1796,7 +1834,6 @@ function saveCSV() {
 
   //** ADDS HEADERS BASED ON THE HEADERS IN THE DATA.TXT*/
   csv = "data:text/csv;charset=utf-8," + headers + "\n" + csv;
-  console.log(headers);
 
   var encodedUri = encodeURI(csv);
   var link = document.createElement("a");
@@ -2033,53 +2070,24 @@ window.addEventListener("mouseover", (event) => {
   document.getElementById("descriptionText").innerHTML = event.target.localName;
 });
 
-//** DRAGGABLE DIV */
-// Make the DIV element draggable:
-dragElement(controlSidebar);
-function dragElement(elmnt) {
-  var pos1 = 0,
-    pos2 = 0,
-    pos3 = 0,
-    pos4 = 0;
-  if (document.getElementById(elmnt.id + "header")) {
-    // if present, the header is where you move the DIV from:
-    document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
-  } else {
-    // otherwise, move the DIV from anywhere inside the DIV:
-    elmnt.onmousedown = dragMouseDown;
-  }
-
-  function dragMouseDown(e) {
-    e = e || window.event;
-    e.preventDefault();
-    // get the mouse cursor position at startup:
-    pos3 = e.clientX;
-    pos4 = e.clientY;
-    document.onmouseup = closeDragElement;
-    // call a function whenever the cursor moves:
-    document.onmousemove = elementDrag;
-  }
-
-  function elementDrag(e) {
-    e = e || window.event;
-    e.preventDefault();
-    // calculate the new cursor position:
-    pos1 = pos3 - e.clientX;
-    pos2 = pos4 - e.clientY;
-    pos3 = e.clientX;
-    pos4 = e.clientY;
-    // set the element's new position:
-    elmnt.style.top = elmnt.offsetTop - pos2 + "px";
-    elmnt.style.left = elmnt.offsetLeft - pos1 + "px";
-    console.log(elmnt.style.top);
-  }
-
-  function closeDragElement() {
-    // stop moving when mouse button is released:
-    document.onmouseup = null;
-    document.onmousemove = null;
-  }
+//** CONTROLS DRAG FOR CONTROL SIDEBAR */
+const wrapper = controlSidebar,
+header = controlSidebarHeader;
+function onDrag({movementX:e,movementY:r}){
+  let t=window.getComputedStyle(wrapper),
+  a=parseInt(t.left),
+  o=parseInt(t.top);
+  wrapper.style.left=`${a+e}px`,
+  wrapper.style.top=`${o+r}px`
 }
+header.addEventListener("mousedown",()=>{
+  header.classList.add("active"),
+  header.addEventListener("mousemove",onDrag)
+}),
+document.addEventListener("mouseup",()=>{
+  header.classList.remove("active"),
+  header.removeEventListener("mousemove",onDrag)
+});
 
 update();
 function update() {
@@ -2091,8 +2099,3 @@ function update() {
     update();
   }, 1000);
 }
-
-// visible_filter_range.addEventListener("change", function(e){
-//   //step = visible_filter_range.value;
-//   //console.log(speedSlider.value);
-// });
