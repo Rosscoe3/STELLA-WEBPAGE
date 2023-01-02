@@ -46,7 +46,10 @@ let frameNumber = document.getElementById("frameNumber");
 let rawData_element = document.getElementById("rawData");
 let visible_filter_element = document.getElementById("visible_filter");
 let infrared_filter_element = document.getElementById("infrared_filter");
-let ndvi_element = document.getElementById("ndvi");
+let ndvi_element = document.getElementById("graphs_ndvi");
+let raw_element = document.getElementById("graphs_raw");
+
+
 let connectDevice = document.getElementById("plugInDevice");
 let recordButton = document.getElementById("recordButton");
 let recordingText = document.getElementById("recordingText");
@@ -59,6 +62,10 @@ let about_button = document.getElementById("about");
 let live_chartCard = document.getElementById("chartCardLive");
 
 let download_label = document.getElementById("downloadBtn");
+let raw_visibility_icon = document.getElementById("visibility_raw");
+let raw_labels_visible = true;
+let ndvi_visibility_icon = document.getElementById("visibility_ndvi");
+let ndvi_labels_visible = true;
 
 let dateHeader_label = document.getElementById("dateHeader");
 let uid_label = document.getElementById("UID");
@@ -655,7 +662,7 @@ const config = {
       //** STYLING FOR DATA LABELS */
       datalabels: {
         formatter: (value, context) => {
-          if(context.datasetIndex === 12 || context.datasetIndex === 13)
+          if(context.datasetIndex === 12 && raw_labels_visible|| context.datasetIndex === 13 && raw_labels_visible)
           {
             return value.y;
           }
@@ -668,7 +675,7 @@ const config = {
         anchor: 'end',
         align: 'top',
         backgroundColor: function(context) {
-            if(context.datasetIndex === 12 || context.datasetIndex === 13) {
+            if(context.datasetIndex === 12 && raw_labels_visible || context.datasetIndex === 13 && raw_labels_visible) {
                 return 'rgba(0, 0, 0, 0.75)';
             } else {
                 return 'rgba(0, 0, 0, 0)';
@@ -731,7 +738,7 @@ const config = {
   plugins: [ChartDataLabels, plugin],
 };
 
-//** CONFIG SETUP FOR SECOND CHART */
+//** CONFIG SETUP FOR NDVI CHART */
 const config2 = {
   type: "scatter",
   data: data2,
@@ -752,6 +759,34 @@ const config2 = {
       },
       legend: {
         display: false,
+      },
+      //** STYLING FOR DATA LABELS */
+      datalabels: {
+        formatter: (value) => {
+          if(ndvi_labels_visible)
+          {
+            return Math.round((value.y + Number.EPSILON) * 100) / 100;
+          }
+          else
+          {
+            return '';
+          }
+        },
+        color: 'white',
+        anchor: 'end',
+        align: 'top',
+        backgroundColor: function(context) {
+            if(ndvi_labels_visible) {
+                return 'rgba(0, 0, 0, 0.75)';
+            } else {
+                return 'rgba(0, 0, 0, 0)';
+            }
+        },
+        borderWidth: 0.5,
+        borderRadius: 5,
+        font:{
+          weight: 'bold',
+        }
       },
     },
     //** ADDS NM to the Y axis lables */
@@ -804,7 +839,7 @@ const config2 = {
       },
     },
   },
-  plugins: [plugin],
+  plugins: [ChartDataLabels, plugin],
 };
 
 //** CONFIG SETUP FOR LIVE CHART */
@@ -993,7 +1028,16 @@ upload_file.addEventListener("input", function () {
       for (var i = 0; i < lineSplit.length; i++) {
         dataArray.push(lineSplit[i].split(","));
       }
-      //console.log(dataArray);
+      
+      if(!raw_element.classList.contains("selected"))
+      {
+        raw_element.classList.toggle("selected");
+      }
+      if(ndvi_element.classList.contains("selected"))
+      {
+        ndvi_element.classList.toggle("selected");
+      }
+
       RESOURCE_LOADED = true;
       updateChart();
     };
@@ -1851,7 +1895,9 @@ menuElement.addEventListener("click", function (ev) {
   if (controlSidebar.classList.contains("active")) {
     controlSidebar.classList.toggle("active");
   }
-
+  if (!document.getElementById("mainGraph").classList.contains("active")) {
+    document.getElementById("mainGraph").classList.toggle("active");
+  }
   if (document.getElementById("calcGraph").classList.contains("active")) {
     document.getElementById("calcGraph").classList.toggle("active");
   }
@@ -1874,6 +1920,7 @@ menuElement.addEventListener("click", function (ev) {
     document.getElementById("mainGraph").classList.toggle("active");
   }
 
+  updateGraphGrid();
   landing.classList.toggle("active");
   RESOURCE_LOADED = false;
 });
@@ -1992,18 +2039,65 @@ infrared_filter_element.addEventListener("click", function () {
   updateChartLabels();
 });
 
+//** DATA LABEL's VISIBILITY TOGGLES */
+raw_visibility_icon.addEventListener("click", function () {
+  if(raw_visibility_icon.classList.contains("selected"))
+  {
+    raw_visibility_icon.classList.toggle("selected");
+    raw_labels_visible = true;
+    document.getElementById("visibleIcon_raw").innerHTML = "visibility";
+  }
+  else
+  {
+    raw_visibility_icon.classList.toggle("selected");
+    raw_labels_visible = false;
+    document.getElementById("visibleIcon_raw").innerHTML = "visibility_off";
+  }
+  mainChart.update();
+});
+ndvi_visibility_icon.addEventListener("click", function () {
+  if(ndvi_visibility_icon.classList.contains("selected"))
+  {
+    ndvi_visibility_icon.classList.toggle("selected");
+    ndvi_labels_visible = true;
+    document.getElementById("visibleIcon_ndvi").innerHTML = "visibility";
+  }
+  else
+  {
+    ndvi_visibility_icon.classList.toggle("selected");
+    ndvi_labels_visible = false;
+    document.getElementById("visibleIcon_ndvi").innerHTML = "visibility_off";
+  }
+  chart2.update();
+});
+
+//** DOWNLOAD BUTTON */
 download_label.addEventListener("click", function () {
   saveCSV();
 });
 
+//** GRAPH TOGGLE's IN CONTROL SIDEBAR */
 ndvi_element.addEventListener("click", function () {
   ndvi_element.classList.toggle("selected");
-
   if (!ndvi_element.classList.contains("selected")) {
     mainChart.update();
   }
 
   document.getElementById("calcGraph").classList.toggle("active");
+  updateGraphGrid();
+  updateChartLabels();
+
+  mainChart.resize();
+  chart2.resize();
+});
+
+raw_element.addEventListener("click", function () {
+  raw_element.classList.toggle("selected");
+  if (!raw_element.classList.contains("selected")) {
+    mainChart.update();
+  }
+
+  document.getElementById("mainGraph").classList.toggle("active");
   updateGraphGrid();
   updateChartLabels();
 

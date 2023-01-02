@@ -67,7 +67,10 @@
           <!-- <div class="editIcon">
             <i class="material-icons w3-xlarge"> content_cut </i>
           </div> -->
-          <div class="editIcon" id="downloadBtn">
+          <div class="editIcon" id="visibility_raw" title="Toggle data labels">
+            <i class="material-icons w3-large" id="visibleIcon_raw"> visibility </i>
+          </div>
+          <div class="editIcon" id="downloadBtn" title="Download batch data">
             <i class="material-icons w3-large"> download </i>
           </div>
         </div>
@@ -76,7 +79,7 @@
           <div
             class="dataMode selected"
             id="rawData"
-            title="Raw output from device"
+            title="Graph of RAW data from the device"
           >
             <b>Raw Data</b>
           </div>
@@ -104,6 +107,11 @@
       </div>
       <div class="chartBox" id="calcGraph">
         <canvas id="graph2"> </canvas>
+        <div class="editContainer">
+          <div class="editIcon" id="visibility_ndvi" title="Toggle data labels">
+            <i class="material-icons w3-large" id="visibleIcon_ndvi"> visibility </i>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -172,8 +180,8 @@
       <h1>#batch</h1>
       <h1 id="dateHeader">2022/12/05</h1>
       <div class="batchGrid" id="graphs">
-        <div class="selected" title="Raw output from device">RAW</div>
-        <div id="ndvi" title="An indicator of density and health in vegetation">
+        <div id="graphs_raw" class="selected" title="RAW data from the device">RAW</div>
+        <div id="graphs_ndvi" title="An indicator of density and health in vegetation">
           NDVI
         </div>
         <div>NIR</div>
