@@ -49,6 +49,9 @@ let infrared_filter_element = document.getElementById("infrared_filter");
 let ndvi_element = document.getElementById("graphs_ndvi");
 let raw_element = document.getElementById("graphs_raw");
 
+let raw_element_live = document.getElementById("graphs_raw_live");
+let duplicate_element_live = document.getElementById("graphs_duplicate_live");
+
 let connectDevice = document.getElementById("plugInDevice");
 let recordButton = document.getElementById("recordButton");
 let recordingText = document.getElementById("recordingText");
@@ -56,15 +59,21 @@ let readDeviceBtn = document.getElementById("read");
 let recording_live_label = document.getElementById("recording_label");
 let controlSidebar = document.getElementById("controlSidebar");
 let controlSidebarHeader = document.getElementById("controlSidebarheader");
+
+let controlSidebar_live = document.getElementById("controlSidebar_live");
+let controlSidebarHeader_live = document.getElementById("controlSidebarheader_live");
+
 let batchesContainer = document.getElementById("batchGrid");
 let about_button = document.getElementById("about");
 let live_chartCard = document.getElementById("chartCardLive");
 
+//** UPLOAD FILE BUTTONS */
 let download_label = document.getElementById("downloadBtn");
 let raw_visibility_icon = document.getElementById("visibility_raw");
 let raw_labels_visible = true;
 let ndvi_visibility_icon = document.getElementById("visibility_ndvi");
 let ndvi_labels_visible = true;
+let trim_icon = document.getElementById("trimIcon");
 
 let dateHeader_label = document.getElementById("dateHeader");
 let uid_label = document.getElementById("UID");
@@ -100,17 +109,19 @@ class SerialScaleController {
         deviceConnected = true;
         getSerialMessage();
 
+        controlSidebar_live.classList.toggle("active");
         menuElement.classList.toggle("active");
         landing.classList.toggle("active");
         duplicateScreen.classList.toggle("active");
         readDeviceBtn.classList.toggle("active");
 
-        if (
-          !document.getElementById("liveGraph").classList.contains("active")
-        ) {
+        if (!document.getElementById("liveGraph").classList.contains("active")) 
+        {
           document.getElementById("liveGraph").classList.toggle("active");
+          updateGraphGrid();
         }
-      } catch (err) {
+      } catch (err) 
+      {
         console.error("There was an error opening the serial port:", err);
 
         console.log(err == "DOMException: No port selected by the user.");
@@ -663,7 +674,7 @@ const config = {
         formatter: (value, context) => {
           if(context.datasetIndex === 12 && raw_labels_visible|| context.datasetIndex === 13 && raw_labels_visible)
           {
-            return value.y;
+            return value.y + "nm";
           }
           else
           {
@@ -867,7 +878,7 @@ const config3 = {
       datalabels: {
         //** USED TO FORMAT DATA */
         formatter: (value, context) => {
-          return value.y;
+          return value.y + "nm";
         },
         color: 'white',
         anchor: 'end',
@@ -1450,7 +1461,9 @@ function decipherSerialMessage(message) {
         console.log("FIRE");
       }
     }
-  } else {
+  } 
+  //** IF THE MESSAGE CONTAINS... */
+  else {
     //** SURFACE TEMP */
     if (messageSplit.includes("surface_temp:")) {
       let surface_temp =
@@ -1747,6 +1760,12 @@ function decipherSerialMessage(message) {
         liveChart.update();
       }
     }
+
+    //** UPDATE CONTROL SIDEBAR */
+    if(messageSplit.includes("batch:"))
+    {
+
+    }
   }
 }
 
@@ -1894,6 +1913,9 @@ menuElement.addEventListener("click", function (ev) {
   if (controlSidebar.classList.contains("active")) {
     controlSidebar.classList.toggle("active");
   }
+  if (controlSidebar_live.classList.contains("active")) {
+    controlSidebar_live.classList.toggle("active");
+  }
   if (document.getElementById("calcGraph").classList.contains("active")) {
     document.getElementById("calcGraph").classList.toggle("active");
   }
@@ -1925,14 +1947,27 @@ menuElement.addEventListener("click", function (ev) {
 });
 
 function updateGraphGrid() {
-  const myElement = document.getElementById("chartCard");
+  let myElement;
+
+  if(controlSidebar.classList.contains("active"))
+  {
+    myElement = document.getElementById("chartCard");
+  }
+  else if(controlSidebar_live.classList.contains("active"))
+  {
+    myElement = document.getElementById("chartCardLive");
+  }
+  else
+  {
+    myElement = document.getElementById("chartCard");
+  }
+  
   let counter = 0;
   for (const child of myElement.children) {
     if (child.classList.contains("active")) {
       counter++;
     }
   }
-
   if (counter < 2) {
     myElement.style.gridTemplateColumns = "minmax(200px, 1fr)";
   } else if (counter == 2) {
@@ -2070,6 +2105,11 @@ ndvi_visibility_icon.addEventListener("click", function () {
   chart2.update();
 });
 
+//** TRIM BUTTON FOR EDITING DATA */
+// trim_icon.addEventListener("click", function () {
+//   trim_icon.classList.toggle("selected");
+// });
+
 //** DOWNLOAD BUTTON */
 download_label.addEventListener("click", function () {
   saveCSV();
@@ -2104,8 +2144,43 @@ raw_element.addEventListener("click", function () {
   chart2.resize();
 });
 
+//** GRAPH TOGGLE's IN LIVE CONTROL SIDEBAR */
+raw_element_live.addEventListener("click", function () {
+  raw_element_live.classList.toggle("selected");
+  if (!raw_element_live.classList.contains("selected")) {
+    liveChart.update();
+  }
+
+  document.getElementById("liveGraph").classList.toggle("active");
+  updateGraphGrid();
+  updateChartLabels();
+
+  liveChart.resize();
+});
+
+duplicate_element_live.addEventListener("click", function () {
+  duplicate_element_live.classList.toggle("selected");
+  if (!duplicate_element_live.classList.contains("selected")) {
+    liveChart.update();
+  }
+
+  document.getElementById("duplicateScreen").classList.toggle("active");
+  updateGraphGrid();
+  updateChartLabels();
+  liveChart.resize();
+});
+
+//** HOMESCREEN BUTTON */
 connectDevice.addEventListener("click", function () {
   serialScaleController.init();
+  if(!raw_element_live.classList.contains("selected"))
+  {
+    raw_element_live.classList.toggle("selected");
+  }
+  if(!duplicate_element_live.classList.contains("selected"))
+  {
+    duplicate_element_live.classList.toggle("selected");
+  }
 });
 
 about_button.addEventListener("click", function () {
@@ -2144,6 +2219,7 @@ navigator.serial.addEventListener("disconnect", (e) => {
     duplicateScreen.classList.toggle("active");
     menuElement.classList.toggle("active");
     landing.classList.toggle("active");
+    controlSidebar_live.classList.toggle("active");
   }
 });
 
@@ -2163,9 +2239,8 @@ window.addEventListener("mouseover", (event) => {
   document.getElementById("descriptionText").innerHTML = event.target.localName;
 });
 
-//** CONTROLS DRAG FOR CONTROL SIDEBAR */
-const wrapper = controlSidebar,
-header = controlSidebarHeader;
+//** DRAG FUNCTION FOR CONTROL SIDEBAR"S */
+let wrapper = controlSidebar;
 function onDrag({movementX:e,movementY:r}){
   let t=window.getComputedStyle(wrapper),
   a=parseInt(t.left),
@@ -2173,13 +2248,35 @@ function onDrag({movementX:e,movementY:r}){
   wrapper.style.left=`${a+e}px`,
   wrapper.style.top=`${o+r}px`
 }
-header.addEventListener("mousedown",()=>{
-  header.classList.add("active"),
-  header.addEventListener("mousemove",onDrag)
+
+//** MOUSE EVENTS FOR CONTROL SIDEBARS */
+controlSidebarHeader.addEventListener("mousedown",()=>{
+  if(controlSidebar.classList.contains("active"))
+  {
+    wrapper = controlSidebar;
+    controlSidebarHeader.classList.add("active"),
+    controlSidebarHeader.addEventListener("mousemove",onDrag)
+  }
+}),
+controlSidebarHeader_live.addEventListener("mousedown",()=>{
+  if(controlSidebar_live.classList.contains("active"))
+  {
+    wrapper = controlSidebar_live;
+    controlSidebarHeader_live.classList.add("active"),
+    controlSidebarHeader_live.addEventListener("mousemove",onDrag)
+  }
 }),
 document.addEventListener("mouseup",()=>{
-  header.classList.remove("active"),
-  header.removeEventListener("mousemove",onDrag)
+  if(controlSidebar.classList.contains("active"))
+  {
+    controlSidebarHeader.classList.remove("active"),
+    controlSidebarHeader.removeEventListener("mousemove",onDrag)
+  }
+  if(controlSidebar_live.classList.contains("active"))
+  {
+    controlSidebarHeader_live.classList.remove("active"),
+    controlSidebarHeader_live.removeEventListener("mousemove",onDrag)
+  }
 });
 
 update();

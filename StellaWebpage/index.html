@@ -64,7 +64,7 @@
         </div>
 
         <div class="editContainer">
-          <!-- <div class="editIcon">
+          <!-- <div class="editIcon" id="trimIcon" title="Edit Current Batch">
             <i class="material-icons w3-xlarge"> content_cut </i>
           </div> -->
           <div class="editIcon" id="visibility_raw" title="Toggle data labels">
@@ -73,6 +73,7 @@
           <div class="editIcon" id="downloadBtn" title="Download batch data" style = "z-index:99">
             <i class="material-icons w3-large"> download </i>
           </div>
+          <!-- <input type="number" id="edit_start_input" name="quantity" min="1" max="5" value = "1"> -->
         </div>
 
         <div class="modeContainer">
@@ -141,9 +142,7 @@
     </div>
 
     <!-- LIVE DUPLICATE SCREEN-->
-    <div
-      class="chartCard"
-      id="chartCardLive"
+    <div class="chartCard" id="chartCardLive"
       style="grid-template-columns: minmax(200px, 1fr) minmax(200px, 1fr)"
     >
       <div class="chartBox" id="liveGraph">
@@ -184,7 +183,7 @@
         <div id="graphs_ndvi" title="An indicator of density and health in vegetation">
           NDVI
         </div>
-        <div>NIR</div>
+        <!-- <div>NIR</div> -->
       </div>
       <div class="batchGrid" id="batchGrid"></div>
       <div class="extraInfo">
@@ -195,6 +194,25 @@
         <div id="battery_voltage">battery_voltage: 3.81 V</div>
         <div id="UID">UID: 3875</div>
       </div>
+    </div>
+
+    <div class="controlSidebar" id="controlSidebar_live"
+    style= "grid-template-columns: minmax(1px, 1fr);
+    grid-template-rows: minmax(0.4fr, 1fr);
+    width: 10%; min-width: 5rem;">
+      <div class="controlSidebarheader" id="controlSidebarheader_live"></div>
+      <h1>graphs</h1>
+      <!-- <h1 id="dateHeader">2022/12/05</h1> -->
+      <div class="batchGrid" id="graphs">
+        <div id="graphs_raw_live" class="selected" title="RAW data from the device">RAW</div>
+        <div id="graphs_duplicate_live" class="selected" title="A duplicate screen from the device">
+          SCREEN
+        </div>
+      </div>
+      <!-- <div class="extraInfo">
+        <div id="batch_live">batch: 2</div>
+        <div id="UID_live">UID: 3875</div>
+      </div> -->
     </div>
 
     <script type="module" src="/main.js"></script>

@@ -662,23 +662,23 @@ h2 {
 
 .duplicateScreen {
   pointer-events: none;
-  position: relative;
+  position: absolute;
   justify-self: center;
   align-self: center;
   background-color: white;
   opacity: 0%;
 
-  outline: 1vh solid red;
+  outline: 0.5vh solid red;
 
   height: 30vw;
   width: 30vw;
 
   display: grid;
   grid-template-columns: 1fr 1fr;
-  transition: ease-in-out 0.25s;
 }
 
 .duplicateScreen.active {
+  position: relative;
   opacity: 100%;
   pointer-events: auto;
   transition: ease-in-out 0.25s;
@@ -695,7 +695,7 @@ h2 {
   position: absolute;
   right: 0%;
   text-align: end;
-  outline: 1vh solid red;
+  outline: 0.5vh solid red;
   margin: 0%;
   width: fit-content;
   height: fit-content;
@@ -734,8 +734,10 @@ h2 {
   position: absolute;
   bottom: 0%;
   left: 0%;
+  /* transform: translate(-50%, 0%); */
   background-color: white;
   margin: 1% 1%;
+  z-index:99;
 
   pointer-events: none;
   opacity: 0%;
@@ -749,12 +751,12 @@ h2 {
 
   outline: solid 2px rgba(0, 0, 0, 1);
   height: 15%;
-  width: 25%;
+  width: 35%;
 
   max-height: 30%;
   min-height: 15%;
   max-width: 50.5%;
-  min-width: 25%;
+  min-width: 20rem;
 }
 
 .controlSidebar.active {
@@ -773,10 +775,11 @@ h2 {
 
 .controlSidebarheader
 {
+  z-index:99;
   cursor: move;
   position: absolute;
   width: 100%;
-  height: 20%;
+  height: 15%;
   color: black;
   background-color: bla;
 }
@@ -838,7 +841,6 @@ h2 {
 
 .editContainer {
   position: absolute;
-  pointer-events: none;
   right: 0%;
   top: 102.5%;
   display: flex;
@@ -851,11 +853,22 @@ h2 {
   height: fit-content;
 }
 
+.editContainer input{
+  height: 1vw;
+  width: 2.25vw;
+  z-index: 99;
+}
+
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button {  
+   opacity: 1;
+}
+
 .editIcon {
   pointer-events: auto;
   margin: 0.1rem;
-  height: 1.5vw;
-  width: 1.5vw;
+  height: 1.25vw;
+  width: 1.25vw;
   padding: 0.5rem;
   left: 0%;
   bottom: 0%;
@@ -884,8 +897,7 @@ h2 {
 }
 
 .editIcon i{
+  position: absolute;
   text-align: center;
-  margin: 0%;
-  padding: 1%;
-  font-size: 1.5vw;
+  font-size: 1.25vw;
 }
