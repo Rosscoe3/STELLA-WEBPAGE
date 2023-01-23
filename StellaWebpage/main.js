@@ -49,6 +49,9 @@ let infrared_filter_element = document.getElementById("infrared_filter");
 let ndvi_element = document.getElementById("graphs_ndvi");
 let raw_element = document.getElementById("graphs_raw");
 
+//** HELP BUTTONS FOR PICKING GRAPHS */
+let help_icon_raw = document.getElementById("help_raw");
+
 let raw_element_live = document.getElementById("graphs_raw_live");
 let duplicate_element_live = document.getElementById("graphs_duplicate_live");
 
@@ -67,13 +70,25 @@ let batchesContainer = document.getElementById("batchGrid");
 let about_button = document.getElementById("about");
 let live_chartCard = document.getElementById("chartCardLive");
 
-//** UPLOAD FILE BUTTONS */
+//** UNDER GRAPH BUTTONS */
 let download_label = document.getElementById("downloadBtn");
 let raw_visibility_icon = document.getElementById("visibility_raw");
+let raw_visibility_live_icon = document.getElementById("visible_raw_live");
+
+let toggleUnitLabels_icon = document.getElementById("unitsToggle");
+let toggleUnitLabels_live_icon = document.getElementById("units_live_toggle");
+
 let raw_labels_visible = true;
 let ndvi_visibility_icon = document.getElementById("visibility_ndvi");
 let ndvi_labels_visible = true;
+
+//** EDIT RANGE */
 let trim_icon = document.getElementById("trimIcon");
+let editRange = document.getElementById("slider-distance");
+let editRange_start = document.getElementById("editRange_start");
+let editRange_end = document.getElementById("editRange_end");
+let editRange_thumb_start = document.getElementById("editRange_thumb_start");
+let editRange_thumb_end = document.getElementById("editRange_thumb_end");
 
 let dateHeader_label = document.getElementById("dateHeader");
 let uid_label = document.getElementById("UID");
@@ -85,6 +100,14 @@ let batteryVoltage_label = document.getElementById("battery_voltage");
 
 let visible_filter_range = document.getElementById("visibleFilter_range");
 let duplicateScreen = document.getElementById("duplicateScreen");
+
+let distanceInput = document.getElementById("distanceInput");
+
+//** PLAY PAUSE HTML ELEMENTS */
+const box = document.querySelector(".box");
+const arrowRight = document.getElementById("arrowRight");
+const arrowLeft = document.getElementById("arrowLeft");
+const playPauseContainer = document.getElementById("timelineContainer");
 
 //** SERIAL PORTS */
 class SerialScaleController {
@@ -208,6 +231,7 @@ var visibleStartData = [2.4, 2.6, 2.2, 1.9, 2.0, 1.8];
 var infraredStartData = [5.4, 5.0, 5.4, 6.5, 5.0, 4.3];
 var visible = [...Array(1)].map((e) => Array(1));
 var infrared = [...Array(1)].map((e) => Array(1));
+var calibration_array = [];
 
 //** RECORD VIDEO */
 var recordedElement = document.getElementById("graph");
@@ -651,7 +675,13 @@ const config = {
       },
       title: {
         display: true,
-        text: "STELLA",
+        text: "  UID: 8888",
+        align: "start",
+        font: {
+          weight: 'bold',
+          family: "'Inter', sans-serif",
+          size: 14,
+        },
       },
       background: {
         color: "white",
@@ -674,7 +704,18 @@ const config = {
         formatter: (value, context) => {
           if(context.datasetIndex === 12 && raw_labels_visible|| context.datasetIndex === 13 && raw_labels_visible)
           {
-            return value.y + "nm";
+            var output;
+
+            if(toggleUnitLabels_icon.classList.contains("selected"))
+            {
+              output = value.y;
+            }
+            else
+            {
+              output = value.y + "μW/cm²";
+            }
+
+            return output;
           }
           else
           {
@@ -878,13 +919,36 @@ const config3 = {
       datalabels: {
         //** USED TO FORMAT DATA */
         formatter: (value, context) => {
-          return value.y + "nm";
+          var output;
+
+          if(!raw_visibility_live_icon.classList.contains("selected"))
+          {
+            if(toggleUnitLabels_live_icon.classList.contains("selected"))
+            {
+              output = value.y;
+            }
+            else
+            {
+              output = value.y + "μW/cm²";
+            }
+
+            return output;
+          }
+          else
+          {
+            return '';
+          }
         },
         color: 'white',
         anchor: 'end',
         align: 'top',
-        backgroundColor: 'rgba(0, 0, 0, 0.75)',
-        borderColor: 'rgba(0, 0, 0, 0.75)',
+        backgroundColor: function(context) {
+            if(!raw_visibility_live_icon.classList.contains("selected")) {
+                return 'rgba(0, 0, 0, 0.75)';
+            } else {
+                return 'rgba(0, 0, 0, 0)';
+            }
+        },
         borderWidth: 0.5,
         borderRadius: 5,
         font:{
@@ -999,24 +1063,20 @@ upload_file.addEventListener("input", function () {
     //** WHEN THE DATA FILE IS LOADED */
     reader.onload = function (event) {
       newDataArray = csvToArray(reader.result);
-      let currentBatchNmb = newDataArray[0].batch_label;
+      let currentBatchNmb = newDataArray[0].batch_number;
       dataArrayBatches = [[]];
 
       let batchIndex = 0;
       for (let i = 0; i < newDataArray.length; i++) {
         //** MAKE SURE NONE OF THE DATA IS EMPTY */
-        if (
-          newDataArray[i].batch_label != "" &&
-          typeof newDataArray[i].batch_label !== "undefined"
-        ) {
+        if (newDataArray[i].batch_number != "" && typeof newDataArray[i].batch_number !== "undefined") 
+        {
           //** SORT THE DATA INTO DISTINCT BATCHES */
-          if (currentBatchNmb != newDataArray[i].batch_label) {
+          if (currentBatchNmb != newDataArray[i].batch_number) {
             batchIndex++;
-            currentBatchNmb = newDataArray[i].batch_label;
+            currentBatchNmb = newDataArray[i].batch_number;
             dataArrayBatches.push(new Array());
-            //console.log("DIFFERENT BATCH");
           } else {
-            //console.log("Same Batch");
           }
 
           dataArrayBatches[batchIndex].push(newDataArray[i]);
@@ -1800,12 +1860,13 @@ function startTimer() {
 function addBatches(dataArray) {
   for (var i = 0; i < dataArray.length; i++) {
     const div = document.createElement("div");
+    var div2 = document.createElement("div")
     div.id = "batchNmb";
 
     //** BATCH NUMBER CLICK FUNCTION */
     div.onclick = function () {
       if (!this.classList.contains("selected")) {
-        const batchGrid = document.querySelectorAll("[id=batchNmb]");
+        const batchGrid = document.getElementById("batchGrid").querySelectorAll("[id=batchNmb]");
 
         lastSliderValue = 0;
 
@@ -1817,8 +1878,39 @@ function addBatches(dataArray) {
 
         this.classList.toggle("selected");
         currentBatchArray = dataArray[this.index];
+        currentBatchArray.index = this.index;
         console.log(currentBatchArray);
+
+        //** SET EDIT RANGE BACK TO NORMAL */
+        var children = editRange_start.parentNode.childNodes[1].childNodes;
+        children[1].style.width = '0%';
+        children[5].style.left = '0%';
+        children[7].style.left = '0%';
+        children[3].style.width = '100%';
+        children[5].style.right = '0%';
+        children[9].style.left = '100%';
+        children[11].style.left='0%';
+        children[11].children[0].innerHTML = 1;
+        children[13].style.left='100%';
+        children[13].children[0].innerHTML = currentBatchArray.length;
+        editRange_start.max = currentBatchArray.length;
+        editRange_end.max = currentBatchArray.length;
+        editRange_start.value = 1;
+        editRange_end.value = currentBatchArray.length;
+
+        if(download_label.classList.contains("active"))
+        {
+          download_label.classList.toggle("active");
+        }
+
+        editRange_thumb_start.style.left = "0%";
+        editRange_thumb_end.style.left = "100%";
+
+
+        //** UPDATE CHART WITH UID */
+        mainChart.options.plugins.title.text = "  UID: " + currentBatchArray[0].UID;
         mainChart.update();
+
 
         chart2.data.labels = Object.keys(data);
         chart2.data.datasets.forEach((dataset) => {
@@ -1834,12 +1926,6 @@ function addBatches(dataArray) {
       }
     };
 
-    //** SELECT THE FIRST BATCH IN THE LIST */
-    if (i == 0) {
-      div.classList.toggle("selected");
-      currentBatchArray = dataArray[0];
-    }
-
     var date =
       dataArray[i][0].timestamp.substr(0, 4) +
       "/" +
@@ -1847,11 +1933,59 @@ function addBatches(dataArray) {
       "/" +
       dataArray[i][0].timestamp.substr(9, 2);
 
-    div.innerHTML = dataArray[i][0].batch_label;
+    div.innerHTML = dataArray[i][0].batch_number;
     div.index = i;
     div.title = date;
+
+    var div2 = div.cloneNode(true);
+    div2.index = i;
+
+    //** CLICK FUNCTIONALITY FOR CALIBRATION BATCH SELECTION*/
+    div2.onclick = function () {
+      if (!this.classList.contains("selected")) {
+        console.log(this.parentNode.id);
+        const batchGrid = document.getElementById("calibration_batch_grid").querySelectorAll("[id=batchNmb]");
+
+        batchGrid.forEach((item) => {
+          if (item.classList.contains("selected")) {
+            item.classList.toggle("selected");
+          }
+        });
+
+        this.classList.toggle("selected");
+        let calibrationArray = dataArrayBatches[this.index];
+
+        console.log(calibrationArray);
+
+        averageCalibrationArray(calibrationArray);
+      }
+    };
+
+    //** SELECT THE FIRST BATCH IN THE LIST ON INITIALIZATION*/
+    if (i == 0) {
+      div.classList.toggle("selected");
+      currentBatchArray = dataArray[0];
+      currentBatchArray.index = 0;
+
+      //** INIT EDITING DATA */
+      var children = editRange_start.parentNode.childNodes[1].childNodes;
+      children[1].style.width = '0%';
+      children[5].style.left = '0%';
+      children[7].style.left = '0%';
+      children[3].style.width = '100%';
+      children[5].style.right = '0%';
+      children[9].style.left = '100%';
+      editRange_start.max = currentBatchArray.length;
+      editRange_end.max = currentBatchArray.length;
+      editRange_start.value = 1;
+      editRange_end.value = currentBatchArray.length;
+    }
+
+    document.getElementById("calibration_batch_grid").appendChild(div2);
     document.getElementById("batchGrid").appendChild(div);
   }
+  //** UDPATE UID ON CHART TITLE AT BATCH INIT */
+  mainChart.options.plugins.title.text = "  UID: " + currentBatchArray[0].UID;
 }
 
 function removeBatches(input) {
@@ -1863,8 +1997,11 @@ function saveCSV() {
   let csv = "";
   let headers = "";
   let firstHeader = true;
+  console.log("START: " + editRange_start.value + ", END: " + editRange_end.value);
 
-  for (var index1 in currentBatchArray) {
+  var saveArray = currentBatchArray.slice(editRange_start.value-1, editRange_end.value);
+
+  for (var index1 in saveArray) {
     var row = currentBatchArray[index1];
 
     // Row is the row of array at index "index1"
@@ -1903,6 +2040,136 @@ function saveCSV() {
   link.setAttribute("download", "my_data.txt");
   document.body.appendChild(link);
   link.click();
+}
+
+//** CALCULATES ALL IRRADIANCE AVERAGES FOR THE CALIBRATION BATCH */
+function averageCalibrationArray(cal_array)
+{
+  let average_450nm = 0,
+  average_500nm = 0,
+  average_550nm = 0,
+  average_570nm = 0,
+  average_600nm = 0,
+  average_650nm = 0,
+  average_610nm = 0,
+  average_680nm = 0,
+  average_730nm = 0,
+  average_760nm = 0,
+  average_810nm = 0,
+  average_860nm = 0;
+
+  for(let i = 0; i < cal_array.length; i++)
+  {
+    average_450nm += parseFloat(cal_array[i].V450_irradiance);
+    average_500nm += parseFloat(cal_array[i].B500_irradiance);
+    average_550nm += parseFloat(cal_array[i].G550_irradiance);
+    average_570nm += parseFloat(cal_array[i].Y570_irradiance);
+    average_600nm += parseFloat(cal_array[i].O600_irradiance);
+    average_650nm += parseFloat(cal_array[i].R650_irradiance);
+    average_610nm += parseFloat(cal_array[i].nir610_irradiance);
+    average_680nm += parseFloat(cal_array[i].nir680_irradiance);
+    average_730nm += parseFloat(cal_array[i].nir730_irradiance);
+    average_760nm += parseFloat(cal_array[i].nir760_irradiance);
+    average_810nm += parseFloat(cal_array[i].nir810_irradiance);
+    average_860nm += parseFloat(cal_array[i].nir860_irradiance);
+  }
+
+  //** DIVIDE ALL BY LENGTH OF ARRAY TO GET AVERAGE*/
+  average_450nm = average_450nm/cal_array.length;
+  average_500nm = average_500nm/cal_array.length;
+  average_550nm = average_550nm/cal_array.length;
+  average_570nm = average_570nm/cal_array.length;
+  average_600nm = average_600nm/cal_array.length;
+  average_650nm = average_650nm/cal_array.length;
+  average_610nm = average_610nm/cal_array.length;
+  average_680nm = average_680nm/cal_array.length;
+  average_730nm = average_730nm/cal_array.length;
+  average_760nm = average_760nm/cal_array.length;
+  average_810nm = average_810nm/cal_array.length;
+  average_860nm = average_860nm/cal_array.length;
+
+  console.log("450nm average: " + average_450nm);
+  console.log("500nm average: " + average_500nm);
+  console.log("550nm average: " + average_550nm);
+  console.log("570nm average: " + average_570nm);
+  console.log("600nm average: " + average_600nm);
+  console.log("650nm average: " + average_650nm);
+
+  console.log("610nm average: " + average_610nm);
+  console.log("680nm average: " + average_680nm);
+  console.log("730nm average: " + average_730nm);
+  console.log("760nm average: " + average_760nm);
+  console.log("810nm average: " + average_810nm);
+  console.log("860nm average: " + average_860nm);
+
+  calibration_array.V450_average_irradiance = average_450nm;
+  calibration_array.B500_average_irradiance = average_500nm;
+  calibration_array.G550_average_irradiance = average_550nm;
+  calibration_array.Y570_average_irradiance = average_570nm;
+  calibration_array.O600_average_irradiance = average_600nm;
+  calibration_array.R650_average_irradiance = average_650nm;
+
+  calibration_array.nir610_average_irradiance = average_610nm;
+  calibration_array.nir680_average_irradiance = average_680nm;
+  calibration_array.nir730_average_irradiance = average_730nm;
+  calibration_array.nir760_average_irradiance = average_760nm;
+  calibration_array.nir810_average_irradiance = average_810nm;
+  calibration_array.nir860_average_irradiance = average_860nm;
+  
+  console.log(calibration_array);
+  //average_450nm = average_450nm/parseFloat(calibration_array.length);
+
+  convertToReflectance();
+}
+
+function convertToReflectance()
+{
+  var NIRV_Array = [];
+  
+  let FOV = 40;
+  let distance = distanceInput.value;
+  
+  //** radius = (tan(FOV/2)) * 10 */
+  let radius = (getTanFromDegrees(FOV/2)) * distance;
+  
+  //** area = PI * Radius^2 */
+  let area = Math.PI * (Math.pow(radius, 2));
+
+  console.log(currentBatchArray);
+
+  for(let i = 0; i < currentBatchArray.length; i++)
+  {
+    //** radiance = irradiance * distance²/Area */
+    let radiance_680nm = currentBatchArray[i].nir680_irradiance * ((Math.pow(distance, 2))/area);
+    let radiance_810nm = currentBatchArray[i].nir810_irradiance * ((Math.pow(distance, 2))/area);
+    let radiance_680nm_calibration = calibration_array.nir680_average_irradiance * ((Math.pow(distance, 2))/area);
+    let radiance_810nm_calibration = calibration_array.nir810_average_irradiance * ((Math.pow(distance, 2))/area);
+  
+    //** Reflectance = Radiance from the plant / Radiance from the white reference */
+    let reflectance_680nm = radiance_680nm/radiance_680nm_calibration;
+    let reflectance_810nm = radiance_810nm/radiance_810nm_calibration;
+  
+    //** NIRv Calculation */
+    let NIRv = ((reflectance_810nm - reflectance_680nm)/(reflectance_680nm + reflectance_810nm)) * reflectance_810nm;
+
+    NIRV_Array[i] = NIRv;
+    console.log("distance: " + distance);
+    console.log("radius: " + radius);
+    console.log("area: " + area);
+    console.log("680 Calibration Radiance: " + radiance_680nm_calibration);
+    console.log("810 Calibration Radiance: " + radiance_810nm_calibration);
+    console.log("680 Radiance: " + radiance_680nm);
+    console.log("810 Radiance: " + radiance_810nm);
+    console.log("680 Reflectance: " + reflectance_680nm);
+    console.log("810 Reflectance: " + reflectance_810nm);
+    console.log("NIRv: " + NIRv);
+  }
+
+  console.log(NIRV_Array);
+}
+
+function getTanFromDegrees(degrees) {
+  return Math.tan(degrees * Math.PI / 180);
 }
 
 //** CLICK EVENT FOR UPLOAD NEW BUTTON */
@@ -1983,7 +2250,6 @@ function updateGraphGrid() {
 }
 
 //** CLICK EVENT FOR THE PLAY / PAUSE BUTTON */
-const box = document.querySelector(".box");
 box.addEventListener("click", (e) => {
   e.target.classList.toggle("pause");
 
@@ -1997,7 +2263,6 @@ box.addEventListener("click", (e) => {
 });
 
 //** CLICK EVENT FOR RIGHT ARROW BUTTON */
-const arrowRight = document.getElementById("arrowRight");
 arrowRight.addEventListener("click", (e) => {
   if (animPlay) {
     animPlay = false;
@@ -2009,7 +2274,6 @@ arrowRight.addEventListener("click", (e) => {
 });
 
 //** CLICK EVENT FOR LEFT ARROW BUTTON */
-const arrowLeft = document.getElementById("arrowLeft");
 arrowLeft.addEventListener("click", (e) => {
   console.log("Left Button");
 
@@ -2105,14 +2369,120 @@ ndvi_visibility_icon.addEventListener("click", function () {
   chart2.update();
 });
 
+raw_visibility_live_icon.addEventListener("click", function () {
+  if(raw_visibility_live_icon.classList.contains("selected"))
+  {
+    raw_visibility_live_icon.classList.toggle("selected");
+    document.getElementById("visibleIcon_raw_live").innerHTML = "visibility";
+  }
+  else
+  {
+    raw_visibility_live_icon.classList.toggle("selected");
+    document.getElementById("visibleIcon_raw_live").innerHTML = "visibility_off";
+  }
+  liveChart.update();
+});
+
+//** TOGGLE UNIT LABELS */
+toggleUnitLabels_icon.addEventListener("click", function () {
+  if(toggleUnitLabels_icon.classList.contains("selected"))
+  {
+    toggleUnitLabels_icon.classList.toggle("selected");
+  }
+  else
+  {
+    toggleUnitLabels_icon.classList.toggle("selected");
+  }
+  mainChart.update();
+});
+
+toggleUnitLabels_live_icon.addEventListener("click", function () {
+  if(toggleUnitLabels_live_icon.classList.contains("selected"))
+  {
+    toggleUnitLabels_live_icon.classList.toggle("selected");
+  }
+  else
+  {
+    toggleUnitLabels_live_icon.classList.toggle("selected");
+  }
+  liveChart.update();
+});
+
+//** HELP ICON's */
+help_icon_raw.addEventListener("click", function (e) {
+  e.stopPropagation();
+  console.log("HELP");
+});
+
 //** TRIM BUTTON FOR EDITING DATA */
-// trim_icon.addEventListener("click", function () {
-//   trim_icon.classList.toggle("selected");
-// });
+trim_icon.addEventListener("click", function () {
+  trim_icon.classList.toggle("selected");
+  editRange.classList.toggle("active");
+  playPauseContainer.classList.toggle("active");
+  arrowRight.classList.toggle("active");
+  arrowLeft.classList.toggle("active");
+
+  //** PAUSE THE TIMELINE PLAY BUTTON */
+  if(box.classList.contains("pause"))
+  {
+    box.classList.toggle("pause");
+  }
+  animPlay = false;
+  clearTimeout(animWaitFunc);
+});
 
 //** DOWNLOAD BUTTON */
 download_label.addEventListener("click", function () {
   saveCSV();
+});
+
+//** DOUBLE RANGE SLIDERS FOR EDITING */
+editRange_start.addEventListener("input" , function () {
+  
+  //** GRABS THE VALUE, MAKE SURE ITS NOT CROSSING THE OTHER RANGE'S BOUNDRY, AND CONVERTS IT INTO A FACTOR OF 100 */
+  this.value=Math.min(this.value,this.parentNode.childNodes[5].value-1);
+  var value=(100/(parseInt(this.max)-parseInt(this.min)))*parseInt(this.value)-(100/(parseInt(this.max)-parseInt(this.min)))*parseInt(this.min); 
+  
+  //** GRAB CHILDREN HTML ELEMENTS */
+  var children = this.parentNode.childNodes[1].childNodes;
+  children[1].style.width=value+'%';
+  children[5].style.left=value+'%';
+  children[7].style.left=value+'%';
+  children[11].style.left=value+'%';
+  children[11].children[0].innerHTML = this.value;
+  console.log(this.value + "START BUTTON");
+
+  if(!download_label.classList.contains("active"))
+  {
+    download_label.classList.toggle("active");
+  }
+
+  //** UPDATES THE CHART AS WELL */
+  updateChart(false, this.value);
+});
+
+editRange_end.addEventListener("input" , function () 
+{
+  this.value=Math.max(this.value,this.parentNode.childNodes[3].value-(-1));
+  var value=(100/(parseInt(this.max)-parseInt(this.min)))*parseInt(this.value)-(100/(parseInt(this.max)-parseInt(this.min)))*parseInt(this.min);
+  var children = this.parentNode.childNodes[1].childNodes;
+  value = parseInt(value);
+  children[3].style.width=(100-value)+'%';
+    //** CONTROLS INSIDE SPAN OF END RANGE **//
+  children[5].style.right=(100-value)+'%';
+    //** CONTROLS END CIRCLE **//
+  children[9].style.left=value+'%';
+  children[13].style.left=value+'%';
+  children[13].children[0].innerHTML = this.value;
+  console.log(this.value + "END");
+
+  if(!download_label.classList.contains("active"))
+  {
+    download_label.classList.toggle("active");
+  }
+
+  //** UPDATES THE CHART AS WELL */
+  updateChart(false, this.value);
 });
 
 //** GRAPH TOGGLE's IN CONTROL SIDEBAR */
@@ -2250,7 +2620,8 @@ function onDrag({movementX:e,movementY:r}){
 }
 
 //** MOUSE EVENTS FOR CONTROL SIDEBARS */
-controlSidebarHeader.addEventListener("mousedown",()=>{
+controlSidebarHeader.addEventListener("mousedown",(e)=>{
+  e.stopPropagation();
   if(controlSidebar.classList.contains("active"))
   {
     wrapper = controlSidebar;

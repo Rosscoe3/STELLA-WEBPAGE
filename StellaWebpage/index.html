@@ -27,7 +27,7 @@
           <input
             type="file"
             id="upload_file"
-            accept=".txt"
+            accept=".txt, .csv"
             onclick="this.value=null;"
           />
           upload_file
@@ -43,7 +43,7 @@
           <div id="canvasBG"></div>
         </canvas>
         <div class="boxContainer">
-          <div class="slidecontainer">
+          <div class="timelineContainer active" id = "timelineContainer">
             <input
               type="range"
               min="1"
@@ -56,22 +56,44 @@
               <div class="track-inner"></div>
             </div>
             <div class="box center pause" id="playPauseBtn"></div>
-            <div class="frameNumber" id="frameNumber">1/100</div>
             <!-- <div class="frameNumber" id="timeStamp" style ="left: 0%">1/100</div> -->
           </div>
-          <div class="arrow right" id="arrowRight"></div>
-          <div class="arrow left" id="arrowLeft"></div>
+          <div class="arrow right active" id="arrowRight"></div>
+          <div class="arrow left active" id="arrowLeft"></div>
+          <!-- DOUBLE SIDED SLIDER -->
+          <div slider id="slider-distance">
+            <div>
+              <div inverse-left></div>
+              <div inverse-right></div>
+              <div range style="left:0%;right:0%;"></div>
+              <span thumb id="editRange_thumb_start" style="left:0%;"></span>
+              <span thumb id="editRange_thumb_end" style="left:100%;"></span>
+              <div sign style="left:0%;">
+                <span id="value">1</span>
+              </div>
+              <div sign style="left:100%;">
+                <span id="value">4</span>
+              </div>
+            </div>
+            <input type="range" id="editRange_start" tabindex="0" value="1" max="13" min="1" step="1"/>
+            <input type="range" id="editRange_end" tabindex="0" value="13" max="13" min="1" step="1"/>
+          </div>
+
+          <div class="frameNumber" id="frameNumber">1/100</div>
         </div>
 
         <div class="editContainer">
-          <!-- <div class="editIcon" id="trimIcon" title="Edit Current Batch">
-            <i class="material-icons w3-xlarge"> content_cut </i>
-          </div> -->
-          <div class="editIcon" id="visibility_raw" title="Toggle data labels">
-            <i class="material-icons w3-large" id="visibleIcon_raw"> visibility </i>
-          </div>
           <div class="editIcon" id="downloadBtn" title="Download batch data" style = "z-index:99">
             <i class="material-icons w3-large"> download </i>
+          </div>
+          <div class="editIcon active" id="trimIcon" title="Edit Current Batch">
+            <i class="material-icons w3-xlarge"> content_cut </i>
+          </div>
+          <div class="editIcon active" id="unitsToggle" title="Toggle unit labels" style = "z-index:99">
+            <i class="material-icons w3-large"> equalizer </i>
+          </div>
+          <div class="editIcon active" id="visibility_raw" title="Toggle data labels" style = "z-index:99">
+            <i class="material-icons w3-large" id="visibleIcon_raw"> visibility </i>
           </div>
           <!-- <input type="number" id="edit_start_input" name="quantity" min="1" max="5" value = "1"> -->
         </div>
@@ -109,7 +131,7 @@
       <div class="chartBox" id="calcGraph">
         <canvas id="graph2"> </canvas>
         <div class="editContainer">
-          <div class="editIcon" id="visibility_ndvi" title="Toggle data labels">
+          <div class="editIcon active" id="visibility_ndvi" title="Toggle data labels">
             <i class="material-icons w3-large" id="visibleIcon_ndvi"> visibility </i>
           </div>
         </div>
@@ -147,6 +169,15 @@
     >
       <div class="chartBox" id="liveGraph">
         <canvas id="graph3"> </canvas>
+        <div class="editContainer">
+          <div class="editIcon active" id="units_live_toggle" title="Toggle unit labels" style = "z-index:99">
+            <i class="material-icons w3-large"> equalizer </i>
+          </div>
+          <div class="editIcon active" id="visible_raw_live" title="Toggle data labels" style = "z-index:99">
+            <i class="material-icons w3-large" id="visibleIcon_raw_live"> visibility </i>
+          </div>
+          <!-- <input type="number" id="edit_start_input" name="quantity" min="1" max="5" value = "1"> -->
+        </div>
       </div>
       <div class="duplicateScreen" id="duplicateScreen">
         <div id="batchNmb_label" class="batchNmb">0.9</div>
@@ -178,8 +209,12 @@
       <h1>graphs</h1>
       <h1>#batch</h1>
       <h1 id="dateHeader">2022/12/05</h1>
+      <h1 style="font-size: 100%;">distance(cm):</h1>
       <div class="batchGrid" id="graphs">
-        <div id="graphs_raw" class="selected" title="RAW data from the device">RAW</div>
+        <div id="graphs_raw" class="indices selected" title="RAW data from the device">
+          <i class="material-icons w3-large" id="help_raw">help_outline</i>
+          <div>RAW</div>
+        </div>
         <div id="graphs_ndvi" title="An indicator of density and health in vegetation">
           NDVI
         </div>
@@ -194,6 +229,16 @@
         <div id="battery_voltage">battery_voltage: 3.81 V</div>
         <div id="UID">UID: 3875</div>
       </div>
+      <div class="userInputContainer">
+        <input type="number" id = "distanceInput" value="1" step="0.1" min="0">
+        <h1>calibration batch:</h1>
+        <div class="batchGrid" id = "calibration_batch_grid">
+        </div>
+      </div>
+
+      <!-- <div class="fav_batch" id="fav_batch" title="Select Calibration Batch">
+        <i class="material-icons w3-large"> star_border </i>
+      </div> -->
     </div>
 
     <div class="controlSidebar" id="controlSidebar_live"
@@ -214,6 +259,19 @@
         <div id="UID_live">UID: 3875</div>
       </div> -->
     </div>
+
+    <!--TEST SLIDER-->
+    <!-- <div slider id="slider-distance">
+      <div>
+        <div inverse-left style="width:80%;"></div>
+        <div inverse-right style="width:80%;"></div>
+        <div range style="left:0%;right:0%;"></div>
+        <span thumb style="left:0%;"></span>
+        <span thumb style="left:100%;"></span>
+      </div>
+      <input type="range" id="editRange_start" tabindex="0" value="0" max="50" min="0" step="1"/>
+      <input type="range" id="editRange_end" tabindex="0" value="50" max="50" min="0" step="1"/>
+    </div> -->
 
     <script type="module" src="/main.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
