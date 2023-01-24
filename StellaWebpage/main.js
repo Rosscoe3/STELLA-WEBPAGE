@@ -232,6 +232,7 @@ var infraredStartData = [5.4, 5.0, 5.4, 6.5, 5.0, 4.3];
 var visible = [...Array(1)].map((e) => Array(1));
 var infrared = [...Array(1)].map((e) => Array(1));
 var calibration_array = [];
+var reflectance_array = [];
 
 //** RECORD VIDEO */
 var recordedElement = document.getElementById("graph");
@@ -2134,23 +2135,57 @@ function convertToReflectance()
   
   //** area = PI * Radius^2 */
   let area = Math.PI * (Math.pow(radius, 2));
-
-  console.log(currentBatchArray);
-
-  for(let i = 0; i < currentBatchArray.length; i++)
-  {
-    //** radiance = irradiance * distance²/Area */
-    let radiance_680nm = currentBatchArray[i].nir680_irradiance * ((Math.pow(distance, 2))/area);
-    let radiance_810nm = currentBatchArray[i].nir810_irradiance * ((Math.pow(distance, 2))/area);
-    let radiance_680nm_calibration = calibration_array.nir680_average_irradiance * ((Math.pow(distance, 2))/area);
-    let radiance_810nm_calibration = calibration_array.nir810_average_irradiance * ((Math.pow(distance, 2))/area);
   
+  //** CALIBRATION RADIANCE CALCULATION */
+  //** radiance = irradiance * distance²/Area */
+  let radiance_450nm_calibration = calibration_array.V450_average_irradiance * ((Math.pow(distance, 2))/area);
+  let radiance_500nm_calibration = calibration_array.B500_average_irradiance * ((Math.pow(distance, 2))/area);
+  let radiance_550nm_calibration = calibration_array.G550_average_irradiance * ((Math.pow(distance, 2))/area);
+  let radiance_570nm_calibration = calibration_array.Y570_average_irradiance * ((Math.pow(distance, 2))/area);
+  let radiance_600nm_calibration = calibration_array.O600_average_irradiance * ((Math.pow(distance, 2))/area);
+  let radiance_650nm_calibration = calibration_array.R650_average_irradiance * ((Math.pow(distance, 2))/area);
+  let radiance_610nm_calibration = calibration_array.nir610_average_irradiance * ((Math.pow(distance, 2))/area);
+  let radiance_680nm_calibration = calibration_array.nir680_average_irradiance * ((Math.pow(distance, 2))/area);
+  let radiance_730nm_calibration = calibration_array.nir730_average_irradiance * ((Math.pow(distance, 2))/area);
+  let radiance_760nm_calibration = calibration_array.nir760_average_irradiance * ((Math.pow(distance, 2))/area);
+  let radiance_810nm_calibration = calibration_array.nir810_average_irradiance * ((Math.pow(distance, 2))/area);
+  let radiance_860nm_calibration = calibration_array.nir860_average_irradiance * ((Math.pow(distance, 2))/area);
+  
+  //** CALCULATES RADIANCE -> REFLECTANCE FOR EACH TIMESTAMP IN THE CURRENT BATCH */
+  for(let i = 0; i < currentBatchArray.length; i++)
+  { 
+    //** RADIANCE CALCULATION */
+    //** radiance = irradiance * distance²/Area */
+    currentBatchArray[i].V450_radiance = currentBatchArray[i].V450_irradiance * ((Math.pow(distance, 2))/area); 
+    currentBatchArray[i].B500_radiance = currentBatchArray[i].B500_irradiance * ((Math.pow(distance, 2))/area); 
+    currentBatchArray[i].G550_radiance = currentBatchArray[i].G550_irradiance * ((Math.pow(distance, 2))/area); 
+    currentBatchArray[i].Y570_radiance = currentBatchArray[i].Y570_irradiance * ((Math.pow(distance, 2))/area); 
+    currentBatchArray[i].O600_radiance = currentBatchArray[i].O600_irradiance * ((Math.pow(distance, 2))/area); 
+    currentBatchArray[i].R650_radiance = currentBatchArray[i].R650_irradiance * ((Math.pow(distance, 2))/area); 
+    currentBatchArray[i].nir610_radiance = currentBatchArray[i].nir610_irradiance * ((Math.pow(distance, 2))/area);
+    currentBatchArray[i].nir680_radiance = currentBatchArray[i].nir680_irradiance * ((Math.pow(distance, 2))/area);
+    currentBatchArray[i].nir730_radiance = currentBatchArray[i].nir730_irradiance * ((Math.pow(distance, 2))/area);
+    currentBatchArray[i].nir760_radiance = currentBatchArray[i].nir760_irradiance * ((Math.pow(distance, 2))/area);
+    currentBatchArray[i].nir810_radiance = currentBatchArray[i].nir810_irradiance * ((Math.pow(distance, 2))/area);
+    currentBatchArray[i].nir860_radiance = currentBatchArray[i].nir860_irradiance * ((Math.pow(distance, 2))/area);
+  
+    //** REFLECTANCE CALCULATION */
     //** Reflectance = Radiance from the plant / Radiance from the white reference */
-    let reflectance_680nm = radiance_680nm/radiance_680nm_calibration;
-    let reflectance_810nm = radiance_810nm/radiance_810nm_calibration;
+    currentBatchArray[i].V450_reflectance = currentBatchArray[i].V450_radiance / radiance_450nm_calibration; 
+    currentBatchArray[i].B500_reflectance = currentBatchArray[i].B500_radiance / radiance_500nm_calibration; 
+    currentBatchArray[i].G550_reflectance = currentBatchArray[i].G550_radiance / radiance_550nm_calibration; 
+    currentBatchArray[i].Y570_reflectance = currentBatchArray[i].Y570_radiance / radiance_570nm_calibration; 
+    currentBatchArray[i].O600_reflectance = currentBatchArray[i].O600_radiance / radiance_600nm_calibration; 
+    currentBatchArray[i].R650_reflectance = currentBatchArray[i].R650_radiance / radiance_650nm_calibration;
+    currentBatchArray[i].nir610_reflectance = currentBatchArray[i].nir610_radiance / radiance_610nm_calibration;
+    currentBatchArray[i].nir680_reflectance = currentBatchArray[i].nir680_radiance / radiance_680nm_calibration;
+    currentBatchArray[i].nir730_reflectance = currentBatchArray[i].nir730_radiance / radiance_730nm_calibration;
+    currentBatchArray[i].nir760_reflectance = currentBatchArray[i].nir760_radiance / radiance_760nm_calibration;
+    currentBatchArray[i].nir810_reflectance = currentBatchArray[i].nir810_radiance / radiance_810nm_calibration;
+    currentBatchArray[i].nir860_reflectance = currentBatchArray[i].nir860_radiance / radiance_860nm_calibration; 
   
     //** NIRv Calculation */
-    let NIRv = ((reflectance_810nm - reflectance_680nm)/(reflectance_680nm + reflectance_810nm)) * reflectance_810nm;
+    let NIRv = ((currentBatchArray[i].nir810_reflectance - currentBatchArray[i].nir680_reflectance)/(currentBatchArray[i].nir680_reflectance + currentBatchArray[i].nir810_reflectance)) * currentBatchArray[i].nir810_reflectance;
 
     NIRV_Array[i] = NIRv;
     console.log("distance: " + distance);
@@ -2158,14 +2193,14 @@ function convertToReflectance()
     console.log("area: " + area);
     console.log("680 Calibration Radiance: " + radiance_680nm_calibration);
     console.log("810 Calibration Radiance: " + radiance_810nm_calibration);
-    console.log("680 Radiance: " + radiance_680nm);
-    console.log("810 Radiance: " + radiance_810nm);
-    console.log("680 Reflectance: " + reflectance_680nm);
-    console.log("810 Reflectance: " + reflectance_810nm);
+    console.log("680 Radiance: " + currentBatchArray[i].nir680_radiance);
+    console.log("810 Radiance: " + currentBatchArray[i].nir810_radiance);
+    console.log("680 Reflectance: " + currentBatchArray[i].nir680_reflectance);
+    console.log("810 Reflectance: " + currentBatchArray[i].nir810_reflectance);
     console.log("NIRv: " + NIRv);
   }
 
-  console.log(NIRV_Array);
+  console.log(currentBatchArray);
 }
 
 function getTanFromDegrees(degrees) {
