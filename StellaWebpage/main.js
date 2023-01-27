@@ -32,7 +32,6 @@ let dataArray = [];
 let newDataArray = [];
 let dataArrayBatches = [[]];
 let currentBatchArray = [[]];
-let ndviArray = [];
 let dataTimeIndex = 0;
 let animationTime = 1500;
 
@@ -48,6 +47,7 @@ let visible_filter_element = document.getElementById("visible_filter");
 let infrared_filter_element = document.getElementById("infrared_filter");
 let ndvi_element = document.getElementById("graphs_ndvi");
 let raw_element = document.getElementById("graphs_raw");
+let nirv_element = document.getElementById("graphs_nirv");
 
 //** HELP BUTTONS FOR PICKING GRAPHS */
 let help_icon_raw = document.getElementById("help_raw");
@@ -64,7 +64,9 @@ let controlSidebar = document.getElementById("controlSidebar");
 let controlSidebarHeader = document.getElementById("controlSidebarheader");
 
 let controlSidebar_live = document.getElementById("controlSidebar_live");
-let controlSidebarHeader_live = document.getElementById("controlSidebarheader_live");
+let controlSidebarHeader_live = document.getElementById(
+  "controlSidebarheader_live"
+);
 
 let batchesContainer = document.getElementById("batchGrid");
 let about_button = document.getElementById("about");
@@ -138,13 +140,13 @@ class SerialScaleController {
         duplicateScreen.classList.toggle("active");
         readDeviceBtn.classList.toggle("active");
 
-        if (!document.getElementById("liveGraph").classList.contains("active")) 
-        {
+        if (
+          !document.getElementById("liveGraph").classList.contains("active")
+        ) {
           document.getElementById("liveGraph").classList.toggle("active");
           updateGraphGrid();
         }
-      } catch (err) 
-      {
+      } catch (err) {
         console.error("There was an error opening the serial port:", err);
 
         console.log(err == "DOMException: No port selected by the user.");
@@ -232,7 +234,6 @@ var infraredStartData = [5.4, 5.0, 5.4, 6.5, 5.0, 4.3];
 var visible = [...Array(1)].map((e) => Array(1));
 var infrared = [...Array(1)].map((e) => Array(1));
 var calibration_array = [];
-var reflectance_array = [];
 
 //** RECORD VIDEO */
 var recordedElement = document.getElementById("graph");
@@ -584,6 +585,82 @@ var data2 = {
 };
 
 //** DATA SETUP FOR LIVE CHART */
+var data4 = {
+  datasets: [
+    //** VISIBLE dataset 13*/
+    {
+      data: [
+        {
+          x: 450,
+          y: visibleStartData[0],
+        },
+        {
+          x: 500,
+          y: visibleStartData[1],
+        },
+        {
+          x: 550,
+          y: visibleStartData[2],
+        },
+        {
+          x: 570,
+          y: visibleStartData[3],
+        },
+        {
+          x: 600,
+          y: visibleStartData[4],
+        },
+        {
+          x: 650,
+          y: visibleStartData[5],
+        },
+      ],
+      showLine: true,
+      label: "Visible",
+      fill: true,
+      backgroundColor: visibleGradient,
+      borderColor: "rgb(255, 255, 255)",
+      pointBackgroundColor: "rgb(189, 195, 199)",
+    },
+    //** INFRARED */
+    {
+      data: [
+        {
+          x: 610,
+          y: infraredStartData[0],
+        },
+        {
+          x: 680,
+          y: infraredStartData[1],
+        },
+        {
+          x: 730,
+          y: infraredStartData[2],
+        },
+        {
+          x: 760,
+          y: infraredStartData[3],
+        },
+        {
+          x: 810,
+          y: infraredStartData[4],
+        },
+        {
+          x: 860,
+          y: infraredStartData[5],
+        },
+      ],
+      showLine: true,
+      label: "Infrared",
+      fill: true,
+      backgroundColor: infraredGradient,
+      borderColor: "rgb(255, 255, 255)",
+      pointBackgroundColor: "rgb(189, 195, 199)",
+    },
+  ],
+};
+
+//** DATA SETUP FOR LIVE CHART */
 var data3 = {
   datasets: [
     //** VISIBLE dataset 13*/
@@ -679,7 +756,7 @@ const config = {
         text: "  UID: 8888",
         align: "start",
         font: {
-          weight: 'bold',
+          weight: "bold",
           family: "'Inter', sans-serif",
           size: 14,
         },
@@ -703,41 +780,41 @@ const config = {
       //** STYLING FOR DATA LABELS */
       datalabels: {
         formatter: (value, context) => {
-          if(context.datasetIndex === 12 && raw_labels_visible|| context.datasetIndex === 13 && raw_labels_visible)
-          {
+          if (
+            (context.datasetIndex === 12 && raw_labels_visible) ||
+            (context.datasetIndex === 13 && raw_labels_visible)
+          ) {
             var output;
 
-            if(toggleUnitLabels_icon.classList.contains("selected"))
-            {
+            if (toggleUnitLabels_icon.classList.contains("selected")) {
               output = value.y;
-            }
-            else
-            {
+            } else {
               output = value.y + "μW/cm²";
             }
 
             return output;
-          }
-          else
-          {
-            return '';
+          } else {
+            return "";
           }
         },
-        color: 'white',
-        anchor: 'end',
-        align: 'top',
-        backgroundColor: function(context) {
-            if(context.datasetIndex === 12 && raw_labels_visible || context.datasetIndex === 13 && raw_labels_visible) {
-                return 'rgba(0, 0, 0, 0.75)';
-            } else {
-                return 'rgba(0, 0, 0, 0)';
-            }
+        color: "white",
+        anchor: "end",
+        align: "top",
+        backgroundColor: function (context) {
+          if (
+            (context.datasetIndex === 12 && raw_labels_visible) ||
+            (context.datasetIndex === 13 && raw_labels_visible)
+          ) {
+            return "rgba(0, 0, 0, 0.75)";
+          } else {
+            return "rgba(0, 0, 0, 0)";
+          }
         },
         borderWidth: 0.5,
         borderRadius: 5,
-        font:{
-          weight: 'bold',
-        }
+        font: {
+          weight: "bold",
+        },
       },
     },
     //** ADDS NM to the Y axis lables */
@@ -815,30 +892,27 @@ const config2 = {
       //** STYLING FOR DATA LABELS */
       datalabels: {
         formatter: (value) => {
-          if(ndvi_labels_visible)
-          {
+          if (ndvi_labels_visible) {
             return Math.round((value.y + Number.EPSILON) * 100) / 100;
-          }
-          else
-          {
-            return '';
+          } else {
+            return "";
           }
         },
-        color: 'white',
-        anchor: 'end',
-        align: 'top',
-        backgroundColor: function(context) {
-            if(ndvi_labels_visible) {
-                return 'rgba(0, 0, 0, 0.75)';
-            } else {
-                return 'rgba(0, 0, 0, 0)';
-            }
+        color: "white",
+        anchor: "end",
+        align: "top",
+        backgroundColor: function (context) {
+          if (ndvi_labels_visible) {
+            return "rgba(0, 0, 0, 0.75)";
+          } else {
+            return "rgba(0, 0, 0, 0)";
+          }
         },
         borderWidth: 0.5,
         borderRadius: 5,
-        font:{
-          weight: 'bold',
-        }
+        font: {
+          weight: "bold",
+        },
       },
     },
     //** ADDS NM to the Y axis lables */
@@ -922,39 +996,33 @@ const config3 = {
         formatter: (value, context) => {
           var output;
 
-          if(!raw_visibility_live_icon.classList.contains("selected"))
-          {
-            if(toggleUnitLabels_live_icon.classList.contains("selected"))
-            {
+          if (!raw_visibility_live_icon.classList.contains("selected")) {
+            if (toggleUnitLabels_live_icon.classList.contains("selected")) {
               output = value.y;
-            }
-            else
-            {
+            } else {
               output = value.y + "μW/cm²";
             }
 
             return output;
-          }
-          else
-          {
-            return '';
+          } else {
+            return "";
           }
         },
-        color: 'white',
-        anchor: 'end',
-        align: 'top',
-        backgroundColor: function(context) {
-            if(!raw_visibility_live_icon.classList.contains("selected")) {
-                return 'rgba(0, 0, 0, 0.75)';
-            } else {
-                return 'rgba(0, 0, 0, 0)';
-            }
+        color: "white",
+        anchor: "end",
+        align: "top",
+        backgroundColor: function (context) {
+          if (!raw_visibility_live_icon.classList.contains("selected")) {
+            return "rgba(0, 0, 0, 0.75)";
+          } else {
+            return "rgba(0, 0, 0, 0)";
+          }
         },
         borderWidth: 0.5,
         borderRadius: 5,
-        font:{
-          weight: 'bold',
-        }
+        font: {
+          weight: "bold",
+        },
       },
     },
     //** ADDS NM to the Y axis lables */
@@ -1070,8 +1138,10 @@ upload_file.addEventListener("input", function () {
       let batchIndex = 0;
       for (let i = 0; i < newDataArray.length; i++) {
         //** MAKE SURE NONE OF THE DATA IS EMPTY */
-        if (newDataArray[i].batch_number != "" && typeof newDataArray[i].batch_number !== "undefined") 
-        {
+        if (
+          newDataArray[i].batch_number != "" &&
+          typeof newDataArray[i].batch_number !== "undefined"
+        ) {
           //** SORT THE DATA INTO DISTINCT BATCHES */
           if (currentBatchNmb != newDataArray[i].batch_number) {
             batchIndex++;
@@ -1099,13 +1169,11 @@ upload_file.addEventListener("input", function () {
       for (var i = 0; i < lineSplit.length; i++) {
         dataArray.push(lineSplit[i].split(","));
       }
-      
-      if(!raw_element.classList.contains("selected"))
-      {
+
+      if (!raw_element.classList.contains("selected")) {
         raw_element.classList.toggle("selected");
       }
-      if(ndvi_element.classList.contains("selected"))
-      {
+      if (ndvi_element.classList.contains("selected")) {
         ndvi_element.classList.toggle("selected");
       }
 
@@ -1522,7 +1590,7 @@ function decipherSerialMessage(message) {
         console.log("FIRE");
       }
     }
-  } 
+  }
   //** IF THE MESSAGE CONTAINS... */
   else {
     //** SURFACE TEMP */
@@ -1823,9 +1891,7 @@ function decipherSerialMessage(message) {
     }
 
     //** UPDATE CONTROL SIDEBAR */
-    if(messageSplit.includes("batch:"))
-    {
-
+    if (messageSplit.includes("batch:")) {
     }
   }
 }
@@ -1861,13 +1927,15 @@ function startTimer() {
 function addBatches(dataArray) {
   for (var i = 0; i < dataArray.length; i++) {
     const div = document.createElement("div");
-    var div2 = document.createElement("div")
+    var div2 = document.createElement("div");
     div.id = "batchNmb";
 
     //** BATCH NUMBER CLICK FUNCTION */
     div.onclick = function () {
       if (!this.classList.contains("selected")) {
-        const batchGrid = document.getElementById("batchGrid").querySelectorAll("[id=batchNmb]");
+        const batchGrid = document
+          .getElementById("batchGrid")
+          .querySelectorAll("[id=batchNmb]");
 
         lastSliderValue = 0;
 
@@ -1884,34 +1952,32 @@ function addBatches(dataArray) {
 
         //** SET EDIT RANGE BACK TO NORMAL */
         var children = editRange_start.parentNode.childNodes[1].childNodes;
-        children[1].style.width = '0%';
-        children[5].style.left = '0%';
-        children[7].style.left = '0%';
-        children[3].style.width = '100%';
-        children[5].style.right = '0%';
-        children[9].style.left = '100%';
-        children[11].style.left='0%';
+        children[1].style.width = "0%";
+        children[5].style.left = "0%";
+        children[7].style.left = "0%";
+        children[3].style.width = "100%";
+        children[5].style.right = "0%";
+        children[9].style.left = "100%";
+        children[11].style.left = "0%";
         children[11].children[0].innerHTML = 1;
-        children[13].style.left='100%';
+        children[13].style.left = "100%";
         children[13].children[0].innerHTML = currentBatchArray.length;
         editRange_start.max = currentBatchArray.length;
         editRange_end.max = currentBatchArray.length;
         editRange_start.value = 1;
         editRange_end.value = currentBatchArray.length;
 
-        if(download_label.classList.contains("active"))
-        {
+        if (download_label.classList.contains("active")) {
           download_label.classList.toggle("active");
         }
 
         editRange_thumb_start.style.left = "0%";
         editRange_thumb_end.style.left = "100%";
 
-
         //** UPDATE CHART WITH UID */
-        mainChart.options.plugins.title.text = "  UID: " + currentBatchArray[0].UID;
+        mainChart.options.plugins.title.text =
+          "  UID: " + currentBatchArray[0].UID;
         mainChart.update();
-
 
         chart2.data.labels = Object.keys(data);
         chart2.data.datasets.forEach((dataset) => {
@@ -1945,7 +2011,9 @@ function addBatches(dataArray) {
     div2.onclick = function () {
       if (!this.classList.contains("selected")) {
         console.log(this.parentNode.id);
-        const batchGrid = document.getElementById("calibration_batch_grid").querySelectorAll("[id=batchNmb]");
+        const batchGrid = document
+          .getElementById("calibration_batch_grid")
+          .querySelectorAll("[id=batchNmb]");
 
         batchGrid.forEach((item) => {
           if (item.classList.contains("selected")) {
@@ -1970,12 +2038,12 @@ function addBatches(dataArray) {
 
       //** INIT EDITING DATA */
       var children = editRange_start.parentNode.childNodes[1].childNodes;
-      children[1].style.width = '0%';
-      children[5].style.left = '0%';
-      children[7].style.left = '0%';
-      children[3].style.width = '100%';
-      children[5].style.right = '0%';
-      children[9].style.left = '100%';
+      children[1].style.width = "0%";
+      children[5].style.left = "0%";
+      children[7].style.left = "0%";
+      children[3].style.width = "100%";
+      children[5].style.right = "0%";
+      children[9].style.left = "100%";
       editRange_start.max = currentBatchArray.length;
       editRange_end.max = currentBatchArray.length;
       editRange_start.value = 1;
@@ -1998,9 +2066,14 @@ function saveCSV() {
   let csv = "";
   let headers = "";
   let firstHeader = true;
-  console.log("START: " + editRange_start.value + ", END: " + editRange_end.value);
+  console.log(
+    "START: " + editRange_start.value + ", END: " + editRange_end.value
+  );
 
-  var saveArray = currentBatchArray.slice(editRange_start.value-1, editRange_end.value);
+  var saveArray = currentBatchArray.slice(
+    editRange_start.value - 1,
+    editRange_end.value
+  );
 
   for (var index1 in saveArray) {
     var row = currentBatchArray[index1];
@@ -2044,23 +2117,21 @@ function saveCSV() {
 }
 
 //** CALCULATES ALL IRRADIANCE AVERAGES FOR THE CALIBRATION BATCH */
-function averageCalibrationArray(cal_array)
-{
+function averageCalibrationArray(cal_array) {
   let average_450nm = 0,
-  average_500nm = 0,
-  average_550nm = 0,
-  average_570nm = 0,
-  average_600nm = 0,
-  average_650nm = 0,
-  average_610nm = 0,
-  average_680nm = 0,
-  average_730nm = 0,
-  average_760nm = 0,
-  average_810nm = 0,
-  average_860nm = 0;
+    average_500nm = 0,
+    average_550nm = 0,
+    average_570nm = 0,
+    average_600nm = 0,
+    average_650nm = 0,
+    average_610nm = 0,
+    average_680nm = 0,
+    average_730nm = 0,
+    average_760nm = 0,
+    average_810nm = 0,
+    average_860nm = 0;
 
-  for(let i = 0; i < cal_array.length; i++)
-  {
+  for (let i = 0; i < cal_array.length; i++) {
     average_450nm += parseFloat(cal_array[i].V450_irradiance);
     average_500nm += parseFloat(cal_array[i].B500_irradiance);
     average_550nm += parseFloat(cal_array[i].G550_irradiance);
@@ -2076,18 +2147,18 @@ function averageCalibrationArray(cal_array)
   }
 
   //** DIVIDE ALL BY LENGTH OF ARRAY TO GET AVERAGE*/
-  average_450nm = average_450nm/cal_array.length;
-  average_500nm = average_500nm/cal_array.length;
-  average_550nm = average_550nm/cal_array.length;
-  average_570nm = average_570nm/cal_array.length;
-  average_600nm = average_600nm/cal_array.length;
-  average_650nm = average_650nm/cal_array.length;
-  average_610nm = average_610nm/cal_array.length;
-  average_680nm = average_680nm/cal_array.length;
-  average_730nm = average_730nm/cal_array.length;
-  average_760nm = average_760nm/cal_array.length;
-  average_810nm = average_810nm/cal_array.length;
-  average_860nm = average_860nm/cal_array.length;
+  average_450nm = average_450nm / cal_array.length;
+  average_500nm = average_500nm / cal_array.length;
+  average_550nm = average_550nm / cal_array.length;
+  average_570nm = average_570nm / cal_array.length;
+  average_600nm = average_600nm / cal_array.length;
+  average_650nm = average_650nm / cal_array.length;
+  average_610nm = average_610nm / cal_array.length;
+  average_680nm = average_680nm / cal_array.length;
+  average_730nm = average_730nm / cal_array.length;
+  average_760nm = average_760nm / cal_array.length;
+  average_810nm = average_810nm / cal_array.length;
+  average_860nm = average_860nm / cal_array.length;
 
   console.log("450nm average: " + average_450nm);
   console.log("500nm average: " + average_500nm);
@@ -2116,85 +2187,135 @@ function averageCalibrationArray(cal_array)
   calibration_array.nir760_average_irradiance = average_760nm;
   calibration_array.nir810_average_irradiance = average_810nm;
   calibration_array.nir860_average_irradiance = average_860nm;
-  
+
   console.log(calibration_array);
   //average_450nm = average_450nm/parseFloat(calibration_array.length);
 
   convertToReflectance();
 }
 
-function convertToReflectance()
-{
-  var NIRV_Array = [];
-  
+function convertToReflectance() {
   let FOV = 40;
   let distance = distanceInput.value;
-  
+
   //** radius = (tan(FOV/2)) * 10 */
-  let radius = (getTanFromDegrees(FOV/2)) * distance;
-  
+  let radius = getTanFromDegrees(FOV / 2) * distance;
+
   //** area = PI * Radius^2 */
-  let area = Math.PI * (Math.pow(radius, 2));
-  
+  let area = Math.PI * Math.pow(radius, 2);
+
+  console.log("distance: " + distance);
+  console.log("radius: " + radius);
+  console.log("area: " + area);
+
   //** CALIBRATION RADIANCE CALCULATION */
   //** radiance = irradiance * distance²/Area */
-  let radiance_450nm_calibration = calibration_array.V450_average_irradiance * ((Math.pow(distance, 2))/area);
-  let radiance_500nm_calibration = calibration_array.B500_average_irradiance * ((Math.pow(distance, 2))/area);
-  let radiance_550nm_calibration = calibration_array.G550_average_irradiance * ((Math.pow(distance, 2))/area);
-  let radiance_570nm_calibration = calibration_array.Y570_average_irradiance * ((Math.pow(distance, 2))/area);
-  let radiance_600nm_calibration = calibration_array.O600_average_irradiance * ((Math.pow(distance, 2))/area);
-  let radiance_650nm_calibration = calibration_array.R650_average_irradiance * ((Math.pow(distance, 2))/area);
-  let radiance_610nm_calibration = calibration_array.nir610_average_irradiance * ((Math.pow(distance, 2))/area);
-  let radiance_680nm_calibration = calibration_array.nir680_average_irradiance * ((Math.pow(distance, 2))/area);
-  let radiance_730nm_calibration = calibration_array.nir730_average_irradiance * ((Math.pow(distance, 2))/area);
-  let radiance_760nm_calibration = calibration_array.nir760_average_irradiance * ((Math.pow(distance, 2))/area);
-  let radiance_810nm_calibration = calibration_array.nir810_average_irradiance * ((Math.pow(distance, 2))/area);
-  let radiance_860nm_calibration = calibration_array.nir860_average_irradiance * ((Math.pow(distance, 2))/area);
-  
+  let radiance_450nm_calibration =
+    calibration_array.V450_average_irradiance * (Math.pow(distance, 2) / area);
+  let radiance_500nm_calibration =
+    calibration_array.B500_average_irradiance * (Math.pow(distance, 2) / area);
+  let radiance_550nm_calibration =
+    calibration_array.G550_average_irradiance * (Math.pow(distance, 2) / area);
+  let radiance_570nm_calibration =
+    calibration_array.Y570_average_irradiance * (Math.pow(distance, 2) / area);
+  let radiance_600nm_calibration =
+    calibration_array.O600_average_irradiance * (Math.pow(distance, 2) / area);
+  let radiance_650nm_calibration =
+    calibration_array.R650_average_irradiance * (Math.pow(distance, 2) / area);
+  let radiance_610nm_calibration =
+    calibration_array.nir610_average_irradiance *
+    (Math.pow(distance, 2) / area);
+  let radiance_680nm_calibration =
+    calibration_array.nir680_average_irradiance *
+    (Math.pow(distance, 2) / area);
+  let radiance_730nm_calibration =
+    calibration_array.nir730_average_irradiance *
+    (Math.pow(distance, 2) / area);
+  let radiance_760nm_calibration =
+    calibration_array.nir760_average_irradiance *
+    (Math.pow(distance, 2) / area);
+  let radiance_810nm_calibration =
+    calibration_array.nir810_average_irradiance *
+    (Math.pow(distance, 2) / area);
+  let radiance_860nm_calibration =
+    calibration_array.nir860_average_irradiance *
+    (Math.pow(distance, 2) / area);
+
   //** CALCULATES RADIANCE -> REFLECTANCE FOR EACH TIMESTAMP IN THE CURRENT BATCH */
-  for(let i = 0; i < currentBatchArray.length; i++)
-  { 
+  for (let i = 0; i < currentBatchArray.length; i++) {
     //** RADIANCE CALCULATION */
     //** radiance = irradiance * distance²/Area */
-    currentBatchArray[i].V450_radiance = currentBatchArray[i].V450_irradiance * ((Math.pow(distance, 2))/area); 
-    currentBatchArray[i].B500_radiance = currentBatchArray[i].B500_irradiance * ((Math.pow(distance, 2))/area); 
-    currentBatchArray[i].G550_radiance = currentBatchArray[i].G550_irradiance * ((Math.pow(distance, 2))/area); 
-    currentBatchArray[i].Y570_radiance = currentBatchArray[i].Y570_irradiance * ((Math.pow(distance, 2))/area); 
-    currentBatchArray[i].O600_radiance = currentBatchArray[i].O600_irradiance * ((Math.pow(distance, 2))/area); 
-    currentBatchArray[i].R650_radiance = currentBatchArray[i].R650_irradiance * ((Math.pow(distance, 2))/area); 
-    currentBatchArray[i].nir610_radiance = currentBatchArray[i].nir610_irradiance * ((Math.pow(distance, 2))/area);
-    currentBatchArray[i].nir680_radiance = currentBatchArray[i].nir680_irradiance * ((Math.pow(distance, 2))/area);
-    currentBatchArray[i].nir730_radiance = currentBatchArray[i].nir730_irradiance * ((Math.pow(distance, 2))/area);
-    currentBatchArray[i].nir760_radiance = currentBatchArray[i].nir760_irradiance * ((Math.pow(distance, 2))/area);
-    currentBatchArray[i].nir810_radiance = currentBatchArray[i].nir810_irradiance * ((Math.pow(distance, 2))/area);
-    currentBatchArray[i].nir860_radiance = currentBatchArray[i].nir860_irradiance * ((Math.pow(distance, 2))/area);
-  
+    currentBatchArray[i].V450_radiance =
+      currentBatchArray[i].V450_irradiance * (Math.pow(distance, 2) / area);
+    currentBatchArray[i].B500_radiance =
+      currentBatchArray[i].B500_irradiance * (Math.pow(distance, 2) / area);
+    currentBatchArray[i].G550_radiance =
+      currentBatchArray[i].G550_irradiance * (Math.pow(distance, 2) / area);
+    currentBatchArray[i].Y570_radiance =
+      currentBatchArray[i].Y570_irradiance * (Math.pow(distance, 2) / area);
+    currentBatchArray[i].O600_radiance =
+      currentBatchArray[i].O600_irradiance * (Math.pow(distance, 2) / area);
+    currentBatchArray[i].R650_radiance =
+      currentBatchArray[i].R650_irradiance * (Math.pow(distance, 2) / area);
+    currentBatchArray[i].nir610_radiance =
+      currentBatchArray[i].nir610_irradiance * (Math.pow(distance, 2) / area);
+    currentBatchArray[i].nir680_radiance =
+      currentBatchArray[i].nir680_irradiance * (Math.pow(distance, 2) / area);
+    currentBatchArray[i].nir730_radiance =
+      currentBatchArray[i].nir730_irradiance * (Math.pow(distance, 2) / area);
+    currentBatchArray[i].nir760_radiance =
+      currentBatchArray[i].nir760_irradiance * (Math.pow(distance, 2) / area);
+    currentBatchArray[i].nir810_radiance =
+      currentBatchArray[i].nir810_irradiance * (Math.pow(distance, 2) / area);
+    currentBatchArray[i].nir860_radiance =
+      currentBatchArray[i].nir860_irradiance * (Math.pow(distance, 2) / area);
+
     //** REFLECTANCE CALCULATION */
     //** Reflectance = Radiance from the plant / Radiance from the white reference */
-    currentBatchArray[i].V450_reflectance = currentBatchArray[i].V450_radiance / radiance_450nm_calibration; 
-    currentBatchArray[i].B500_reflectance = currentBatchArray[i].B500_radiance / radiance_500nm_calibration; 
-    currentBatchArray[i].G550_reflectance = currentBatchArray[i].G550_radiance / radiance_550nm_calibration; 
-    currentBatchArray[i].Y570_reflectance = currentBatchArray[i].Y570_radiance / radiance_570nm_calibration; 
-    currentBatchArray[i].O600_reflectance = currentBatchArray[i].O600_radiance / radiance_600nm_calibration; 
-    currentBatchArray[i].R650_reflectance = currentBatchArray[i].R650_radiance / radiance_650nm_calibration;
-    currentBatchArray[i].nir610_reflectance = currentBatchArray[i].nir610_radiance / radiance_610nm_calibration;
-    currentBatchArray[i].nir680_reflectance = currentBatchArray[i].nir680_radiance / radiance_680nm_calibration;
-    currentBatchArray[i].nir730_reflectance = currentBatchArray[i].nir730_radiance / radiance_730nm_calibration;
-    currentBatchArray[i].nir760_reflectance = currentBatchArray[i].nir760_radiance / radiance_760nm_calibration;
-    currentBatchArray[i].nir810_reflectance = currentBatchArray[i].nir810_radiance / radiance_810nm_calibration;
-    currentBatchArray[i].nir860_reflectance = currentBatchArray[i].nir860_radiance / radiance_860nm_calibration; 
-  
-    //** NIRv Calculation */
-    let NIRv = ((currentBatchArray[i].nir810_reflectance - currentBatchArray[i].nir680_reflectance)/(currentBatchArray[i].nir680_reflectance + currentBatchArray[i].nir810_reflectance)) * currentBatchArray[i].nir810_reflectance;
+    currentBatchArray[i].V450_reflectance =
+      currentBatchArray[i].V450_radiance / radiance_450nm_calibration;
+    currentBatchArray[i].B500_reflectance =
+      currentBatchArray[i].B500_radiance / radiance_500nm_calibration;
+    currentBatchArray[i].G550_reflectance =
+      currentBatchArray[i].G550_radiance / radiance_550nm_calibration;
+    currentBatchArray[i].Y570_reflectance =
+      currentBatchArray[i].Y570_radiance / radiance_570nm_calibration;
+    currentBatchArray[i].O600_reflectance =
+      currentBatchArray[i].O600_radiance / radiance_600nm_calibration;
+    currentBatchArray[i].R650_reflectance =
+      currentBatchArray[i].R650_radiance / radiance_650nm_calibration;
+    currentBatchArray[i].nir610_reflectance =
+      currentBatchArray[i].nir610_radiance / radiance_610nm_calibration;
+    currentBatchArray[i].nir680_reflectance =
+      currentBatchArray[i].nir680_radiance / radiance_680nm_calibration;
+    currentBatchArray[i].nir730_reflectance =
+      currentBatchArray[i].nir730_radiance / radiance_730nm_calibration;
+    currentBatchArray[i].nir760_reflectance =
+      currentBatchArray[i].nir760_radiance / radiance_760nm_calibration;
+    currentBatchArray[i].nir810_reflectance =
+      currentBatchArray[i].nir810_radiance / radiance_810nm_calibration;
+    currentBatchArray[i].nir860_reflectance =
+      currentBatchArray[i].nir860_radiance / radiance_860nm_calibration;
+  }
 
-    NIRV_Array[i] = NIRv;
-    console.log("distance: " + distance);
-    console.log("radius: " + radius);
-    console.log("area: " + area);
-    console.log("680 Calibration Radiance: " + radiance_680nm_calibration);
-    console.log("810 Calibration Radiance: " + radiance_810nm_calibration);
-    console.log("680 Radiance: " + currentBatchArray[i].nir680_radiance);
-    console.log("810 Radiance: " + currentBatchArray[i].nir810_radiance);
+  console.log(currentBatchArray);
+  calculateNIRV();
+}
+
+function calculateNIRV() {
+  var NIRV_Array = [];
+
+  for (let i = 0; i < currentBatchArray.length; i++) {
+    //** NIRv Calculation */
+    let NIRv =
+      ((currentBatchArray[i].nir810_reflectance -
+        currentBatchArray[i].nir680_reflectance) /
+        (currentBatchArray[i].nir680_reflectance +
+          currentBatchArray[i].nir810_reflectance)) *
+      currentBatchArray[i].nir810_reflectance;
+
+    // NIRV_Array[i] = NIRv;
+    currentBatchArray[i].NIRv = NIRv;
     console.log("680 Reflectance: " + currentBatchArray[i].nir680_reflectance);
     console.log("810 Reflectance: " + currentBatchArray[i].nir810_reflectance);
     console.log("NIRv: " + NIRv);
@@ -2204,7 +2325,7 @@ function convertToReflectance()
 }
 
 function getTanFromDegrees(degrees) {
-  return Math.tan(degrees * Math.PI / 180);
+  return Math.tan((degrees * Math.PI) / 180);
 }
 
 //** CLICK EVENT FOR UPLOAD NEW BUTTON */
@@ -2228,6 +2349,10 @@ menuElement.addEventListener("click", function (ev) {
   if (ndvi_element.classList.contains("selected")) {
     ndvi_element.classList.toggle("selected");
   }
+  if (nirv_element.classList.contains("selected")) {
+    nirv_element.classList.toggle("selected");
+  }
+
   if (duplicateScreen.classList.contains("active")) {
     duplicateScreen.classList.toggle("active");
   }
@@ -2251,19 +2376,15 @@ menuElement.addEventListener("click", function (ev) {
 function updateGraphGrid() {
   let myElement;
 
-  if(controlSidebar.classList.contains("active"))
-  {
+  //** CHOOSE MY ELEMENT */
+  if (controlSidebar.classList.contains("active")) {
     myElement = document.getElementById("chartCard");
-  }
-  else if(controlSidebar_live.classList.contains("active"))
-  {
+  } else if (controlSidebar_live.classList.contains("active")) {
     myElement = document.getElementById("chartCardLive");
-  }
-  else
-  {
+  } else {
     myElement = document.getElementById("chartCard");
   }
-  
+
   let counter = 0;
   for (const child of myElement.children) {
     if (child.classList.contains("active")) {
@@ -2374,14 +2495,11 @@ infrared_filter_element.addEventListener("click", function () {
 
 //** DATA LABEL's VISIBILITY TOGGLES */
 raw_visibility_icon.addEventListener("click", function () {
-  if(raw_visibility_icon.classList.contains("selected"))
-  {
+  if (raw_visibility_icon.classList.contains("selected")) {
     raw_visibility_icon.classList.toggle("selected");
     raw_labels_visible = true;
     document.getElementById("visibleIcon_raw").innerHTML = "visibility";
-  }
-  else
-  {
+  } else {
     raw_visibility_icon.classList.toggle("selected");
     raw_labels_visible = false;
     document.getElementById("visibleIcon_raw").innerHTML = "visibility_off";
@@ -2389,14 +2507,11 @@ raw_visibility_icon.addEventListener("click", function () {
   mainChart.update();
 });
 ndvi_visibility_icon.addEventListener("click", function () {
-  if(ndvi_visibility_icon.classList.contains("selected"))
-  {
+  if (ndvi_visibility_icon.classList.contains("selected")) {
     ndvi_visibility_icon.classList.toggle("selected");
     ndvi_labels_visible = true;
     document.getElementById("visibleIcon_ndvi").innerHTML = "visibility";
-  }
-  else
-  {
+  } else {
     ndvi_visibility_icon.classList.toggle("selected");
     ndvi_labels_visible = false;
     document.getElementById("visibleIcon_ndvi").innerHTML = "visibility_off";
@@ -2405,39 +2520,31 @@ ndvi_visibility_icon.addEventListener("click", function () {
 });
 
 raw_visibility_live_icon.addEventListener("click", function () {
-  if(raw_visibility_live_icon.classList.contains("selected"))
-  {
+  if (raw_visibility_live_icon.classList.contains("selected")) {
     raw_visibility_live_icon.classList.toggle("selected");
     document.getElementById("visibleIcon_raw_live").innerHTML = "visibility";
-  }
-  else
-  {
+  } else {
     raw_visibility_live_icon.classList.toggle("selected");
-    document.getElementById("visibleIcon_raw_live").innerHTML = "visibility_off";
+    document.getElementById("visibleIcon_raw_live").innerHTML =
+      "visibility_off";
   }
   liveChart.update();
 });
 
 //** TOGGLE UNIT LABELS */
 toggleUnitLabels_icon.addEventListener("click", function () {
-  if(toggleUnitLabels_icon.classList.contains("selected"))
-  {
+  if (toggleUnitLabels_icon.classList.contains("selected")) {
     toggleUnitLabels_icon.classList.toggle("selected");
-  }
-  else
-  {
+  } else {
     toggleUnitLabels_icon.classList.toggle("selected");
   }
   mainChart.update();
 });
 
 toggleUnitLabels_live_icon.addEventListener("click", function () {
-  if(toggleUnitLabels_live_icon.classList.contains("selected"))
-  {
+  if (toggleUnitLabels_live_icon.classList.contains("selected")) {
     toggleUnitLabels_live_icon.classList.toggle("selected");
-  }
-  else
-  {
+  } else {
     toggleUnitLabels_live_icon.classList.toggle("selected");
   }
   liveChart.update();
@@ -2458,8 +2565,7 @@ trim_icon.addEventListener("click", function () {
   arrowLeft.classList.toggle("active");
 
   //** PAUSE THE TIMELINE PLAY BUTTON */
-  if(box.classList.contains("pause"))
-  {
+  if (box.classList.contains("pause")) {
     box.classList.toggle("pause");
   }
   animPlay = false;
@@ -2472,23 +2578,23 @@ download_label.addEventListener("click", function () {
 });
 
 //** DOUBLE RANGE SLIDERS FOR EDITING */
-editRange_start.addEventListener("input" , function () {
-  
+editRange_start.addEventListener("input", function () {
   //** GRABS THE VALUE, MAKE SURE ITS NOT CROSSING THE OTHER RANGE'S BOUNDRY, AND CONVERTS IT INTO A FACTOR OF 100 */
-  this.value=Math.min(this.value,this.parentNode.childNodes[5].value-1);
-  var value=(100/(parseInt(this.max)-parseInt(this.min)))*parseInt(this.value)-(100/(parseInt(this.max)-parseInt(this.min)))*parseInt(this.min); 
-  
+  this.value = Math.min(this.value, this.parentNode.childNodes[5].value - 1);
+  var value =
+    (100 / (parseInt(this.max) - parseInt(this.min))) * parseInt(this.value) -
+    (100 / (parseInt(this.max) - parseInt(this.min))) * parseInt(this.min);
+
   //** GRAB CHILDREN HTML ELEMENTS */
   var children = this.parentNode.childNodes[1].childNodes;
-  children[1].style.width=value+'%';
-  children[5].style.left=value+'%';
-  children[7].style.left=value+'%';
-  children[11].style.left=value+'%';
+  children[1].style.width = value + "%";
+  children[5].style.left = value + "%";
+  children[7].style.left = value + "%";
+  children[11].style.left = value + "%";
   children[11].children[0].innerHTML = this.value;
   console.log(this.value + "START BUTTON");
 
-  if(!download_label.classList.contains("active"))
-  {
+  if (!download_label.classList.contains("active")) {
     download_label.classList.toggle("active");
   }
 
@@ -2496,23 +2602,23 @@ editRange_start.addEventListener("input" , function () {
   updateChart(false, this.value);
 });
 
-editRange_end.addEventListener("input" , function () 
-{
-  this.value=Math.max(this.value,this.parentNode.childNodes[3].value-(-1));
-  var value=(100/(parseInt(this.max)-parseInt(this.min)))*parseInt(this.value)-(100/(parseInt(this.max)-parseInt(this.min)))*parseInt(this.min);
+editRange_end.addEventListener("input", function () {
+  this.value = Math.max(this.value, this.parentNode.childNodes[3].value - -1);
+  var value =
+    (100 / (parseInt(this.max) - parseInt(this.min))) * parseInt(this.value) -
+    (100 / (parseInt(this.max) - parseInt(this.min))) * parseInt(this.min);
   var children = this.parentNode.childNodes[1].childNodes;
   value = parseInt(value);
-  children[3].style.width=(100-value)+'%';
-    //** CONTROLS INSIDE SPAN OF END RANGE **//
-  children[5].style.right=(100-value)+'%';
-    //** CONTROLS END CIRCLE **//
-  children[9].style.left=value+'%';
-  children[13].style.left=value+'%';
+  children[3].style.width = 100 - value + "%";
+  //** CONTROLS INSIDE SPAN OF END RANGE **//
+  children[5].style.right = 100 - value + "%";
+  //** CONTROLS END CIRCLE **//
+  children[9].style.left = value + "%";
+  children[13].style.left = value + "%";
   children[13].children[0].innerHTML = this.value;
   console.log(this.value + "END");
 
-  if(!download_label.classList.contains("active"))
-  {
+  if (!download_label.classList.contains("active")) {
     download_label.classList.toggle("active");
   }
 
@@ -2533,6 +2639,10 @@ ndvi_element.addEventListener("click", function () {
 
   mainChart.resize();
   chart2.resize();
+});
+
+nirv_element.addEventListener("click", function () {
+  console.log("NIRV");
 });
 
 raw_element.addEventListener("click", function () {
@@ -2578,12 +2688,10 @@ duplicate_element_live.addEventListener("click", function () {
 //** HOMESCREEN BUTTON */
 connectDevice.addEventListener("click", function () {
   serialScaleController.init();
-  if(!raw_element_live.classList.contains("selected"))
-  {
+  if (!raw_element_live.classList.contains("selected")) {
     raw_element_live.classList.toggle("selected");
   }
-  if(!duplicate_element_live.classList.contains("selected"))
-  {
+  if (!duplicate_element_live.classList.contains("selected")) {
     duplicate_element_live.classList.toggle("selected");
   }
 });
@@ -2630,7 +2738,7 @@ navigator.serial.addEventListener("disconnect", (e) => {
 
 navigator.serial.getPorts().then((ports) => {
   // Initialize the list of available ports with `ports` on page load.
-  console.log(ports);
+  //console.log(ports);
 });
 
 document.getElementById("read").addEventListener("pointerdown", async () => {
@@ -2646,44 +2754,39 @@ window.addEventListener("mouseover", (event) => {
 
 //** DRAG FUNCTION FOR CONTROL SIDEBAR"S */
 let wrapper = controlSidebar;
-function onDrag({movementX:e,movementY:r}){
-  let t=window.getComputedStyle(wrapper),
-  a=parseInt(t.left),
-  o=parseInt(t.top);
-  wrapper.style.left=`${a+e}px`,
-  wrapper.style.top=`${o+r}px`
+function onDrag({ movementX: e, movementY: r }) {
+  let t = window.getComputedStyle(wrapper),
+    a = parseInt(t.left),
+    o = parseInt(t.top);
+  (wrapper.style.left = `${a + e}px`), (wrapper.style.top = `${o + r}px`);
 }
 
 //** MOUSE EVENTS FOR CONTROL SIDEBARS */
-controlSidebarHeader.addEventListener("mousedown",(e)=>{
+controlSidebarHeader.addEventListener("mousedown", (e) => {
   e.stopPropagation();
-  if(controlSidebar.classList.contains("active"))
-  {
+  if (controlSidebar.classList.contains("active")) {
     wrapper = controlSidebar;
     controlSidebarHeader.classList.add("active"),
-    controlSidebarHeader.addEventListener("mousemove",onDrag)
+      controlSidebarHeader.addEventListener("mousemove", onDrag);
   }
 }),
-controlSidebarHeader_live.addEventListener("mousedown",()=>{
-  if(controlSidebar_live.classList.contains("active"))
-  {
-    wrapper = controlSidebar_live;
-    controlSidebarHeader_live.classList.add("active"),
-    controlSidebarHeader_live.addEventListener("mousemove",onDrag)
-  }
-}),
-document.addEventListener("mouseup",()=>{
-  if(controlSidebar.classList.contains("active"))
-  {
-    controlSidebarHeader.classList.remove("active"),
-    controlSidebarHeader.removeEventListener("mousemove",onDrag)
-  }
-  if(controlSidebar_live.classList.contains("active"))
-  {
-    controlSidebarHeader_live.classList.remove("active"),
-    controlSidebarHeader_live.removeEventListener("mousemove",onDrag)
-  }
-});
+  controlSidebarHeader_live.addEventListener("mousedown", () => {
+    if (controlSidebar_live.classList.contains("active")) {
+      wrapper = controlSidebar_live;
+      controlSidebarHeader_live.classList.add("active"),
+        controlSidebarHeader_live.addEventListener("mousemove", onDrag);
+    }
+  }),
+  document.addEventListener("mouseup", () => {
+    if (controlSidebar.classList.contains("active")) {
+      controlSidebarHeader.classList.remove("active"),
+        controlSidebarHeader.removeEventListener("mousemove", onDrag);
+    }
+    if (controlSidebar_live.classList.contains("active")) {
+      controlSidebarHeader_live.classList.remove("active"),
+        controlSidebarHeader_live.removeEventListener("mousemove", onDrag);
+    }
+  });
 
 update();
 function update() {
