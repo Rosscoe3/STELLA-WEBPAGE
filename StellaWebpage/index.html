@@ -36,6 +36,120 @@
       </div>
     </div>
 
+    <!-- USED TO DOWNLOAD SCREENSHOTS -->
+    <a id="link"></a>
+
+    <!-- HELP SCREEN -->
+    <div class="helpContainer" id="helpContainer">
+      <div class="helpHeader" id="helpHeader">
+        <div class="close-icon" id="help_closeBtn">X</div>
+        <h1>Help</h1>
+        <!-- <h3>Because we can.</h3> -->
+      </div>
+      <div class="helpScroll">
+        <!-- GRAPHS AND INDICES -->
+        <div class="ac">
+          
+          <input class="ac-input" id="ac-1" name="ac-1" type="checkbox" />
+          <label class="ac-label" for="ac-1">Graphs and Indices</label>
+          
+          <article class="ac-text">
+            <div class="ac-sub">
+              <input class="ac-input" id="ac-2" name="ac-2" type="checkbox" />
+              <label class="ac-label" for="ac-2">'RAW'</label>
+              <article class="ac-sub-text">
+                <p>The <b>‘RAW’</b> graph refers to the direct unfiltered data received straight from the device.
+                  It records values in irradiance at the following wavelengths:
+                </p>
+                <p>
+                  <i>Visible</i>: <b>450nm, 500nm, 550nm, 570nm, 600nm, 650nm.</b>
+                </p>
+                <p>
+                  <i>Near Infrared</i>: <b>610nm, 680nm, 730nm, 760nm, 810nm, 860nm.</b>
+                </p>
+                <p>
+                  Toggling <b>‘Visible (filtered)’</b> or <b>‘Infrared (filtered)’</b> on top of the graph will show the current data points filtered through each sensor's calibration curve. 
+                </p>
+              </article>
+            </div>
+            
+            <div class="ac-sub">
+              <input class="ac-input" id="ac-3" name="ac-3" type="checkbox" />
+              <label class="ac-label" for="ac-3">'NDVI'</label>
+              <article class="ac-sub-text">
+                <p><b>'NDVI'</b> <i>aka</i> <b>'Normalized Difference NIR/Red Vegetation Index'</b></p>
+                <p><i>NDVI = (R_NIR - R_RED) / (R_NIR + R_RED)</i></p>
+                <p>The output of NDVI is a range from <b>-1</b> to <b>+1</b> (low-high).
+                  If NDVI returns a <b>negative</b> value, it's highly probable that your subject is water. 
+                  If it returns a value close to <b>+1</b> there’s a good chance it is dense green vegetation. 
+                  Values close to <b>zero</b> means there is likely no vegetation at all.</p>
+                <p>NDVI has found broad applications in remote sensing for agricultural applications for crop biomass assessment and monitoring of the fraction of vegetation cover for a specific field. 
+                  In agriculture, models based on NDVI are developed for prediction of winter wheat yield at large scale. 
+                  In forestry, models for fire danger and using NDVI together with a suite of other biophysical and meteorological variables.</p>
+              </article>
+            </div>    
+            <div class="ac-sub">
+              <input class="ac-input" id="ac-NIRv" name="ac-NIRv" type="checkbox" />
+              <label class="ac-label" for="ac-NIRv">'NIRv'</label>
+              <article class="ac-sub-text">
+                <p><b>'NIRv'</b> <i>aka</i> <b>'Near-infrared reflectance of vegetation (NIRV)'</b></p>
+                <p><i>NIRv = NDVI*NIR</i></p>
+              </article>
+            </div>        
+          </article><!--/ac-text-->
+        </div><!--/ac-->
+  
+        <!-- HOW TO USE THIS APP -->
+        <div class="ac">
+          <input class="ac-input" id="ac-4" name="ac-4" type="checkbox" />
+          <label class="ac-label" for="ac-4">How to use</label>
+          <article class="ac-text">
+            <div class="ac-sub">
+              <input class="ac-input" id="ac-5" name="ac-5" type="checkbox" />
+              <label class="ac-label" for="ac-5">'Connect Device'</label>
+              <article class="ac-sub-text">
+                <p>Content, Content, Content</p>
+              </article>
+            </div>
+            <div class="ac-sub">
+              <input class="ac-input" id="ac-6" name="ac-6" type="checkbox" />
+              <label class="ac-label" for="ac-6">'Upload File'</label>
+              <article class="ac-sub-text">
+                <p>Content, Content, Content</p>
+              </article>
+            </div>
+            
+          </article><!--/ac-text-->
+          
+        </div><!--/ac-->
+  
+        <!-- FAQ -->
+        <div class="ac">
+          <input class="ac-input" id="ac-7" name="ac-7" type="checkbox" />
+          <label class="ac-label" for="ac-7">FAQ</label>
+          <article class="ac-text">
+            <div class="ac-sub">
+              <input class="ac-input" id="ac-8" name="ac-8" type="checkbox" />
+              <label class="ac-label" for="ac-8">How do I download my data?</label>
+              <article class="ac-sub-text">
+                <p>Content, Content, Content</p>
+              </article>
+            </div>
+            <div class="ac-sub">
+              <input class="ac-input" id="ac-9" name="ac-9" type="checkbox" />
+              <label class="ac-label" for="ac-9">'Upload File'</label>
+              <article class="ac-sub-text">
+                <p>Content, Content, Content</p>
+              </article>
+            </div>
+            
+          </article><!--/ac-text-->
+          
+        </div><!--/ac-->
+      </div>
+  
+    </div>
+
     <!-- GRAPHS AND GRAPH CONTROLLERS-->
     <div class="chartCard" id="chartCard">
       <div class="chartBox" id="mainGraph">
@@ -100,10 +214,9 @@
 
         <div class="editContainer">
           <div
-            class="editIcon"
+            class="editIcon active"
             id="downloadBtn"
             title="Download batch data"
-            style="z-index: 99"
           >
             <i class="material-icons w3-large"> download </i>
           </div>
@@ -131,6 +244,17 @@
           <!-- <input type="number" id="edit_start_input" name="quantity" min="1" max="5" value = "1"> -->
         </div>
 
+        <div class="editContainer leftSided">
+          <div class="recordContainer" id="recordContainer">
+            <div class="record active" id="recordButton">
+            </div>
+            <div class="recordingText" id="recordingText"><b>Record</b></div>
+          </div>
+          <div class="editIcon active" id="snapshot" title="Take a screenshot of the current graph">
+            <i class="material-icons w3-xlarge"> camera_alt </i>
+          </div>
+        </div>
+
         <div class="modeContainer">
           <div
             class="dataMode selected"
@@ -156,9 +280,9 @@
             <b>Infrared (filtered)</b>
           </div>
 
-          <div class="record" id="recordButton">
+          <!-- <div class="record" id="recordButton">
             <div class="recordingText" id="recordingText"><b>Record</b></div>
-          </div>
+          </div> -->
         </div>
       </div>
       <div class="chartBox" id="calcGraph">
@@ -175,17 +299,39 @@
           </div>
         </div>
       </div>
+      <div class="chartBox" id="NIRvGraph">
+        <canvas id="graph_NIRv"> </canvas>
+        <div class="editContainer">
+          <div
+            class="editIcon active"
+            id="visibility_nirv"
+            title="Toggle data labels"
+          >
+            <i class="material-icons w3-large" id="visibleIcon_nirv">
+              visibility
+            </i>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- MENU BUTTON -->
-    <div class="newFile" id="menu" style="top: 0%">
-      <!-- <b>Menu</b> -->
-      <i class="material-icons w3-xlarge"> home </i>
-    </div>
 
-    <!-- NDVI BUTTON -->
-    <div class="newFile" style="left: 0%">
-      <b>NDVI</b>
+    <div class="editContainer disable" id="menuContainer" style="top: 1%; right: 1%;">
+      <div class="editIcon" id="help" 
+      style=
+      "height: 2vw;
+      width: 2vw;">
+        <!-- <b>Menu</b> -->
+        <i class="material-icons w3-xlarge" style="font-size: 2vw;"> help_outline </i>
+      </div>
+      <div class="editIcon" id="menu" 
+      style=
+      "height: 2vw;
+      width: 2vw;">
+        <!-- <b>Menu</b> -->
+        <i class="material-icons w3-xlarge" style="font-size: 2vw;"> home </i>
+      </div>
     </div>
 
     <!-- SCREEN RECORDING -->
@@ -264,21 +410,19 @@
       <h1 id="dateHeader">2022/12/05</h1>
       <h1 style="font-size: 100%">distance(cm):</h1>
       <div class="batchGrid" id="graphs">
-        <div
-          id="graphs_raw"
-          class="indices selected"
-          title="RAW data from the device"
-        >
-          <i class="material-icons w3-large" id="help_raw">help_outline</i>
-          <div>RAW</div>
+        <div id="graphs_raw" class="active selected" title="RAW data from the device">
+          RAW
         </div>
         <div
           id="graphs_ndvi"
+          class="active"
           title="An indicator of density and health in vegetation"
         >
           NDVI
         </div>
-        <div id="graphs_nirv">NIRv</div>
+        <div id="graphs_nirv" class=" ">
+          NIRv
+        </div>
       </div>
       <div class="batchGrid" id="batchGrid"></div>
       <div class="extraInfo">

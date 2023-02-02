@@ -3,6 +3,7 @@ import "./style.css";
 const ctx = document.getElementById("graph").getContext("2d");
 const ctx2 = document.getElementById("graph2").getContext("2d");
 const ctx3 = document.getElementById("graph3").getContext("2d");
+const ctx4 = document.getElementById("graph_NIRv").getContext("2d");
 
 //** GRADIENT FILL */
 let visibleGradient = ctx.createLinearGradient(0, 0, 500, 0);
@@ -25,6 +26,10 @@ let infraredGradient = ctx.createLinearGradient(0, 0, 800, 0);
 infraredGradient.addColorStop(0, "rgba(255, 0, 0, 1)");
 infraredGradient.addColorStop(1, "rgba(173, 173, 173, 0.75)");
 
+let ndviGradient = ctx2.createLinearGradient(0, 0, 0, 700);
+ndviGradient.addColorStop(0, "rgba(89, 255, 133, 1)");
+ndviGradient.addColorStop(1, "rgba(126, 148, 0)");
+
 //** LIVE DATA */
 //** FILE DROP JS */
 let dropArea = document.getElementById("drop-area");
@@ -36,7 +41,10 @@ let dataTimeIndex = 0;
 let animationTime = 1500;
 
 //** HTML ELEMENTS */
+let menuContainer = document.getElementById("menuContainer");
 let menuElement = document.getElementById("menu");
+let helpButton = document.getElementById("help");
+
 let upload_file = document.getElementById("upload_file");
 let landing = document.getElementById("landing");
 
@@ -50,14 +58,15 @@ let raw_element = document.getElementById("graphs_raw");
 let nirv_element = document.getElementById("graphs_nirv");
 
 //** HELP BUTTONS FOR PICKING GRAPHS */
-let help_icon_raw = document.getElementById("help_raw");
-
 let raw_element_live = document.getElementById("graphs_raw_live");
 let duplicate_element_live = document.getElementById("graphs_duplicate_live");
 
 let connectDevice = document.getElementById("plugInDevice");
 let recordButton = document.getElementById("recordButton");
+let recordContainer = document.getElementById("recordContainer");
 let recordingText = document.getElementById("recordingText");
+let snapShotIcon = document.getElementById("snapshot");
+
 let readDeviceBtn = document.getElementById("read");
 let recording_live_label = document.getElementById("recording_label");
 let controlSidebar = document.getElementById("controlSidebar");
@@ -83,6 +92,9 @@ let toggleUnitLabels_live_icon = document.getElementById("units_live_toggle");
 let raw_labels_visible = true;
 let ndvi_visibility_icon = document.getElementById("visibility_ndvi");
 let ndvi_labels_visible = true;
+
+let nirv_visibility_icon = document.getElementById("visibility_nirv");
+let nirv_labels_visible = true;
 
 //** EDIT RANGE */
 let trim_icon = document.getElementById("trimIcon");
@@ -111,6 +123,29 @@ const arrowRight = document.getElementById("arrowRight");
 const arrowLeft = document.getElementById("arrowLeft");
 const playPauseContainer = document.getElementById("timelineContainer");
 
+//** HELP SCREEN - ACCORDIAN FUNCTIONALITY */
+var acc = document.getElementsByClassName("accordion");
+let help_closeBtn = document.getElementById("help_closeBtn");
+let menu_help = document.getElementById("help");
+let helpScreen = document.getElementById("helpContainer");
+let helpHeader = document.getElementById("helpHeader");
+
+for (var i = 0; i < acc.length; i++) {
+  acc[i].addEventListener("click", function() {
+    /* Toggle between adding and removing the "active" class,
+    to highlight the button that controls the panel */
+    this.classList.toggle("active");
+
+    /* Toggle between hiding and showing the active panel */
+    var panel = this.nextElementSibling;
+    if (panel.style.display === "block") {
+      panel.style.display = "none";
+    } else {
+      panel.style.display = "block";
+    }
+  });
+}
+
 //** SERIAL PORTS */
 class SerialScaleController {
   constructor() {
@@ -136,6 +171,8 @@ class SerialScaleController {
 
         controlSidebar_live.classList.toggle("active");
         menuElement.classList.toggle("active");
+        menuContainer.classList.toggle("disable");
+        helpButton.classList.toggle("active");
         landing.classList.toggle("active");
         duplicateScreen.classList.toggle("active");
         readDeviceBtn.classList.toggle("active");
@@ -154,6 +191,8 @@ class SerialScaleController {
           console.log("Port is already open");
           getSerialMessage();
           menuElement.classList.toggle("active");
+          menuContainer.classList.toggle("disable");
+          helpButton.classList.toggle("active");
           landing.classList.toggle("active");
           duplicateScreen.classList.toggle("active");
           readDeviceBtn.classList.toggle("active");
@@ -194,6 +233,7 @@ var serialTimeout;
 const serialScaleController = new SerialScaleController();
 var deviceConnected = false;
 var paused = false;
+var calibrationBatchSelected = false;
 var readTime = 500;
 
 //** VARIOUS VARIABLES */
@@ -576,8 +616,8 @@ var data2 = {
       label: "NDVI",
       fill: false,
       hidden: false,
-      backgroundColor: "rgb(255,0,0)",
-      borderColor: "rgb(255,0,0)",
+      backgroundColor: ndviGradient,
+      borderColor: ndviGradient,
       lineTension: 0.25,
       pointBackgroundColor: "rgb(189, 195, 199)",
     },
@@ -585,76 +625,18 @@ var data2 = {
 };
 
 //** DATA SETUP FOR LIVE CHART */
-var data4 = {
+var data_NIRv = {
   datasets: [
-    //** VISIBLE dataset 13*/
+    //** NIRv */
     {
-      data: [
-        {
-          x: 450,
-          y: visibleStartData[0],
-        },
-        {
-          x: 500,
-          y: visibleStartData[1],
-        },
-        {
-          x: 550,
-          y: visibleStartData[2],
-        },
-        {
-          x: 570,
-          y: visibleStartData[3],
-        },
-        {
-          x: 600,
-          y: visibleStartData[4],
-        },
-        {
-          x: 650,
-          y: visibleStartData[5],
-        },
-      ],
+      data: [],
       showLine: true,
-      label: "Visible",
-      fill: true,
-      backgroundColor: visibleGradient,
-      borderColor: "rgb(255, 255, 255)",
-      pointBackgroundColor: "rgb(189, 195, 199)",
-    },
-    //** INFRARED */
-    {
-      data: [
-        {
-          x: 610,
-          y: infraredStartData[0],
-        },
-        {
-          x: 680,
-          y: infraredStartData[1],
-        },
-        {
-          x: 730,
-          y: infraredStartData[2],
-        },
-        {
-          x: 760,
-          y: infraredStartData[3],
-        },
-        {
-          x: 810,
-          y: infraredStartData[4],
-        },
-        {
-          x: 860,
-          y: infraredStartData[5],
-        },
-      ],
-      showLine: true,
-      label: "Infrared",
-      fill: true,
-      backgroundColor: infraredGradient,
-      borderColor: "rgb(255, 255, 255)",
+      label: "NIRv",
+      fill: false,
+      hidden: false,
+      backgroundColor: "rgb(255,0,0)",
+      borderColor: "rgb(255,0,0)",
+      lineTension: 0.25,
       pointBackgroundColor: "rgb(189, 195, 199)",
     },
   ],
@@ -745,7 +727,8 @@ const config = {
     hitRadius: 10,
     hoverRadius: 8,
     spanGaps: true,
-    responsive: true,
+    responsive: false,
+    maintainAspectRatio: false,
     tension: 0,
     plugins: {
       customCanvasBackgroundColor: {
@@ -876,7 +859,8 @@ const config2 = {
     hitRadius: 10,
     hoverRadius: 8,
     spanGaps: false,
-    responsive: true,
+    responsive: false,
+    maintainAspectRatio: false,
     tension: 0,
     plugins: {
       customCanvasBackgroundColor: {
@@ -930,14 +914,115 @@ const config2 = {
     },
     scales: {
       y: {
+        max : 1,    
+        min : -1,
+        title: {
+          display: true,
+          text: "NDVI",
+          font: {
+            size: 15,
+          },
+        },
+      },
+      x: {
+        position: "bottom",
+        // ticks: {
+        //   callback: function (value){
+        //     return value + " nm";
+        //   }
+        // },
+        title: {
+          display: true,
+          text: "Time",
+          align: "center",
+          font: {
+            size: 15,
+          },
+        },
+        type: "time",
+        min: "20211017T143405Z",
+        max: "20221117T143405Z",
+        parsing: false,
+      },
+    },
+  },
+  plugins: [ChartDataLabels, plugin],
+};
+
+//** CONFIG SETUP FOR NIRv CHART */
+const config_NIRv = {
+  type: "scatter",
+  data: data_NIRv,
+  options: {
+    radius: 3,
+    hitRadius: 10,
+    hoverRadius: 8,
+    spanGaps: false,
+    responsive: false,
+    maintainAspectRatio: false,
+    tension: 0,
+    plugins: {
+      customCanvasBackgroundColor: {
+        color: "white",
+      },
+      title: {
+        display: true,
+        text: "NIRv",
+      },
+      legend: {
+        display: false,
+      },
+      //** STYLING FOR DATA LABELS */
+      datalabels: {
+        formatter: (value) => {
+          if (nirv_labels_visible) {
+            return Math.round((value.y + Number.EPSILON) * 100) / 100;
+          } else {
+            return "";
+          }
+        },
+        color: "white",
+        anchor: "end",
+        align: "top",
+        backgroundColor: function (context) {
+          if (nirv_labels_visible) {
+            return "rgba(0, 0, 0, 0.75)";
+          } else {
+            return "rgba(0, 0, 0, 0)";
+          }
+        },
+        borderWidth: 0.5,
+        borderRadius: 5,
+        font: {
+          weight: "bold",
+        },
+      },
+    },
+    //** ADDS NM to the Y axis lables */
+    animation: {
+      onComplete: () => {
+        delayed = true;
+      },
+      delay: (context) => {
+        let delay = 0;
+        if (context.type === "data" && context.mode === "default" && !delayed) {
+          delay = context.dataIndex * 75 + context.datasetIndex * 25;
+        }
+        return delay;
+      },
+    },
+    scales: {
+      y: {
         // ticks: {
         //   callback: function (value){
         //     return value + "μW/cm²";
         //   }
         // },
+        // max : 1,    
+        // min : -1,
         title: {
           display: true,
-          text: "NDVI",
+          text: "NIRv",
           font: {
             size: 15,
           },
@@ -977,7 +1062,8 @@ const config3 = {
     hitRadius: 10,
     hoverRadius: 8,
     spanGaps: true,
-    responsive: true,
+    responsive: false,
+    maintainAspectRatio: false,
     tension: 0,
     plugins: {
       customCanvasBackgroundColor: {
@@ -1077,8 +1163,10 @@ const config3 = {
 
 //** CHART INSTANTIATION */
 const mainChart = new Chart(ctx, config);
-var chart2 = new Chart(ctx2, config2);
+const chart2 = new Chart(ctx2, config2);
+const NIRv_chart = new Chart(ctx4, config_NIRv);
 const liveChart = new Chart(ctx3, config3);
+
 
 init();
 function init() {
@@ -1123,8 +1211,10 @@ upload_file.addEventListener("input", function () {
     rawData_element.classList.toggle("active");
     visible_filter_element.classList.toggle("active");
     infrared_filter_element.classList.toggle("active");
-    recordButton.classList.toggle("active");
+    recordContainer.classList.toggle("active");
     menuElement.classList.toggle("active");
+    menuContainer.classList.toggle("disable");
+    helpButton.classList.toggle("active");
     landing.classList.toggle("active");
 
     graphGradients();
@@ -1390,6 +1480,30 @@ function updateChart(backward, index) {
       };
     }
 
+    //** UPDATE NIRv */
+    if(calibrationBatchSelected)
+    {
+      for (let i = 0; i < currentBatchArray.length; i++) {
+        //** GRAB LAST VALUE OF ARRAY TO SET THE MAX TIMESTAMP OF CHART */
+        if (i == currentBatchArray.length - 1) {
+          NIRv_chart.options.scales.x.max = currentBatchArray[i].timestamp;
+        }
+        //** GRAB FIRST VALUE OF ARRAY TO SET THE MIN TIMESTAMP OF CHART */
+        else if (i == 0) {
+          NIRv_chart.options.scales.x.min = currentBatchArray[i].timestamp;
+        }
+  
+        NIRv_chart.data.datasets[0].data[i] = {
+          x: currentBatchArray[i].timestamp,
+          // x: parseFloat(currentBatchArray[i].decimal_hour),
+          y: currentBatchArray[i].NIRv,
+        };
+  
+      }
+      console.log("GRAPHED NIRv");
+    }
+    
+
     //** UPDATE EXTRA INFO LABELS */
 
     dateHeader_label.innerHTML =
@@ -1428,6 +1542,7 @@ function updateChart(backward, index) {
     mainChart.update();
     chart2.update();
     liveChart.update();
+    NIRv_chart.update();
 
     //** CALLS AN UPDATE FUNCTION */
     if (animPlay) {
@@ -1929,6 +2044,7 @@ function addBatches(dataArray) {
     const div = document.createElement("div");
     var div2 = document.createElement("div");
     div.id = "batchNmb";
+    div.classList.add("active");
 
     //** BATCH NUMBER CLICK FUNCTION */
     div.onclick = function () {
@@ -1967,9 +2083,9 @@ function addBatches(dataArray) {
         editRange_start.value = 1;
         editRange_end.value = currentBatchArray.length;
 
-        if (download_label.classList.contains("active")) {
-          download_label.classList.toggle("active");
-        }
+        // if (download_label.classList.contains("active")) {
+        //   download_label.classList.toggle("active");
+        // }
 
         editRange_thumb_start.style.left = "0%";
         editRange_thumb_end.style.left = "100%";
@@ -1979,17 +2095,26 @@ function addBatches(dataArray) {
           "  UID: " + currentBatchArray[0].UID;
         mainChart.update();
 
+
+        //** CLEAR DATA VALUES TO ALLOW FOR NEW DATA TO POPULATE THE GRAPHS */
         chart2.data.labels = Object.keys(data);
         chart2.data.datasets.forEach((dataset) => {
           dataset.data = Object.values(data);
         });
-
-        //chart2.data.datasets[0].data.pop();
+        NIRv_chart.data.labels = Object.keys(data);
+        NIRv_chart.data.datasets.forEach((dataset) => {
+          dataset.data = Object.values(data);
+        });
 
         chart2.update();
-
+        NIRv_chart.update();
         clearTimeout(animWaitFunc);
         updateChart();
+
+        if(calibrationBatchSelected)
+        {
+          convertToReflectance();
+        }
       }
     };
 
@@ -2024,7 +2149,13 @@ function addBatches(dataArray) {
         this.classList.toggle("selected");
         let calibrationArray = dataArrayBatches[this.index];
 
+        if(!nirv_element.classList.contains("active"))
+        {
+          nirv_element.classList.toggle("active");
+        }
+
         console.log(calibrationArray);
+        calibrationBatchSelected = true;
 
         averageCalibrationArray(calibrationArray);
       }
@@ -2204,9 +2335,9 @@ function convertToReflectance() {
   //** area = PI * Radius^2 */
   let area = Math.PI * Math.pow(radius, 2);
 
-  console.log("distance: " + distance);
-  console.log("radius: " + radius);
-  console.log("area: " + area);
+  // console.log("distance: " + distance);
+  // console.log("radius: " + radius);
+  // console.log("area: " + area);
 
   //** CALIBRATION RADIANCE CALCULATION */
   //** radiance = irradiance * distance²/Area */
@@ -2303,7 +2434,6 @@ function convertToReflectance() {
 }
 
 function calculateNIRV() {
-  var NIRV_Array = [];
 
   for (let i = 0; i < currentBatchArray.length; i++) {
     //** NIRv Calculation */
@@ -2314,13 +2444,13 @@ function calculateNIRV() {
           currentBatchArray[i].nir810_reflectance)) *
       currentBatchArray[i].nir810_reflectance;
 
-    // NIRV_Array[i] = NIRv;
     currentBatchArray[i].NIRv = NIRv;
-    console.log("680 Reflectance: " + currentBatchArray[i].nir680_reflectance);
-    console.log("810 Reflectance: " + currentBatchArray[i].nir810_reflectance);
+    // console.log("680 Reflectance: " + currentBatchArray[i].nir680_reflectance);
+    // console.log("810 Reflectance: " + currentBatchArray[i].nir810_reflectance);
     console.log("NIRv: " + NIRv);
   }
 
+  updateChart();
   console.log(currentBatchArray);
 }
 
@@ -2332,6 +2462,8 @@ function getTanFromDegrees(degrees) {
 menuElement.addEventListener("click", function (ev) {
   ev.stopPropagation(); // prevent event from bubbling up to .container
   menuElement.classList.toggle("active");
+  menuContainer.classList.toggle("disable");
+  helpButton.classList.toggle("active");
 
   if (controlSidebar.classList.contains("active")) {
     controlSidebar.classList.toggle("active");
@@ -2361,7 +2493,7 @@ menuElement.addEventListener("click", function (ev) {
     rawData_element.classList.toggle("active");
     visible_filter_element.classList.toggle("active");
     infrared_filter_element.classList.toggle("active");
-    recordButton.classList.toggle("active");
+    recordContainer.classList.toggle("active");
     // document.getElementById("mainGraph").classList.toggle("active");
     if (document.getElementById("mainGraph").classList.contains("active")) {
       document.getElementById("mainGraph").classList.toggle("active");
@@ -2376,7 +2508,7 @@ menuElement.addEventListener("click", function (ev) {
 function updateGraphGrid() {
   let myElement;
 
-  //** CHOOSE MY ELEMENT */
+  //** CHOOSE MY ELEMENT, WHETHER IN CONNECT_DEVICE OR UPLOAD_FILE MODE */
   if (controlSidebar.classList.contains("active")) {
     myElement = document.getElementById("chartCard");
   } else if (controlSidebar_live.classList.contains("active")) {
@@ -2393,9 +2525,11 @@ function updateGraphGrid() {
   }
   if (counter < 2) {
     myElement.style.gridTemplateColumns = "minmax(200px, 1fr)";
+    myElement.style.gridTemplateRows = "auto";
   } else if (counter == 2) {
     myElement.style.gridTemplateColumns =
       "minmax(200px, 1fr) minmax(200px, 1fr)";
+    myElement.style.gridTemplateRows = "auto";
   } else if (counter > 2) {
     myElement.style.gridTemplateColumns =
       "minmax(200px, 1fr) minmax(200px, 1fr)";
@@ -2519,6 +2653,19 @@ ndvi_visibility_icon.addEventListener("click", function () {
   chart2.update();
 });
 
+nirv_visibility_icon.addEventListener("click", function () {
+  if (nirv_visibility_icon.classList.contains("selected")) {
+    nirv_visibility_icon.classList.toggle("selected");
+    nirv_labels_visible = true;
+    document.getElementById("visibleIcon_nirv").innerHTML = "visibility";
+  } else {
+    nirv_visibility_icon.classList.toggle("selected");
+    nirv_labels_visible = false;
+    document.getElementById("visibleIcon_nirv").innerHTML = "visibility_off";
+  }
+  NIRv_chart.update();
+});
+
 raw_visibility_live_icon.addEventListener("click", function () {
   if (raw_visibility_live_icon.classList.contains("selected")) {
     raw_visibility_live_icon.classList.toggle("selected");
@@ -2548,12 +2695,6 @@ toggleUnitLabels_live_icon.addEventListener("click", function () {
     toggleUnitLabels_live_icon.classList.toggle("selected");
   }
   liveChart.update();
-});
-
-//** HELP ICON's */
-help_icon_raw.addEventListener("click", function (e) {
-  e.stopPropagation();
-  console.log("HELP");
 });
 
 //** TRIM BUTTON FOR EDITING DATA */
@@ -2594,9 +2735,9 @@ editRange_start.addEventListener("input", function () {
   children[11].children[0].innerHTML = this.value;
   console.log(this.value + "START BUTTON");
 
-  if (!download_label.classList.contains("active")) {
-    download_label.classList.toggle("active");
-  }
+  // if (!download_label.classList.contains("active")) {
+  //   download_label.classList.toggle("active");
+  // }
 
   //** UPDATES THE CHART AS WELL */
   updateChart(false, this.value);
@@ -2618,9 +2759,9 @@ editRange_end.addEventListener("input", function () {
   children[13].children[0].innerHTML = this.value;
   console.log(this.value + "END");
 
-  if (!download_label.classList.contains("active")) {
-    download_label.classList.toggle("active");
-  }
+  // if (!download_label.classList.contains("active")) {
+  //   download_label.classList.toggle("active");
+  // }
 
   //** UPDATES THE CHART AS WELL */
   updateChart(false, this.value);
@@ -2633,6 +2774,7 @@ ndvi_element.addEventListener("click", function () {
     mainChart.update();
   }
 
+  //** TOGGLE ON GRAPH */
   document.getElementById("calcGraph").classList.toggle("active");
   updateGraphGrid();
   updateChartLabels();
@@ -2642,7 +2784,18 @@ ndvi_element.addEventListener("click", function () {
 });
 
 nirv_element.addEventListener("click", function () {
-  console.log("NIRV");
+  nirv_element.classList.toggle("selected");
+  if (!nirv_element.classList.contains("selected")) {
+    NIRv_chart.update();
+  }
+  //** TOGGLE ON GRAPH */
+  document.getElementById("NIRvGraph").classList.toggle("active");
+  updateGraphGrid();
+  updateChartLabels();
+
+  NIRv_chart.resize();
+  mainChart.resize();
+  chart2.resize();
 });
 
 raw_element.addEventListener("click", function () {
@@ -2700,7 +2853,7 @@ about_button.addEventListener("click", function () {
   window.open("https://landsat.gsfc.nasa.gov/stella/", "_blank");
 });
 
-recordButton.addEventListener("click", function () {
+recordContainer.addEventListener("click", function () {
   recordButton.classList.toggle("recording");
   if (recordButton.classList.contains("recording")) {
     startTimer();
@@ -2713,6 +2866,15 @@ recordButton.addEventListener("click", function () {
     timePassed = 0;
     recordingText.classList.toggle("active");
   }
+});
+
+snapShotIcon.addEventListener('click', function () {
+  var image = document.getElementById("graph").toDataURL("image/png").replace("image/png", "image/octet-stream");  // here is the most important part because if you dont replace you will get a DOM 18 exception.
+
+  var link = document.getElementById('link');
+  link.setAttribute('download', 'stella_graph_RAW.png');
+  link.setAttribute('href', image);
+  link.click();
 });
 
 //** SERIAL PORT FUNCTIONALITY */
@@ -2731,6 +2893,8 @@ navigator.serial.addEventListener("disconnect", (e) => {
     document.getElementById("liveGraph").classList.toggle("active");
     duplicateScreen.classList.toggle("active");
     menuElement.classList.toggle("active");
+    menuContainer.classList.toggle("disable");
+    helpButton.classList.toggle("active");
     landing.classList.toggle("active");
     controlSidebar_live.classList.toggle("active");
   }
@@ -2752,6 +2916,19 @@ window.addEventListener("mouseover", (event) => {
   document.getElementById("descriptionText").innerHTML = event.target.localName;
 });
 
+//** MENU HELP BUTTON */
+menu_help.addEventListener("click", function(){
+  helpScreen.classList.toggle("active");
+});
+
+//** CLOSE BUTTON FOR HELP SCREEN */
+help_closeBtn.addEventListener("click", function(){
+  if(helpScreen.classList.contains("active"))
+  {
+    helpScreen.classList.toggle("active");
+  }
+});
+
 //** DRAG FUNCTION FOR CONTROL SIDEBAR"S */
 let wrapper = controlSidebar;
 function onDrag({ movementX: e, movementY: r }) {
@@ -2770,29 +2947,42 @@ controlSidebarHeader.addEventListener("mousedown", (e) => {
       controlSidebarHeader.addEventListener("mousemove", onDrag);
   }
 }),
-  controlSidebarHeader_live.addEventListener("mousedown", () => {
-    if (controlSidebar_live.classList.contains("active")) {
-      wrapper = controlSidebar_live;
-      controlSidebarHeader_live.classList.add("active"),
-        controlSidebarHeader_live.addEventListener("mousemove", onDrag);
-    }
-  }),
-  document.addEventListener("mouseup", () => {
-    if (controlSidebar.classList.contains("active")) {
-      controlSidebarHeader.classList.remove("active"),
-        controlSidebarHeader.removeEventListener("mousemove", onDrag);
-    }
-    if (controlSidebar_live.classList.contains("active")) {
-      controlSidebarHeader_live.classList.remove("active"),
-        controlSidebarHeader_live.removeEventListener("mousemove", onDrag);
-    }
-  });
+controlSidebarHeader_live.addEventListener("mousedown", () => {
+  if (controlSidebar_live.classList.contains("active")) {
+    wrapper = controlSidebar_live;
+    controlSidebarHeader_live.classList.add("active"),
+      controlSidebarHeader_live.addEventListener("mousemove", onDrag);
+  }
+}),
+helpHeader.addEventListener("mousedown", (e) => {
+  e.stopPropagation();
+  if (helpScreen.classList.contains("active")) {
+    wrapper = helpScreen;
+    helpScreen.classList.add("active"),
+    helpHeader.addEventListener("mousemove", onDrag);
+  }
+});
+document.addEventListener("mouseup", () => {
+  if (controlSidebar.classList.contains("active")) {
+    controlSidebarHeader.classList.remove("active"),
+      controlSidebarHeader.removeEventListener("mousemove", onDrag);
+  }
+  if (controlSidebar_live.classList.contains("active")) {
+    controlSidebarHeader_live.classList.remove("active"),
+      controlSidebarHeader_live.removeEventListener("mousemove", onDrag);
+  }
+  if (helpScreen.classList.contains("active")) {
+    helpHeader.removeEventListener("mousemove", onDrag);
+  }
+});
+
 
 update();
 function update() {
   mainChart.resize();
   chart2.resize();
   liveChart.resize();
+  NIRv_chart.resize();
 
   setTimeout(() => {
     update();
