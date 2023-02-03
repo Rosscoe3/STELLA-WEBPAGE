@@ -1239,7 +1239,6 @@ div[slider] > input[type=range]::-ms-tooltip {
   width: 30%;
   top: 9%;
   right: 4.5%;
-  
 
   outline: solid 2px rgba(0, 0, 0, 1);
   background-color: white;
@@ -1254,7 +1253,7 @@ div[slider] > input[type=range]::-ms-tooltip {
   opacity: 0%;
 
   overflow: auto;
-  resize: both;
+  resize: vertical;
 
   min-width: 25%;
   max-width: 90%;

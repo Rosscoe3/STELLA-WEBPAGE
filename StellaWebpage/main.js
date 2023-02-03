@@ -65,7 +65,10 @@ let connectDevice = document.getElementById("plugInDevice");
 let recordButton = document.getElementById("recordButton");
 let recordContainer = document.getElementById("recordContainer");
 let recordingText = document.getElementById("recordingText");
+
 let snapShotIcon = document.getElementById("snapshot");
+let snapShotIcon_2 = document.getElementById("snapshot_2");
+let snapShotIcon_3 = document.getElementById("snapshot_3");
 
 let readDeviceBtn = document.getElementById("read");
 let recording_live_label = document.getElementById("recording_label");
@@ -276,12 +279,11 @@ var infrared = [...Array(1)].map((e) => Array(1));
 var calibration_array = [];
 
 //** RECORD VIDEO */
-var recordedElement = document.getElementById("graph");
-//let video = document.querySelector("video");
-var videoStream = recordedElement.captureStream(30);
-var mediaRecorder = new MediaRecorder(videoStream);
+let recordedElement = document.getElementById("graph2");
+let videoStream = recordedElement.captureStream(30);
+let mediaRecorder = new MediaRecorder(videoStream);
 
-var chunks = [];
+let chunks = [];
 mediaRecorder.ondataavailable = function (e) {
   chunks.push(e.data);
 };
@@ -1245,6 +1247,7 @@ upload_file.addEventListener("input", function () {
       }
 
       batchesContainer.innerHTML = "";
+      console.log(dataArrayBatches);
       addBatches(dataArrayBatches);
 
       //** CLEAR THE ARRAY IF IT IS FULL */
@@ -2873,6 +2876,24 @@ snapShotIcon.addEventListener('click', function () {
 
   var link = document.getElementById('link');
   link.setAttribute('download', 'stella_graph_RAW.png');
+  link.setAttribute('href', image);
+  link.click();
+});
+
+snapShotIcon_2.addEventListener('click', function () {
+  var image = document.getElementById("graph2").toDataURL("image/png").replace("image/png", "image/octet-stream");  // here is the most important part because if you dont replace you will get a DOM 18 exception.
+
+  var link = document.getElementById('link');
+  link.setAttribute('download', 'stella_graph_NDVI.png');
+  link.setAttribute('href', image);
+  link.click();
+});
+
+snapShotIcon_3.addEventListener('click', function () {
+  var image = document.getElementById("graph_NIRv").toDataURL("image/png").replace("image/png", "image/octet-stream");  // here is the most important part because if you dont replace you will get a DOM 18 exception.
+
+  var link = document.getElementById('link');
+  link.setAttribute('download', 'stella_graph_NIRv.png');
   link.setAttribute('href', image);
   link.click();
 });
