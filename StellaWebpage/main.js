@@ -4,6 +4,7 @@ const ctx = document.getElementById("graph").getContext("2d");
 const ctx2 = document.getElementById("graph2").getContext("2d");
 const ctx3 = document.getElementById("graph3").getContext("2d");
 const ctx4 = document.getElementById("graph_NIRv").getContext("2d");
+const ctx5 = document.getElementById("graph_SR").getContext("2d");
 
 //** GRADIENT FILL */
 let visibleGradient = ctx.createLinearGradient(0, 0, 500, 0);
@@ -27,8 +28,16 @@ infraredGradient.addColorStop(0, "rgba(255, 0, 0, 1)");
 infraredGradient.addColorStop(1, "rgba(173, 173, 173, 0.75)");
 
 let ndviGradient = ctx2.createLinearGradient(0, 0, 0, 700);
-ndviGradient.addColorStop(0, "rgba(89, 255, 133, 1)");
-ndviGradient.addColorStop(1, "rgba(126, 148, 0)");
+ndviGradient.addColorStop(0, "rgba(3, 252, 49, 1)");
+ndviGradient.addColorStop(1, "rgba(194, 155, 0)");
+
+let nirvGradient = ctx4.createLinearGradient(0, 0, 0, 700);
+nirvGradient.addColorStop(0, "rgb(252, 187, 5)");
+nirvGradient.addColorStop(1, "rgb(194, 85, 2)");
+
+let srGradient = ctx5.createLinearGradient(0, 0, 0, 700);
+srGradient.addColorStop(0, "rgb(250, 171, 2)");
+srGradient.addColorStop(1, "rgb(4, 185, 217)");
 
 //** LIVE DATA */
 //** FILE DROP JS */
@@ -56,6 +65,7 @@ let infrared_filter_element = document.getElementById("infrared_filter");
 let ndvi_element = document.getElementById("graphs_ndvi");
 let raw_element = document.getElementById("graphs_raw");
 let nirv_element = document.getElementById("graphs_nirv");
+let sr_element = document.getElementById("graphs_SR");
 
 //** HELP BUTTONS FOR PICKING GRAPHS */
 let raw_element_live = document.getElementById("graphs_raw_live");
@@ -69,6 +79,7 @@ let recordingText = document.getElementById("recordingText");
 let snapShotIcon = document.getElementById("snapshot");
 let snapShotIcon_2 = document.getElementById("snapshot_2");
 let snapShotIcon_3 = document.getElementById("snapshot_3");
+let snapShotIcon_4 = document.getElementById("snapshot_4");
 
 let readDeviceBtn = document.getElementById("read");
 let recording_live_label = document.getElementById("recording_label");
@@ -98,6 +109,9 @@ let ndvi_labels_visible = true;
 
 let nirv_visibility_icon = document.getElementById("visibility_nirv");
 let nirv_labels_visible = true;
+
+let sr_visibility_icon = document.getElementById("visibility_sr");
+let sr_labels_visible = true;
 
 //** EDIT RANGE */
 let trim_icon = document.getElementById("trimIcon");
@@ -626,7 +640,7 @@ var data2 = {
   ],
 };
 
-//** DATA SETUP FOR LIVE CHART */
+//** DATA SETUP FOR NIRv CHART */
 var data_NIRv = {
   datasets: [
     //** NIRv */
@@ -636,8 +650,25 @@ var data_NIRv = {
       label: "NIRv",
       fill: false,
       hidden: false,
-      backgroundColor: "rgb(255,0,0)",
-      borderColor: "rgb(255,0,0)",
+      backgroundColor: nirvGradient,
+      borderColor: nirvGradient,
+      lineTension: 0.25,
+      pointBackgroundColor: nirvGradient,
+    },
+  ],
+};
+
+//** DATA SETUP FOR SIMPLE RATIO CHART */
+var data_SR = {
+  datasets: [
+    {
+      data: [],
+      showLine: true,
+      label: "SR",
+      fill: false,
+      hidden: false,
+      backgroundColor: srGradient,
+      borderColor: srGradient,
       lineTension: 0.25,
       pointBackgroundColor: "rgb(189, 195, 199)",
     },
@@ -833,11 +864,6 @@ const config = {
       x: {
         type: "linear",
         position: "bottom",
-        // ticks: {
-        //   callback: function (value){
-        //     return value + " nm";
-        //   }
-        // },
         title: {
           display: true,
           text: "Wavelength (nm)",
@@ -928,17 +954,28 @@ const config2 = {
       },
       x: {
         position: "bottom",
-        // ticks: {
-        //   callback: function (value){
-        //     return value + " nm";
-        //   }
-        // },
+        ticks: {
+          maxTicksLimit: 5
+        },
         title: {
           display: true,
           text: "Time",
           align: "center",
           font: {
             size: 15,
+          },
+        },
+        time: {
+          displayFormats: {
+             'millisecond':'HH:mm:ss',
+             'second': 'HH:mm:ss',
+             'minute': 'HH:mm:ss',
+             'hour': 'HH:mm:ss',
+             'day': 'HH:mm:ss',
+             'week': 'HH:mm:ss',
+             'month': 'HH:mm:ss',
+             'quarter': 'HH:mm:ss',
+             'year': 'HH:mm:ss',
           },
         },
         type: "time",
@@ -1032,17 +1069,144 @@ const config_NIRv = {
       },
       x: {
         position: "bottom",
-        // ticks: {
-        //   callback: function (value){
-        //     return value + " nm";
-        //   }
-        // },
+        ticks: {
+          maxTicksLimit: 5
+        },
         title: {
           display: true,
           text: "Time",
           align: "center",
           font: {
             size: 15,
+          },
+        },
+        time: {
+          displayFormats: {
+             'millisecond':'HH:mm:ss',
+             'second': 'HH:mm:ss',
+             'minute': 'HH:mm:ss',
+             'hour': 'HH:mm:ss',
+             'day': 'HH:mm:ss',
+             'week': 'HH:mm:ss',
+             'month': 'HH:mm:ss',
+             'quarter': 'HH:mm:ss',
+             'year': 'HH:mm:ss',
+          },
+        },
+        type: "time",
+        min: "20211017T143405Z",
+        max: "20221117T143405Z",
+        parsing: false,
+      },
+    },
+  },
+  plugins: [ChartDataLabels, plugin],
+};
+
+//** CONFIG SETUP FOR SIMPLE RATIO CHART */
+const config_SR = {
+  type: "scatter",
+  data: data_SR,
+  options: {
+    radius: 3,
+    hitRadius: 10,
+    hoverRadius: 8,
+    spanGaps: false,
+    responsive: false,
+    maintainAspectRatio: false,
+    tension: 0,
+    plugins: {
+      customCanvasBackgroundColor: {
+        color: "white",
+      },
+      title: {
+        display: true,
+        text: "SR",
+      },
+      legend: {
+        display: false,
+      },
+      //** STYLING FOR DATA LABELS */
+      datalabels: {
+        formatter: (value) => {
+          if (sr_labels_visible) {
+            return Math.round((value.y + Number.EPSILON) * 100) / 100;
+            //return value.y;
+          } else {
+            return "";
+          }
+        },
+        color: "white",
+        anchor: "end",
+        align: "top",
+        backgroundColor: function (context) {
+          if (sr_labels_visible) {
+            return "rgba(0, 0, 0, 0.75)";
+          } else {
+            return "rgba(0, 0, 0, 0)";
+          }
+        },
+        borderWidth: 0.5,
+        borderRadius: 5,
+        font: {
+          weight: "bold",
+        },
+      },
+    },
+    //** ADDS NM to the Y axis lables */
+    animation: {
+      onComplete: () => {
+        delayed = true;
+      },
+      delay: (context) => {
+        let delay = 0;
+        if (context.type === "data" && context.mode === "default" && !delayed) {
+          delay = context.dataIndex * 75 + context.datasetIndex * 25;
+        }
+        return delay;
+      },
+    },
+    scales: {
+      y: {
+        // ticks: {
+        //   callback: function (value){
+        //     return value + "μW/cm²";
+        //   }
+        // },
+        // max : 1,    
+        // min : -1,
+        title: {
+          display: true,
+          text: "Simple Ratio",
+          font: {
+            size: 15,
+          },
+        },
+      },
+      x: {
+        position: "bottom",
+        ticks: {
+          maxTicksLimit: 5
+        },
+        title: {
+          display: true,
+          text: "Time",
+          align: "center",
+          font: {
+            size: 15,
+          },
+        },
+        time: {
+          displayFormats: {
+             'millisecond':'HH:mm:ss',
+             'second': 'HH:mm:ss',
+             'minute': 'HH:mm:ss',
+             'hour': 'HH:mm:ss',
+             'day': 'HH:mm:ss',
+             'week': 'HH:mm:ss',
+             'month': 'HH:mm:ss',
+             'quarter': 'HH:mm:ss',
+             'year': 'HH:mm:ss',
           },
         },
         type: "time",
@@ -1167,8 +1331,8 @@ const config3 = {
 const mainChart = new Chart(ctx, config);
 const chart2 = new Chart(ctx2, config2);
 const NIRv_chart = new Chart(ctx4, config_NIRv);
+const SR_chart = new Chart(ctx5, config_SR);
 const liveChart = new Chart(ctx3, config3);
-
 
 init();
 function init() {
@@ -1506,6 +1670,26 @@ function updateChart(backward, index) {
       console.log("GRAPHED NIRv");
     }
     
+    //** UPDATE SR or SIMPLE RATIO **// 
+    for (let i = 0; i < currentBatchArray.length; i++) {
+      //** GRAB LAST VALUE OF ARRAY TO SET THE MAX TIMESTAMP OF CHART */
+      if (i == currentBatchArray.length - 1) {
+        SR_chart.options.scales.x.max = currentBatchArray[i].timestamp;
+      }
+      //** GRAB FIRST VALUE OF ARRAY TO SET THE MIN TIMESTAMP OF CHART */
+      else if (i == 0) {
+        SR_chart.options.scales.x.min = currentBatchArray[i].timestamp;
+      }
+
+      currentBatchArray[i].simpleRatio = currentBatchArray[i].nir860_irradiance / currentBatchArray[i].R650_irradiance;
+
+      SR_chart.data.datasets[0].data[i] = {
+        x: currentBatchArray[i].timestamp,
+        y: currentBatchArray[i].simpleRatio,
+      };
+      
+      //console.log("GRAPHED Simple Ratio: " + currentBatchArray[i].B500_irradiance);
+    }
 
     //** UPDATE EXTRA INFO LABELS */
 
@@ -1546,6 +1730,7 @@ function updateChart(backward, index) {
     chart2.update();
     liveChart.update();
     NIRv_chart.update();
+    SR_chart.update();
 
     //** CALLS AN UPDATE FUNCTION */
     if (animPlay) {
@@ -1558,24 +1743,60 @@ function updateChart(backward, index) {
   }
 }
 
-//** UPDATES THE GRAPHS GRADIENTS */
+//** UPDATES THE GRAPHS GRADIENTS BASED ON THEIR SCREEN SIZE*/
 function graphGradients() {
-  // console.log("HEIGHT: " + mainChart.height + ", WIDTH: " + mainChart.width);
-  visibleGradient = ctx.createLinearGradient(0, 0, mainChart.width / 2, 0);
-  visibleGradient.addColorStop(0.1, "rgba(0, 0, 255, 0.75)");
-  visibleGradient.addColorStop(0.25, "rgba(0, 255, 0, 0.75)");
-  visibleGradient.addColorStop(0.5, "rgba(255, 255, 0, 0.75)");
-  visibleGradient.addColorStop(0.75, "rgba(255, 102, 0, 0.75)");
-  visibleGradient.addColorStop(1, "rgba(255, 0, 0, 0.75)");
+  
+  //** USE TIMEOUT TO GIVE GRAPHS A CHANCE TO RESIZE */
+  setTimeout(() => {
+    console.log("HEIGHT: " + chart2.height + ", WIDTH: " + chart2.width);
+    
+    //** MAIN GRAPH */
+    visibleGradient = ctx.createLinearGradient(0, 0, mainChart.width / 2, 0);
+    visibleGradient.addColorStop(0.1, "rgba(0, 0, 255, 0.75)");
+    visibleGradient.addColorStop(0.25, "rgba(0, 255, 0, 0.75)");
+    visibleGradient.addColorStop(0.5, "rgba(255, 255, 0, 0.75)");
+    visibleGradient.addColorStop(0.75, "rgba(255, 102, 0, 0.75)");
+    visibleGradient.addColorStop(1, "rgba(255, 0, 0, 0.75)");
+  
+    infraredGradient = ctx.createLinearGradient(0, 0, mainChart.width, 0);
+    infraredGradient.addColorStop(0, "rgba(255, 0, 0, 1)");
+    infraredGradient.addColorStop(1, "rgba(173, 173, 173, 0.75)");
+  
+    mainChart.data.datasets[13].backgroundColor = visibleGradient;
+    mainChart.data.datasets[13].borderColor = visibleGradient;
+    
+    mainChart.data.datasets[12].backgroundColor = infraredGradient;
+    mainChart.data.datasets[12].borderColor = infraredGradient;
 
-  infraredGradient = ctx.createLinearGradient(0, 0, mainChart.width, 0);
-  infraredGradient.addColorStop(0, "rgba(255, 0, 0, 1)");
-  infraredGradient.addColorStop(1, "rgba(173, 173, 173, 0.75)");
+    //** NDVI GRAPH */
+    ndviGradient = ctx2.createLinearGradient(0, 0, 0, chart2.height/2);
+    ndviGradient.addColorStop(0, "rgba(3, 252, 49, 1)");
+    ndviGradient.addColorStop(1, "rgba(194, 155, 0)");
 
-  mainChart.data.datasets[13].backgroundColor = visibleGradient;
-  mainChart.data.datasets[12].backgroundColor = infraredGradient;
+    chart2.data.datasets[0].backgroundColor = ndviGradient;
+    chart2.data.datasets[0].borderColor = ndviGradient;
+    
+    //** NIRv GRAPH */
+    nirvGradient = ctx4.createLinearGradient(0, 0, 0, NIRv_chart.height/2);
+    nirvGradient.addColorStop(0, "rgb(252, 187, 5)");
+    nirvGradient.addColorStop(1, "rgb(194, 85, 2)");
 
-  mainChart.update();
+    NIRv_chart.data.datasets[0].backgroundColor = nirvGradient;
+    NIRv_chart.data.datasets[0].borderColor = nirvGradient;
+
+    //** SIMPLE RATIO GRAPH */
+    srGradient = ctx4.createLinearGradient(0, 0, 0, SR_chart.height);
+    srGradient.addColorStop(0, "rgb(250, 171, 2)");
+    srGradient.addColorStop(1, "rgb(4, 185, 217)");
+
+    SR_chart.data.datasets[0].backgroundColor = srGradient;
+    SR_chart.data.datasets[0].borderColor = srGradient;
+  
+    mainChart.update();
+    chart2.update();
+    NIRv_chart.update();
+    SR_chart.update();
+  }, 500);
 }
 
 //** CONVERTS THE INCOMING TEXT FILE INTO A USABLE CSV ARRAY */
@@ -2109,6 +2330,11 @@ function addBatches(dataArray) {
           dataset.data = Object.values(data);
         });
 
+        SR_chart.data.labels = Object.keys(data);
+        SR_chart.data.datasets.forEach((dataset) => {
+          dataset.data = Object.values(data);
+        });
+
         chart2.update();
         NIRv_chart.update();
         clearTimeout(animWaitFunc);
@@ -2590,6 +2816,7 @@ window.onresize = function () {
   mainChart.resize();
   chart2.resize();
   liveChart.resize();
+  SR_chart.resize();
 };
 
 var lastSliderValue = 0;
@@ -2667,6 +2894,18 @@ nirv_visibility_icon.addEventListener("click", function () {
     document.getElementById("visibleIcon_nirv").innerHTML = "visibility_off";
   }
   NIRv_chart.update();
+});
+sr_visibility_icon.addEventListener("click", function () {
+  if (sr_visibility_icon.classList.contains("selected")) {
+    sr_visibility_icon.classList.toggle("selected");
+    sr_labels_visible = true;
+    document.getElementById("visibilityIcon_sr").innerHTML = "visibility";
+  } else {
+    sr_visibility_icon.classList.toggle("selected");
+    sr_labels_visible = false;
+    document.getElementById("visibilityIcon_sr").innerHTML = "visibility_off";
+  }
+  SR_chart.update();
 });
 
 raw_visibility_live_icon.addEventListener("click", function () {
@@ -2781,9 +3020,12 @@ ndvi_element.addEventListener("click", function () {
   document.getElementById("calcGraph").classList.toggle("active");
   updateGraphGrid();
   updateChartLabels();
+  graphGradients();
 
+  NIRv_chart.resize();
   mainChart.resize();
   chart2.resize();
+  SR_chart.resize();
 });
 
 nirv_element.addEventListener("click", function () {
@@ -2792,13 +3034,32 @@ nirv_element.addEventListener("click", function () {
     NIRv_chart.update();
   }
   //** TOGGLE ON GRAPH */
-  document.getElementById("NIRvGraph").classList.toggle("active");
+  document.getElementById("NIRv_Graph").classList.toggle("active");
   updateGraphGrid();
   updateChartLabels();
+  graphGradients();
 
   NIRv_chart.resize();
   mainChart.resize();
   chart2.resize();
+  SR_chart.resize();
+});
+
+sr_element.addEventListener('click', function() {
+  sr_element.classList.toggle("selected");
+  if (!sr_element.classList.contains("selected")) {
+    SR_chart.update();
+  }
+  //** TOGGLE ON GRAPH */
+  document.getElementById("SR_Graph").classList.toggle("active");
+  updateGraphGrid();
+  updateChartLabels();
+  graphGradients();
+
+  NIRv_chart.resize();
+  mainChart.resize();
+  chart2.resize();
+  SR_chart.resize();
 });
 
 raw_element.addEventListener("click", function () {
@@ -2810,9 +3071,12 @@ raw_element.addEventListener("click", function () {
   document.getElementById("mainGraph").classList.toggle("active");
   updateGraphGrid();
   updateChartLabels();
+  graphGradients();
 
+  NIRv_chart.resize();
   mainChart.resize();
   chart2.resize();
+  SR_chart.resize();
 });
 
 //** GRAPH TOGGLE's IN LIVE CONTROL SIDEBAR */
@@ -2825,6 +3089,7 @@ raw_element_live.addEventListener("click", function () {
   document.getElementById("liveGraph").classList.toggle("active");
   updateGraphGrid();
   updateChartLabels();
+  graphGradients();
 
   liveChart.resize();
 });
@@ -2875,7 +3140,7 @@ snapShotIcon.addEventListener('click', function () {
   var image = document.getElementById("graph").toDataURL("image/png").replace("image/png", "image/octet-stream");  // here is the most important part because if you dont replace you will get a DOM 18 exception.
 
   var link = document.getElementById('link');
-  link.setAttribute('download', 'stella_graph_RAW.png');
+  link.setAttribute('download', 'stella_graph.png');
   link.setAttribute('href', image);
   link.click();
 });
@@ -2884,7 +3149,7 @@ snapShotIcon_2.addEventListener('click', function () {
   var image = document.getElementById("graph2").toDataURL("image/png").replace("image/png", "image/octet-stream");  // here is the most important part because if you dont replace you will get a DOM 18 exception.
 
   var link = document.getElementById('link');
-  link.setAttribute('download', 'stella_graph_NDVI.png');
+  link.setAttribute('download', 'stella_graph.png');
   link.setAttribute('href', image);
   link.click();
 });
@@ -2893,7 +3158,16 @@ snapShotIcon_3.addEventListener('click', function () {
   var image = document.getElementById("graph_NIRv").toDataURL("image/png").replace("image/png", "image/octet-stream");  // here is the most important part because if you dont replace you will get a DOM 18 exception.
 
   var link = document.getElementById('link');
-  link.setAttribute('download', 'stella_graph_NIRv.png');
+  link.setAttribute('download', 'stella_graph.png');
+  link.setAttribute('href', image);
+  link.click();
+});
+
+snapShotIcon_4.addEventListener('click', function () {
+  var image = document.getElementById("graph_SR").toDataURL("image/png").replace("image/png", "image/octet-stream");  // here is the most important part because if you dont replace you will get a DOM 18 exception.
+
+  var link = document.getElementById('link');
+  link.setAttribute('download', 'stella_graph.png');
   link.setAttribute('href', image);
   link.click();
 });
@@ -3004,6 +3278,7 @@ function update() {
   chart2.resize();
   liveChart.resize();
   NIRv_chart.resize();
+  SR_chart.resize();
 
   setTimeout(() => {
     update();

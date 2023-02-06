@@ -308,7 +308,7 @@
           </div>
         </div>
       </div>
-      <div class="chartBox" id="NIRvGraph">
+      <div class="chartBox" id="NIRv_Graph">
         <canvas id="graph_NIRv"> </canvas>
         <div class="editContainer">
           <div
@@ -325,6 +325,27 @@
         <!-- BOTTOM LEFT SIDEBAR FOR RECORDING GRAPH-->
         <div class="editContainer leftSided">
           <div class="editIcon active" id="snapshot_3" title="Take a screenshot of the current graph">
+            <i class="material-icons w3-xlarge"> camera_alt </i>
+          </div>
+        </div>
+      </div>
+      <div class="chartBox" id="SR_Graph">
+        <canvas id="graph_SR"> </canvas>
+        <div class="editContainer">
+          <div
+            class="editIcon active"
+            id="visibility_sr"
+            title="Toggle data labels"
+          >
+            <i class="material-icons w3-large" id="visibilityIcon_sr">
+              visibility
+            </i>
+          </div>
+        </div>
+
+        <!-- BOTTOM LEFT SIDEBAR FOR RECORDING GRAPH-->
+        <div class="editContainer leftSided">
+          <div class="editIcon active" id="snapshot_4" title="Take a screenshot of the current graph">
             <i class="material-icons w3-xlarge"> camera_alt </i>
           </div>
         </div>
@@ -435,6 +456,9 @@
           title="An indicator of density and health in vegetation"
         >
           NDVI
+        </div>
+        <div id="graphs_SR" class="active">
+          SR
         </div>
         <div id="graphs_nirv" class=" ">
           NIRv
