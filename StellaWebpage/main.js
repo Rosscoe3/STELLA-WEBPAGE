@@ -5,6 +5,7 @@ const ctx2 = document.getElementById("graph2").getContext("2d");
 const ctx3 = document.getElementById("graph3").getContext("2d");
 const ctx4 = document.getElementById("graph_NIRv").getContext("2d");
 const ctx5 = document.getElementById("graph_SR").getContext("2d");
+const ctx6 = document.getElementById("graph_DSWI").getContext("2d");
 
 //** GRADIENT FILL */
 let visibleGradient = ctx.createLinearGradient(0, 0, 500, 0);
@@ -39,6 +40,10 @@ let srGradient = ctx5.createLinearGradient(0, 0, 0, 700);
 srGradient.addColorStop(0, "rgb(250, 171, 2)");
 srGradient.addColorStop(1, "rgb(4, 185, 217)");
 
+let dswiGradient = ctx6.createLinearGradient(0, 0, 0, 700);
+dswiGradient.addColorStop(0, "rgb(0, 213, 255)");
+dswiGradient.addColorStop(1, "rgb(0, 34, 255)");
+
 //** LIVE DATA */
 //** FILE DROP JS */
 let dropArea = document.getElementById("drop-area");
@@ -66,6 +71,8 @@ let ndvi_element = document.getElementById("graphs_ndvi");
 let raw_element = document.getElementById("graphs_raw");
 let nirv_element = document.getElementById("graphs_nirv");
 let sr_element = document.getElementById("graphs_SR");
+let dswi_element = document.getElementById("graphs_DSWI");
+let lastGraphed;
 
 //** HELP BUTTONS FOR PICKING GRAPHS */
 let raw_element_live = document.getElementById("graphs_raw_live");
@@ -80,6 +87,7 @@ let snapShotIcon = document.getElementById("snapshot");
 let snapShotIcon_2 = document.getElementById("snapshot_2");
 let snapShotIcon_3 = document.getElementById("snapshot_3");
 let snapShotIcon_4 = document.getElementById("snapshot_4");
+let snapShotIcon_5 = document.getElementById("snapshot_5");
 
 let readDeviceBtn = document.getElementById("read");
 let recording_live_label = document.getElementById("recording_label");
@@ -113,8 +121,13 @@ let nirv_labels_visible = true;
 let sr_visibility_icon = document.getElementById("visibility_sr");
 let sr_labels_visible = true;
 
+let dswi_visibility_icon = document.getElementById("visibility_dswi");
+let dswi_labels_visible = true;
+
 //** EDIT RANGE */
 let trim_icon = document.getElementById("trimIcon");
+let done_trim = document.getElementById("done_trim");
+
 let editRange = document.getElementById("slider-distance");
 let editRange_start = document.getElementById("editRange_start");
 let editRange_end = document.getElementById("editRange_end");
@@ -293,7 +306,7 @@ var infrared = [...Array(1)].map((e) => Array(1));
 var calibration_array = [];
 
 //** RECORD VIDEO */
-let recordedElement = document.getElementById("graph2");
+let recordedElement = document.getElementById("graph");
 let videoStream = recordedElement.captureStream(30);
 let mediaRecorder = new MediaRecorder(videoStream);
 
@@ -675,6 +688,23 @@ var data_SR = {
   ],
 };
 
+//** DATA SETUP FOR SIMPLE RATIO CHART */
+var data_DSWI = {
+  datasets: [
+    {
+      data: [],
+      showLine: true,
+      label: "DSWI 4",
+      fill: false,
+      hidden: false,
+      backgroundColor: dswiGradient,
+      borderColor: dswiGradient,
+      lineTension: 0.25,
+      pointBackgroundColor: "rgb(189, 195, 199)",
+    },
+  ],
+};
+
 //** DATA SETUP FOR LIVE CHART */
 var data3 = {
   datasets: [
@@ -958,7 +988,7 @@ const config2 = {
           maxTicksLimit: 5
         },
         title: {
-          display: true,
+          display: false,
           text: "Time",
           align: "center",
           font: {
@@ -1073,7 +1103,7 @@ const config_NIRv = {
           maxTicksLimit: 5
         },
         title: {
-          display: true,
+          display: false,
           text: "Time",
           align: "center",
           font: {
@@ -1189,7 +1219,116 @@ const config_SR = {
           maxTicksLimit: 5
         },
         title: {
+          display: false,
+          text: "Time",
+          align: "center",
+          font: {
+            size: 15,
+          },
+        },
+        time: {
+          displayFormats: {
+             'millisecond':'HH:mm:ss',
+             'second': 'HH:mm:ss',
+             'minute': 'HH:mm:ss',
+             'hour': 'HH:mm:ss',
+             'day': 'HH:mm:ss',
+             'week': 'HH:mm:ss',
+             'month': 'HH:mm:ss',
+             'quarter': 'HH:mm:ss',
+             'year': 'HH:mm:ss',
+          },
+        },
+        type: "time",
+        min: "20211017T143405Z",
+        max: "20221117T143405Z",
+        parsing: false,
+      },
+    },
+  },
+  plugins: [ChartDataLabels, plugin],
+};
+
+//** CONFIG SETUP FOR DSWI 4 CHART */
+const config_DSWI = {
+  type: "scatter",
+  data: data_DSWI,
+  options: {
+    radius: 3,
+    hitRadius: 10,
+    hoverRadius: 8,
+    spanGaps: false,
+    responsive: false,
+    maintainAspectRatio: false,
+    tension: 0,
+    plugins: {
+      customCanvasBackgroundColor: {
+        color: "white",
+      },
+      title: {
+        display: true,
+        text: "DSWI 4",
+      },
+      legend: {
+        display: false,
+      },
+      //** STYLING FOR DATA LABELS */
+      datalabels: {
+        formatter: (value) => {
+          if (dswi_labels_visible) {
+            return Math.round((value.y + Number.EPSILON) * 100) / 100;
+            //return value.y;
+          } else {
+            return "";
+          }
+        },
+        color: "white",
+        anchor: "end",
+        align: "top",
+        backgroundColor: function (context) {
+          if (dswi_labels_visible) {
+            return "rgba(0, 0, 0, 0.75)";
+          } else {
+            return "rgba(0, 0, 0, 0)";
+          }
+        },
+        borderWidth: 0.5,
+        borderRadius: 5,
+        font: {
+          weight: "bold",
+        },
+      },
+    },
+    //** ADDS NM to the Y axis lables */
+    animation: {
+      onComplete: () => {
+        delayed = true;
+      },
+      delay: (context) => {
+        let delay = 0;
+        if (context.type === "data" && context.mode === "default" && !delayed) {
+          delay = context.dataIndex * 75 + context.datasetIndex * 25;
+        }
+        return delay;
+      },
+    },
+    scales: {
+      y: {
+        title: {
           display: true,
+          text: "DSWI 4",
+          font: {
+            size: 15,
+          },
+        },
+      },
+      x: {
+        position: "bottom",
+        ticks: {
+          maxTicksLimit: 5
+        },
+        title: {
+          display: false,
           text: "Time",
           align: "center",
           font: {
@@ -1332,6 +1471,7 @@ const mainChart = new Chart(ctx, config);
 const chart2 = new Chart(ctx2, config2);
 const NIRv_chart = new Chart(ctx4, config_NIRv);
 const SR_chart = new Chart(ctx5, config_SR);
+const DSWI_chart = new Chart(ctx6, config_DSWI);
 const liveChart = new Chart(ctx3, config3);
 
 init();
@@ -1411,7 +1551,6 @@ upload_file.addEventListener("input", function () {
       }
 
       batchesContainer.innerHTML = "";
-      console.log(dataArrayBatches);
       addBatches(dataArrayBatches);
 
       //** CLEAR THE ARRAY IF IT IS FULL */
@@ -1630,21 +1769,24 @@ function updateChart(backward, index) {
     }
 
     //** UPDATE NDVI */
-    for (let i = 0; i < currentBatchArray.length; i++) {
-      //** GRAB LAST VALUE OF ARRAY TO SET THE MAX TIMESTAMP OF CHART */
-      if (i == currentBatchArray.length - 1) {
-        chart2.options.scales.x.max = currentBatchArray[i].timestamp;
+    if(ndvi_element.classList.contains("selected"))
+    {
+      for (let i = 0; i < currentBatchArray.length; i++) {
+        //** GRAB LAST VALUE OF ARRAY TO SET THE MAX TIMESTAMP OF CHART */
+        if (i == currentBatchArray.length - 1) {
+          chart2.options.scales.x.max = currentBatchArray[i].timestamp;
+        }
+        //** GRAB FIRST VALUE OF ARRAY TO SET THE MIN TIMESTAMP OF CHART */
+        else if (i == 0) {
+          chart2.options.scales.x.min = currentBatchArray[i].timestamp;
+        }
+  
+        chart2.data.datasets[0].data[i] = {
+          x: currentBatchArray[i].timestamp,
+          // x: parseFloat(currentBatchArray[i].decimal_hour),
+          y: calculateNDVI(i),
+        };
       }
-      //** GRAB FIRST VALUE OF ARRAY TO SET THE MIN TIMESTAMP OF CHART */
-      else if (i == 0) {
-        chart2.options.scales.x.min = currentBatchArray[i].timestamp;
-      }
-
-      chart2.data.datasets[0].data[i] = {
-        x: currentBatchArray[i].timestamp,
-        // x: parseFloat(currentBatchArray[i].decimal_hour),
-        y: calculateNDVI(i),
-      };
     }
 
     //** UPDATE NIRv */
@@ -1671,34 +1813,59 @@ function updateChart(backward, index) {
     }
     
     //** UPDATE SR or SIMPLE RATIO **// 
-    for (let i = 0; i < currentBatchArray.length; i++) {
-      //** GRAB LAST VALUE OF ARRAY TO SET THE MAX TIMESTAMP OF CHART */
-      if (i == currentBatchArray.length - 1) {
-        SR_chart.options.scales.x.max = currentBatchArray[i].timestamp;
+    if(sr_element.classList.contains("selected"))
+    {
+      for (let i = 0; i < currentBatchArray.length; i++) {
+        //** GRAB LAST VALUE OF ARRAY TO SET THE MAX TIMESTAMP OF CHART */
+        if (i == currentBatchArray.length - 1) {
+          SR_chart.options.scales.x.max = currentBatchArray[i].timestamp;
+        }
+        //** GRAB FIRST VALUE OF ARRAY TO SET THE MIN TIMESTAMP OF CHART */
+        else if (i == 0) {
+          SR_chart.options.scales.x.min = currentBatchArray[i].timestamp;
+        }
+  
+        currentBatchArray[i].simpleRatio = currentBatchArray[i].nir860_irradiance / currentBatchArray[i].R650_irradiance;
+        //currentBatchArray[i].simpleRatio = currentBatchArray[i].nir860_reflectance / currentBatchArray[i].R650_reflectance;
+  
+        SR_chart.data.datasets[0].data[i] = {
+          x: currentBatchArray[i].timestamp,
+          y: currentBatchArray[i].simpleRatio,
+        };
+        
+        //console.log("GRAPHED Simple Ratio: " + currentBatchArray[i].B500_irradiance);
       }
-      //** GRAB FIRST VALUE OF ARRAY TO SET THE MIN TIMESTAMP OF CHART */
-      else if (i == 0) {
-        SR_chart.options.scales.x.min = currentBatchArray[i].timestamp;
-      }
-
-      currentBatchArray[i].simpleRatio = currentBatchArray[i].nir860_irradiance / currentBatchArray[i].R650_irradiance;
-
-      SR_chart.data.datasets[0].data[i] = {
-        x: currentBatchArray[i].timestamp,
-        y: currentBatchArray[i].simpleRatio,
-      };
-      
-      //console.log("GRAPHED Simple Ratio: " + currentBatchArray[i].B500_irradiance);
     }
 
+    //** UPDATE DSWI 4 **// 
+    if(dswi_element.classList.contains("selected"))
+    {
+      for (let i = 0; i < currentBatchArray.length; i++) {
+        //** GRAB LAST VALUE OF ARRAY TO SET THE MAX TIMESTAMP OF CHART */
+        if (i == currentBatchArray.length - 1) {
+          DSWI_chart.options.scales.x.max = currentBatchArray[i].timestamp;
+        }
+        //** GRAB FIRST VALUE OF ARRAY TO SET THE MIN TIMESTAMP OF CHART */
+        else if (i == 0) {
+          DSWI_chart.options.scales.x.min = currentBatchArray[i].timestamp;
+        }
+  
+        currentBatchArray[i].DSWI = currentBatchArray[i].G550_irradiance / currentBatchArray[i].nir680_irradiance;
+        //currentBatchArray[i].simpleRatio = currentBatchArray[i].nir860_reflectance / currentBatchArray[i].R650_reflectance;
+  
+        DSWI_chart.data.datasets[0].data[i] = {
+          x: currentBatchArray[i].timestamp,
+          y: currentBatchArray[i].DSWI,
+        };
+      }
+    }
     //** UPDATE EXTRA INFO LABELS */
-
     dateHeader_label.innerHTML =
-      currentBatchArray[dataTimeIndex].timestamp.substring(0, 4) +
-      "/" +
-      currentBatchArray[dataTimeIndex].timestamp.substring(4, 6) +
-      "/" +
-      currentBatchArray[dataTimeIndex].timestamp.substring(6, 8);
+    currentBatchArray[dataTimeIndex].timestamp.substring(4, 6) +
+    "/" +
+    currentBatchArray[dataTimeIndex].timestamp.substring(6, 8) +
+    "/" +
+    currentBatchArray[dataTimeIndex].timestamp.substring(0, 4);
 
     uid_label.innerHTML = "UID: " + currentBatchArray[dataTimeIndex].UID;
 
@@ -1731,6 +1898,7 @@ function updateChart(backward, index) {
     liveChart.update();
     NIRv_chart.update();
     SR_chart.update();
+    DSWI_chart.update();
 
     //** CALLS AN UPDATE FUNCTION */
     if (animPlay) {
@@ -1748,7 +1916,7 @@ function graphGradients() {
   
   //** USE TIMEOUT TO GIVE GRAPHS A CHANCE TO RESIZE */
   setTimeout(() => {
-    console.log("HEIGHT: " + chart2.height + ", WIDTH: " + chart2.width);
+    //console.log("HEIGHT: " + chart2.height + ", WIDTH: " + chart2.width);
     
     //** MAIN GRAPH */
     visibleGradient = ctx.createLinearGradient(0, 0, mainChart.width / 2, 0);
@@ -1789,6 +1957,11 @@ function graphGradients() {
     srGradient.addColorStop(0, "rgb(250, 171, 2)");
     srGradient.addColorStop(1, "rgb(4, 185, 217)");
 
+    //** DSWI 4 GRADIENT */
+    let dswiGradient = ctx6.createLinearGradient(0, 0, 0, 700);
+    dswiGradient.addColorStop(0, "rgb(0, 213, 255)");
+    dswiGradient.addColorStop(1, "rgb(0, 34, 255)");
+
     SR_chart.data.datasets[0].backgroundColor = srGradient;
     SR_chart.data.datasets[0].borderColor = srGradient;
   
@@ -1796,6 +1969,7 @@ function graphGradients() {
     chart2.update();
     NIRv_chart.update();
     SR_chart.update();
+    DSWI_chart.update();
   }, 500);
 }
 
@@ -1833,7 +2007,6 @@ function updateChartLabels() {
   excludeLabelList = [];
 
   if (rawData_element.classList.contains("selected")) {
-    console.log("Raw Data is Selected: ");
     mainChart.getDatasetMeta(12).hidden = false;
     mainChart.getDatasetMeta(13).hidden = false;
   } else {
@@ -1852,7 +2025,6 @@ function updateChartLabels() {
     mainChart.getDatasetMeta(11).hidden = false;
   } else {
     excludeLabelList = excludeLabelList.concat(visible_filter_array);
-    console.log("Visible Data is not selected: " + excludeLabelList);
     mainChart.getDatasetMeta(6).hidden = true;
     mainChart.getDatasetMeta(7).hidden = true;
     mainChart.getDatasetMeta(8).hidden = true;
@@ -1870,7 +2042,6 @@ function updateChartLabels() {
     mainChart.getDatasetMeta(5).hidden = false;
   } else {
     excludeLabelList = excludeLabelList.concat(infrared_filter_array);
-    console.log("Infrared Data is not selected: " + excludeLabelList);
     mainChart.getDatasetMeta(0).hidden = true;
     mainChart.getDatasetMeta(1).hidden = true;
     mainChart.getDatasetMeta(2).hidden = true;
@@ -2288,62 +2459,14 @@ function addBatches(dataArray) {
         this.classList.toggle("selected");
         currentBatchArray = dataArray[this.index];
         currentBatchArray.index = this.index;
-        console.log(currentBatchArray);
-
-        //** SET EDIT RANGE BACK TO NORMAL */
-        var children = editRange_start.parentNode.childNodes[1].childNodes;
-        children[1].style.width = "0%";
-        children[5].style.left = "0%";
-        children[7].style.left = "0%";
-        children[3].style.width = "100%";
-        children[5].style.right = "0%";
-        children[9].style.left = "100%";
-        children[11].style.left = "0%";
-        children[11].children[0].innerHTML = 1;
-        children[13].style.left = "100%";
-        children[13].children[0].innerHTML = currentBatchArray.length;
-        editRange_start.max = currentBatchArray.length;
-        editRange_end.max = currentBatchArray.length;
-        editRange_start.value = 1;
-        editRange_end.value = currentBatchArray.length;
-
-        // if (download_label.classList.contains("active")) {
-        //   download_label.classList.toggle("active");
-        // }
-
-        editRange_thumb_start.style.left = "0%";
-        editRange_thumb_end.style.left = "100%";
+        resetTrim();
 
         //** UPDATE CHART WITH UID */
         mainChart.options.plugins.title.text =
           "  UID: " + currentBatchArray[0].UID;
         mainChart.update();
 
-
-        //** CLEAR DATA VALUES TO ALLOW FOR NEW DATA TO POPULATE THE GRAPHS */
-        chart2.data.labels = Object.keys(data);
-        chart2.data.datasets.forEach((dataset) => {
-          dataset.data = Object.values(data);
-        });
-        NIRv_chart.data.labels = Object.keys(data);
-        NIRv_chart.data.datasets.forEach((dataset) => {
-          dataset.data = Object.values(data);
-        });
-
-        SR_chart.data.labels = Object.keys(data);
-        SR_chart.data.datasets.forEach((dataset) => {
-          dataset.data = Object.values(data);
-        });
-
-        chart2.update();
-        NIRv_chart.update();
-        clearTimeout(animWaitFunc);
-        updateChart();
-
-        if(calibrationBatchSelected)
-        {
-          convertToReflectance();
-        }
+        batchChangeUpdate();
       }
     };
 
@@ -2415,6 +2538,49 @@ function addBatches(dataArray) {
   }
   //** UDPATE UID ON CHART TITLE AT BATCH INIT */
   mainChart.options.plugins.title.text = "  UID: " + currentBatchArray[0].UID;
+}
+
+function batchChangeUpdate()
+{
+  //** CLEAR DATA VALUES TO ALLOW FOR NEW DATA TO POPULATE THE GRAPHS */
+  chart2.data.labels = Object.keys(data);
+  chart2.data.datasets.forEach((dataset) => {
+    dataset.data = Object.values(data);
+  });
+  NIRv_chart.data.labels = Object.keys(data);
+  NIRv_chart.data.datasets.forEach((dataset) => {
+    dataset.data = Object.values(data);
+  });
+
+  SR_chart.data.labels = Object.keys(data);
+  SR_chart.data.datasets.forEach((dataset) => {
+    dataset.data = Object.values(data);
+  });
+
+  DSWI_chart.data.labels = Object.keys(data);
+  DSWI_chart.data.datasets.forEach((dataset) => {
+    dataset.data = Object.values(data);
+  });
+
+  chart2.update();
+  NIRv_chart.update();
+  clearTimeout(animWaitFunc);
+  updateChart();
+
+  if(calibrationBatchSelected)
+  {
+    convertToReflectance();
+  }
+
+  //** CLOSE TRIM AND EDIT ICONS IF THE BATCH IS LESS THAN 2 */
+  if(currentBatchArray.length < 3)
+  {
+    trim_icon.classList.toggle("disabled");
+  }
+  else if(trim_icon.classList.contains("disabled"))
+  {
+    trim_icon.classList.toggle("disabled");
+  }
 }
 
 function removeBatches(input) {
@@ -2520,19 +2686,19 @@ function averageCalibrationArray(cal_array) {
   average_810nm = average_810nm / cal_array.length;
   average_860nm = average_860nm / cal_array.length;
 
-  console.log("450nm average: " + average_450nm);
-  console.log("500nm average: " + average_500nm);
-  console.log("550nm average: " + average_550nm);
-  console.log("570nm average: " + average_570nm);
-  console.log("600nm average: " + average_600nm);
-  console.log("650nm average: " + average_650nm);
+  // console.log("450nm average: " + average_450nm);
+  // console.log("500nm average: " + average_500nm);
+  // console.log("550nm average: " + average_550nm);
+  // console.log("570nm average: " + average_570nm);
+  // console.log("600nm average: " + average_600nm);
+  // console.log("650nm average: " + average_650nm);
 
-  console.log("610nm average: " + average_610nm);
-  console.log("680nm average: " + average_680nm);
-  console.log("730nm average: " + average_730nm);
-  console.log("760nm average: " + average_760nm);
-  console.log("810nm average: " + average_810nm);
-  console.log("860nm average: " + average_860nm);
+  // console.log("610nm average: " + average_610nm);
+  // console.log("680nm average: " + average_680nm);
+  // console.log("730nm average: " + average_730nm);
+  // console.log("760nm average: " + average_760nm);
+  // console.log("810nm average: " + average_810nm);
+  // console.log("860nm average: " + average_860nm);
 
   calibration_array.V450_average_irradiance = average_450nm;
   calibration_array.B500_average_irradiance = average_500nm;
@@ -2657,8 +2823,6 @@ function convertToReflectance() {
     currentBatchArray[i].nir860_reflectance =
       currentBatchArray[i].nir860_radiance / radiance_860nm_calibration;
   }
-
-  console.log(currentBatchArray);
   calculateNIRV();
 }
 
@@ -2674,13 +2838,9 @@ function calculateNIRV() {
       currentBatchArray[i].nir810_reflectance;
 
     currentBatchArray[i].NIRv = NIRv;
-    // console.log("680 Reflectance: " + currentBatchArray[i].nir680_reflectance);
-    // console.log("810 Reflectance: " + currentBatchArray[i].nir810_reflectance);
-    console.log("NIRv: " + NIRv);
   }
 
   updateChart();
-  console.log(currentBatchArray);
 }
 
 function getTanFromDegrees(degrees) {
@@ -2706,12 +2866,27 @@ menuElement.addEventListener("click", function (ev) {
   if (document.getElementById("liveGraph").classList.contains("active")) {
     document.getElementById("liveGraph").classList.toggle("active");
   }
+  if (document.getElementById("SR_Graph").classList.contains("active")) {
+    document.getElementById("SR_Graph").classList.toggle("active");
+  }
+  if (document.getElementById("DSWI_Graph").classList.contains("active")) {
+    document.getElementById("DSWI_Graph").classList.toggle("active");
+  }
+  if (document.getElementById("NIRv_Graph").classList.contains("active")) {
+    document.getElementById("NIRv_Graph").classList.toggle("active");
+  }
 
   if (ndvi_element.classList.contains("selected")) {
     ndvi_element.classList.toggle("selected");
   }
   if (nirv_element.classList.contains("selected")) {
     nirv_element.classList.toggle("selected");
+  }
+  if (sr_element.classList.contains("selected")) {
+    sr_element.classList.toggle("selected");
+  }
+  if (dswi_element.classList.contains("selected")) {
+    dswi_element.classList.toggle("selected");
   }
 
   if (duplicateScreen.classList.contains("active")) {
@@ -2734,7 +2909,7 @@ menuElement.addEventListener("click", function (ev) {
   RESOURCE_LOADED = false;
 });
 
-function updateGraphGrid() {
+function updateGraphGrid(currentlyGraphed) {
   let myElement;
 
   //** CHOOSE MY ELEMENT, WHETHER IN CONNECT_DEVICE OR UPLOAD_FILE MODE */
@@ -2759,13 +2934,44 @@ function updateGraphGrid() {
     myElement.style.gridTemplateColumns =
       "minmax(200px, 1fr) minmax(200px, 1fr)";
     myElement.style.gridTemplateRows = "auto";
-  } else if (counter > 2) {
+  } else if (counter > 2 && counter < 5) {
     myElement.style.gridTemplateColumns =
       "minmax(200px, 1fr) minmax(200px, 1fr)";
     myElement.style.gridTemplateRows = "minmax(200px, 1fr) minmax(200px, 1fr)";
   }
+  else if(counter > 4)
+  {
+    document.getElementById(lastGraphed).classList.toggle("active");
 
-  console.log(counter);
+    if(lastGraphed == "mainGraph")
+    {
+      raw_element.classList.toggle("selected");
+    }
+    else if(lastGraphed == "DSWI_Graph")
+    {
+      dswi_element.classList.toggle("selected");
+    }
+    else if(lastGraphed == "SR_Graph")
+    {
+      sr_element.classList.toggle("selected");
+    }
+    else if(lastGraphed == "NIRv_Graph")
+    {
+      nirv_element.classList.toggle("selected");
+    }
+    else if(lastGraphed == "calcGraph")
+    {
+      ndvi_element.classList.toggle("selected");
+    }
+
+    console.log("GREATER THAN 4 GRAPHS: " + lastGraphed);
+  }
+
+  //** UPDATE LAST GRAPHED VARIABLE */
+  if(currentlyGraphed)
+  {
+    lastGraphed = currentlyGraphed;
+  }
 }
 
 //** CLICK EVENT FOR THE PLAY / PAUSE BUTTON */
@@ -2907,6 +3113,18 @@ sr_visibility_icon.addEventListener("click", function () {
   }
   SR_chart.update();
 });
+dswi_visibility_icon.addEventListener("click", function () {
+  if (dswi_visibility_icon.classList.contains("selected")) {
+    dswi_visibility_icon.classList.toggle("selected");
+    dswi_labels_visible = true;
+    document.getElementById("visibilityIcon_dswi").innerHTML = "visibility";
+  } else {
+    dswi_visibility_icon.classList.toggle("selected");
+    dswi_labels_visible = false;
+    document.getElementById("visibilityIcon_dswi").innerHTML = "visibility_off";
+  }
+  DSWI_chart.update();
+});
 
 raw_visibility_live_icon.addEventListener("click", function () {
   if (raw_visibility_live_icon.classList.contains("selected")) {
@@ -2947,12 +3165,59 @@ trim_icon.addEventListener("click", function () {
   arrowRight.classList.toggle("active");
   arrowLeft.classList.toggle("active");
 
+  document.getElementById("trimBtns_container").classList.toggle("active");
+
+  resetTrim();
+
   //** PAUSE THE TIMELINE PLAY BUTTON */
   if (box.classList.contains("pause")) {
     box.classList.toggle("pause");
   }
   animPlay = false;
   clearTimeout(animWaitFunc);
+});
+
+function resetTrim()
+{
+  //** SET EDIT RANGE BACK TO NORMAL */
+  var children = editRange_start.parentNode.childNodes[1].childNodes;
+  children[1].style.width = "0%";
+  children[5].style.left = "0%";
+  children[7].style.left = "0%";
+  children[3].style.width = "100%";
+  children[5].style.right = "0%";
+  children[9].style.left = "100%";
+  children[11].style.left = "0%";
+  children[11].children[0].innerHTML = 1;
+  children[13].style.left = "100%";
+  children[13].children[0].innerHTML = currentBatchArray.length;
+  editRange_start.max = currentBatchArray.length;
+  editRange_end.max = currentBatchArray.length;
+  editRange_start.value = 1;
+  editRange_end.value = currentBatchArray.length;
+  editRange_thumb_start.style.left = "0%";
+  editRange_thumb_end.style.left = "100%";
+}
+
+done_trim.addEventListener("click", function () {
+
+  console.log("START: " + editRange_start.value + " End: " + editRange_end.value)
+  console.log(currentBatchArray.length);
+  currentBatchArray = currentBatchArray.slice(editRange_start.value-1, editRange_end.value);
+  console.log(currentBatchArray.length);
+
+  console.log(currentBatchArray);
+
+  trim_icon.classList.toggle("selected");
+  editRange.classList.toggle("active");
+  playPauseContainer.classList.toggle("active");
+  arrowRight.classList.toggle("active");
+  arrowLeft.classList.toggle("active");
+  document.getElementById("trimBtns_container").classList.toggle("active");
+
+  console.log("SAVE");
+
+  batchChangeUpdate();
 });
 
 //** DOWNLOAD BUTTON */
@@ -2975,11 +3240,6 @@ editRange_start.addEventListener("input", function () {
   children[7].style.left = value + "%";
   children[11].style.left = value + "%";
   children[11].children[0].innerHTML = this.value;
-  console.log(this.value + "START BUTTON");
-
-  // if (!download_label.classList.contains("active")) {
-  //   download_label.classList.toggle("active");
-  // }
 
   //** UPDATES THE CHART AS WELL */
   updateChart(false, this.value);
@@ -2999,11 +3259,6 @@ editRange_end.addEventListener("input", function () {
   children[9].style.left = value + "%";
   children[13].style.left = value + "%";
   children[13].children[0].innerHTML = this.value;
-  console.log(this.value + "END");
-
-  // if (!download_label.classList.contains("active")) {
-  //   download_label.classList.toggle("active");
-  // }
 
   //** UPDATES THE CHART AS WELL */
   updateChart(false, this.value);
@@ -3018,14 +3273,16 @@ ndvi_element.addEventListener("click", function () {
 
   //** TOGGLE ON GRAPH */
   document.getElementById("calcGraph").classList.toggle("active");
-  updateGraphGrid();
+  updateGraphGrid("calcGraph");
   updateChartLabels();
   graphGradients();
+  updateChart();
 
   NIRv_chart.resize();
   mainChart.resize();
   chart2.resize();
   SR_chart.resize();
+  DSWI_chart.resize();
 });
 
 nirv_element.addEventListener("click", function () {
@@ -3035,14 +3292,16 @@ nirv_element.addEventListener("click", function () {
   }
   //** TOGGLE ON GRAPH */
   document.getElementById("NIRv_Graph").classList.toggle("active");
-  updateGraphGrid();
+  updateGraphGrid("NIRv_Graph");
   updateChartLabels();
   graphGradients();
+  updateChart();
 
   NIRv_chart.resize();
   mainChart.resize();
   chart2.resize();
   SR_chart.resize();
+  DSWI_chart.resize();
 });
 
 sr_element.addEventListener('click', function() {
@@ -3053,6 +3312,8 @@ sr_element.addEventListener('click', function() {
   //** TOGGLE ON GRAPH */
   document.getElementById("SR_Graph").classList.toggle("active");
   updateGraphGrid();
+
+  updateChart();
   updateChartLabels();
   graphGradients();
 
@@ -3060,6 +3321,27 @@ sr_element.addEventListener('click', function() {
   mainChart.resize();
   chart2.resize();
   SR_chart.resize();
+  DSWI_chart.resize();
+});
+
+dswi_element.addEventListener('click', function() {
+  dswi_element.classList.toggle("selected");
+  if (!dswi_element.classList.contains("selected")) {
+    DSWI_chart.update();
+  }
+  //** TOGGLE ON GRAPH */
+  document.getElementById("DSWI_Graph").classList.toggle("active");
+  updateGraphGrid("DSWI_Graph");
+
+  updateChart();
+  updateChartLabels();
+  graphGradients();
+
+  NIRv_chart.resize();
+  mainChart.resize();
+  chart2.resize();
+  SR_chart.resize();
+  DSWI_chart.resize();
 });
 
 raw_element.addEventListener("click", function () {
@@ -3077,6 +3359,7 @@ raw_element.addEventListener("click", function () {
   mainChart.resize();
   chart2.resize();
   SR_chart.resize();
+  DSWI_chart.resize();
 });
 
 //** GRAPH TOGGLE's IN LIVE CONTROL SIDEBAR */
@@ -3165,6 +3448,15 @@ snapShotIcon_3.addEventListener('click', function () {
 
 snapShotIcon_4.addEventListener('click', function () {
   var image = document.getElementById("graph_SR").toDataURL("image/png").replace("image/png", "image/octet-stream");  // here is the most important part because if you dont replace you will get a DOM 18 exception.
+
+  var link = document.getElementById('link');
+  link.setAttribute('download', 'stella_graph.png');
+  link.setAttribute('href', image);
+  link.click();
+});
+
+snapShotIcon_5.addEventListener('click', function () {
+  var image = document.getElementById("graph_DSWI").toDataURL("image/png").replace("image/png", "image/octet-stream");  // here is the most important part because if you dont replace you will get a DOM 18 exception.
 
   var link = document.getElementById('link');
   link.setAttribute('download', 'stella_graph.png');
@@ -3279,6 +3571,7 @@ function update() {
   liveChart.resize();
   NIRv_chart.resize();
   SR_chart.resize();
+  DSWI_chart.resize();
 
   setTimeout(() => {
     update();

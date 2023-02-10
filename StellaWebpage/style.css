@@ -1022,13 +1022,18 @@ input[type=number]::-webkit-outer-spin-button {
   transition: all 0.25s ease-in-out;
 }
 
+.editIcon.disabled{
+  opacity: 50%;
+  pointer-events: none;
+}
+
 .editIcon i{
   position: absolute;
   text-align: center;
   font-size: 1.25vw;
 }
 
-/* TEST SLIDER */
+/* DOUBLE SLIDER */
 [slider] {
   pointer-events: none;
   opacity: 0%;
@@ -1093,10 +1098,6 @@ input[type=number]::-webkit-outer-spin-button {
   background-color: white;
   outline: none;
 }
-
-/* [slider].active > div > [thumb] {
-  pointer-events: auto;
-} */
 
 [slider] > input[type=range] {
   position: absolute;
@@ -1219,6 +1220,36 @@ div[slider] > input[type=range]::-ms-tooltip {
   transition: ease-in-out opacity 0.25s;
 }
 
+[slider] .modeContainer{
+  top: 200%;
+  gap: 2.5%;
+  pointer-events: none;
+}
+
+[slider] .modeContainer.active{
+  pointer-events: auto;
+}
+
+.trimButton{
+  top: 200%;
+  right: 0%;
+  margin: 0.1rem;
+  padding: 0.5rem;
+  width: fit-content;
+  height: fit-content;
+
+  font-size: 1vw;
+  outline: solid 2px rgba(0, 0, 0, 1);
+}
+
+.modeContainer .trimButton:hover{
+  cursor: pointer;
+  opacity: 100%;
+  background: rgb(65, 65, 65);
+  color: white;
+  transition: all 0.25s ease;
+}
+
 .fav_batch{
   position: absolute;
   cursor: pointer;
@@ -1253,10 +1284,10 @@ div[slider] > input[type=range]::-ms-tooltip {
   opacity: 0%;
 
   overflow: auto;
-  resize: vertical;
+  resize: both;
 
   min-width: 25%;
-  max-width: 90%;
+  max-width: 75%;
   min-height: 25%;
   max-height: 90%;
 }
@@ -1346,6 +1377,7 @@ div[slider] > input[type=range]::-ms-tooltip {
 }
 .ac-sub-text {
   padding: 0 1em 0 2em;
+  user-select: text;
 }
 
 .close-icon
