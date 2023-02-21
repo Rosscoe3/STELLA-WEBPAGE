@@ -1527,9 +1527,18 @@ upload_file.addEventListener("input", function () {
 
     //** WHEN THE DATA FILE IS LOADED */
     reader.onload = function (event) {
+
+      if(reader.result.includes("average"))
+      {
+        console.log(reader.result.replace('average', ''));
+        console.log("INCLUDES AVERAGE");
+      }
+
       newDataArray = csvToArray(reader.result);
       let currentBatchNmb = newDataArray[0].batch_number;
       dataArrayBatches = [[]];
+
+      console.log(newDataArray);
 
       let batchIndex = 0;
       for (let i = 0; i < newDataArray.length; i++) {
@@ -1826,7 +1835,7 @@ function updateChart(backward, index) {
         }
   
         currentBatchArray[i].simpleRatio = currentBatchArray[i].nir860_irradiance / currentBatchArray[i].R650_irradiance;
-        //currentBatchArray[i].simpleRatio = currentBatchArray[i].nir860_reflectance / currentBatchArray[i].R650_reflectance;
+        currentBatchArray[i].simpleRatio = currentBatchArray[i].nir860_reflectance / currentBatchArray[i].R650_reflectance;
   
         SR_chart.data.datasets[0].data[i] = {
           x: currentBatchArray[i].timestamp,
@@ -1850,8 +1859,8 @@ function updateChart(backward, index) {
           DSWI_chart.options.scales.x.min = currentBatchArray[i].timestamp;
         }
   
-        currentBatchArray[i].DSWI = currentBatchArray[i].G550_irradiance / currentBatchArray[i].nir680_irradiance;
-        //currentBatchArray[i].simpleRatio = currentBatchArray[i].nir860_reflectance / currentBatchArray[i].R650_reflectance;
+        //currentBatchArray[i].DSWI = currentBatchArray[i].G550_irradiance / currentBatchArray[i].nir680_irradiance;
+        currentBatchArray[i].DSWI = currentBatchArray[i].G550_reflectance / currentBatchArray[i].nir680_reflectance;
   
         DSWI_chart.data.datasets[0].data[i] = {
           x: currentBatchArray[i].timestamp,
@@ -2054,8 +2063,13 @@ function updateChartLabels() {
 }
 
 function calculateNDVI(index) {
-  var b1 = "nir810_irradiance";
-  var b2 = "nir680_irradiance";
+  // var b1 = "nir810_irradiance";
+  // var b2 = "nir680_irradiance";
+
+  var b1 = "nir810_reflectance";
+  var b2 = "nir680_reflectance";
+
+  //console.log(currentBatchArray[index])
 
   var ndvi =
     (parseFloat(currentBatchArray[index][b1]) -
@@ -2501,6 +2515,18 @@ function addBatches(dataArray) {
         this.classList.toggle("selected");
         let calibrationArray = dataArrayBatches[this.index];
 
+        if(!ndvi_element.classList.contains("active"))
+        {
+          ndvi_element.classList.toggle("active");
+        }
+        if(!sr_element.classList.contains("active"))
+        {
+          sr_element.classList.toggle("active");
+        }
+        if(!dswi_element.classList.contains("active"))
+        {
+          dswi_element.classList.toggle("active");
+        }
         if(!nirv_element.classList.contains("active"))
         {
           nirv_element.classList.toggle("active");

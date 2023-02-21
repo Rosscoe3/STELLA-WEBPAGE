@@ -161,8 +161,8 @@
               <input class="ac-input" id="ac-3" name="ac-3" type="checkbox" />
               <label class="ac-label" for="ac-3">'NDVI'</label>
               <article class="ac-sub-text">
-                <p><b>'NDVI'</b> <i>aka</i> <b>'Normalized Difference NIR/Red Vegetation Index'</b></p>
-                <p><i>NDVI = (R_NIR - R_RED) / (R_NIR + R_RED)</i></p>
+                <p><b>'NDVI'</b> <i>aka</i> <b>'Normalized Difference Vegetation Index'</b></p>
+                <p><i>NDVI = (NIR - RED) / (NIR + RED)</i></p>
                 <p>The output of NDVI is a range from <b>-1</b> to <b>+1</b> (low-high).
                   If NDVI returns a <b>negative</b> value, it's highly probable that your subject is water. 
                   If it returns a value close to <b>+1</b> there’s a good chance it is dense green vegetation. 
@@ -205,7 +205,7 @@
               <label class="ac-label" for="ac-contact">Contact Us</label>
               <article class="ac-sub-text">
                 <p>Contact us for suggestions, questions, and feedback at:
-                  <a href="mailto: Stella@mail.nasa.gov" target="_blank" rel="noopener noreferrer">Stella@mail.nasa.gov</a>
+                  <a href="mailto: STELLA@mail.nasa.gov" target="_blank" rel="noopener noreferrer">Stella@mail.nasa.gov</a>
                 </p>
               </article>
             </div>
@@ -588,18 +588,18 @@
         </div>
         <div
           id="graphs_ndvi"
-          class="active"
+          class=""
           title="An indicator of density and health in vegetation"
         >
           NDVI
         </div>
-        <div id="graphs_SR" class="active">
+        <div id="graphs_SR" class="">
           SR
         </div>
-        <div id="graphs_DSWI" class="active">
+        <div id="graphs_DSWI" class="">
           DSWI 4
         </div>
-        <div id="graphs_nirv" class=" ">
+        <div id="graphs_nirv" class="">
           NIRv
         </div>
       </div>
@@ -623,15 +623,10 @@
       </div> -->
     </div>
 
+    <!-- CONTROL SIDEBAR FOR LIVE SCREEN -->
     <div
       class="controlSidebar"
       id="controlSidebar_live"
-      style="
-        grid-template-columns: minmax(1px, 1fr);
-        grid-template-rows: minmax(0.4fr, 1fr);
-        width: 10%;
-        min-width: 5rem;
-      "
     >
       <div class="controlSidebarheader" id="controlSidebarheader_live"></div>
       <h1>graphs</h1>
@@ -639,14 +634,14 @@
       <div class="batchGrid" id="graphs">
         <div
           id="graphs_raw_live"
-          class="selected"
+          class="active selected"
           title="RAW data from the device"
         >
           RAW
         </div>
         <div
           id="graphs_duplicate_live"
-          class="selected"
+          class="active selected"
           title="A duplicate screen from the device"
         >
           SCREEN
@@ -657,19 +652,6 @@
         <div id="UID_live">UID: 3875</div>
       </div> -->
     </div>
-
-    <!--TEST SLIDER-->
-    <!-- <div slider id="slider-distance">
-      <div>
-        <div inverse-left style="width:80%;"></div>
-        <div inverse-right style="width:80%;"></div>
-        <div range style="left:0%;right:0%;"></div>
-        <span thumb style="left:0%;"></span>
-        <span thumb style="left:100%;"></span>
-      </div>
-      <input type="range" id="editRange_start" tabindex="0" value="0" max="50" min="0" step="1"/>
-      <input type="range" id="editRange_end" tabindex="0" value="50" max="50" min="0" step="1"/>
-    </div> -->
 
     <script type="module" src="/main.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

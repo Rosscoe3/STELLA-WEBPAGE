@@ -847,7 +847,7 @@ h2 {
   opacity: 50%;
 }
 
-.batchGrid div.active {
+.controlSidebar.active .batchGrid div.active {
   pointer-events: auto;
   opacity: 100%;
 }
