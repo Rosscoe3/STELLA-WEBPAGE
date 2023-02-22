@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>STELLA - Data Viewer</title>
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -58,10 +59,10 @@
               <label class="ac-label" for="ac-graphs">'Graphs'</label>
               <article class="ac-sub-text">
                 <p>The <b>‘Graphs’</b> section of the sidebar is used to select which graphs are visible on screen. 
-                  Simply click on an index to have it toggle on or off. When an index is selected it will highlight in black, 
-                  a total of 4 graphs are available to show on screen at one time. </p>
+                  Simply click on an index to have it toggle on or off. When an index is selected, it will highlight in black. 
+                  A total of four graphs are shown on the screen at one time. </p>
                 <img src="images/graphs.png" alt="" draggable="false">
-                <p>*Note that if an index is grayed-out you will need select a calibration batch*</p>
+                <p>*Note that if an index is grayed out, you will need to select a calibration batch.*</p>
               </article>
             </div>
             <div class="ac-sub">
@@ -70,7 +71,7 @@
               <article class="ac-sub-text">
                 <p>The <b>‘#Batch’</b> section of the sidebar is used to select which batch is currently visible. 
                   Simply click on a batch number to have it displayed on the graph. 
-                  When a batch is selected it will highlight in black and will update any other indices you have selected. </p>
+                  When a batch is selected, it will highlight in black and any other indices you have selected will be updated.</p>
                 <img src="images/batch.png" alt="" draggable="false">  
               </article>
             </div>
@@ -90,7 +91,7 @@
                 <p>The <b>‘distance’</b> section of the sidebar is used to determine the distance at which the currently selected batch was taken from its subject in cm. 
                   This value is important in accurately calculating reflectance.</p>
                 <p>The <b>‘calibration batch’</b> section of the sidebar is used to select which batch to compare against for various indices. 
-                  Once selected, the values of this batch will be averaged over time and used to calculate reflectance for the currently selected batch.</p>  
+                  Once selected, the values of this batch will be averaged over time and used to calculate the reflectance for the currently selected batch.</p>  
                 <img src="images/calibration_batch.png" alt="" draggable="false">  
               </article>
             </div>
@@ -103,28 +104,28 @@
                   Click and drag each slider to the desired start and end point, and click done to save your changes.</p>
                 <img src="images/trim.png" alt="" draggable="false">  
                 <p>*Note that clicking ‘done’ will remove the data you have trimmed. 
-                  However you can always re-upload your data file to recover whatever changes you have made.*</p>
+                  However you can always re-upload your data file to recover previous changes you have made.*</p>
               </article>
             </div>
             <div class="ac-sub">
               <input class="ac-input" id="ac-download" name="ac-download" type="checkbox" />
               <label class="ac-label" for="ac-download">Downloading data</label>
               <article class="ac-sub-text">
-                <p>To download your data simply click the <i class="material-icons w3-large">download</i> icon. 
-                  Once clicked, the currently selected batch will download automatically as a .csv 
-                  file which can be re-uploaded to perform the same graphing as before.</p>
+                <p>To download your data, click the <i class="material-icons w3-large">download</i> icon. 
+                  Once clicked, the currently selected batch will download automatically as a .csv file. 
+                  This file can be re-uploaded to perform the same graphing as before.</p>
               </article>
             </div>
             <div class="ac-sub">
               <input class="ac-input" id="ac-recording" name="ac-recording" type="checkbox" />
               <label class="ac-label" for="ac-recording">Recording</label>
               <article class="ac-sub-text">
-                <p>To record a graph click on the <b>‘Record’</b> button in the bottom left corner. 
+                <p>To record a graph, click on the <b>‘Record’</b> button in the bottom left corner. 
                   Once clicked, a timer will appear displaying the amount of time you have recorded. 
                   To stop recording, click the <b>‘Record’</b> button again and a new tab will appear with your video file. 
-                  Once your file has fully loaded, click the hamburger in the bottom right corner to download the file as a .mp4</p>
-                <p>*Note that only the <b>‘RAW’</b> graph is available for video recording, because all other indices will not change as the timeline is moved.*</p>
-                <p>To take a still image of your graph, click on the <i class="material-icons w3-large">camera_alt</i> button in the bottom left corner. 
+                  Once your file has fully loaded, click the hamburger icon in the bottom right corner to download the file as a .mp4.</p>
+                <p>*Note that only the <b>‘RAW’</b> graph is available for video recording because all other indices will not change as the timeline is moved.*</p>
+                <p>To capture a static image of your graph, click on the <i class="material-icons w3-large">camera_alt</i> button in the bottom left corner. 
                   Once clicked, a .png file will automatically download to your computer.</p>
               </article>
             </div>
@@ -142,8 +143,8 @@
               <input class="ac-input" id="ac-2" name="ac-2" type="checkbox" />
               <label class="ac-label" for="ac-2">'RAW'</label>
               <article class="ac-sub-text">
-                <p>The <b>‘RAW’</b> graph refers to the direct unfiltered data received straight from the device.
-                  It records values in irradiance at the following wavelengths:
+                <p>The <b>‘RAW’</b> graph refers to the unfiltered data that are received directly from the STELLA device. 
+                  Data values are recorded as irradiance measurements at the following wavelengths:
                 </p>
                 <p>
                   <i>Visible</i>: <b>450nm, 500nm, 550nm, 570nm, 600nm, 650nm.</b>
@@ -152,7 +153,7 @@
                   <i>Near Infrared</i>: <b>610nm, 680nm, 730nm, 760nm, 810nm, 860nm.</b>
                 </p>
                 <p>
-                  Toggling <b>‘Visible (filtered)’</b> or <b>‘Infrared (filtered)’</b> on top of the graph will show the current data points filtered through each sensor's calibration curve. 
+                  Toggling <b>‘Visible (filtered)’</b> or <b>‘Infrared (filtered)’</b> on top of the graph will show the current data points filtered through each sensor's calibration curve.
                 </p>
               </article>
             </div>
@@ -161,34 +162,35 @@
               <input class="ac-input" id="ac-3" name="ac-3" type="checkbox" />
               <label class="ac-label" for="ac-3">'NDVI'</label>
               <article class="ac-sub-text">
-                <p><b>'NDVI'</b> <i>aka</i> <b>'Normalized Difference Vegetation Index'</b></p>
+                <p><b>'NDVI'</b> <b>'Normalized Difference Vegetation Index'</b></p>
                 <p><i>NDVI = (NIR - RED) / (NIR + RED)</i></p>
-                <p>The output of NDVI is a range from <b>-1</b> to <b>+1</b> (low-high).
-                  If NDVI returns a <b>negative</b> value, it's highly probable that your subject is water. 
-                  If it returns a value close to <b>+1</b> there’s a good chance it is dense green vegetation. 
-                  Values close to <b>zero</b> means there is likely no vegetation at all.</p>
-                <p>NDVI has found broad applications in remote sensing for agricultural applications for crop biomass assessment and monitoring of the fraction of vegetation cover for a specific field. 
-                  In agriculture, models based on NDVI are developed for prediction of winter wheat yield at large scale. 
-                  In forestry, models for fire danger and using NDVI together with a suite of other biophysical and meteorological variables.</p>
+                <p>The output range of NDVI is <b>-1</b> to <b>+1</b>.
+                  If the NDVI value is <b>negative</b>, it is probable that your subject is water, barren rock, or an impervious surface. 
+                  If the NDVI value is close to <b>+1</b>, there is a high likelihood that your subject has dense green and photosynthetically active vegetation. 
+                  NDVI values that are close to <b>zero</b> suggest that the subject has little to no vegetation.</p>
+                <p>Since NDVI corresponds to photosynthetic activity, it has broad applications in remote sensing. 
+                  In agricultural studies, NDVI has been used to assess crop biomass and to monitor the fraction of plant cover in specific fields. 
+                  Specifically, models based on NDVI have been developed to predict winter wheat yield at large scales. 
+                  In forestry applications, NDVI measurements can provide important information about forest dynamics and it can be used in 
+                  conjunction with a suite of other biophysical and meteorological variables to model wildfire risk</p>
               </article>
             </div>
             <div class="ac-sub">
               <input class="ac-input" id="ac-SR" name="ac-SR" type="checkbox" />
               <label class="ac-label" for="ac-SR">'SR'</label>
               <article class="ac-sub-text">
-                <p><b>'SR'</b> <i>aka</i> <b>'Simple Ratio'</b></p>
-                <p><i>SR = R_860/R_650</i></p>
-                <p>Vegetation indices are commonly used as quick indicators of relative crop condition 
-                  (e.g., as compared to prior observation).</p>
+                <p><b>'SR'</b> <b>('Simple Ratio')</b></p>
+                <p><i>SR = R860/R650</i></p>
+                <p>Vegetation indices are commonly used as quick indicators of relative crop condition (e.g., as compared to prior observation).</p>
               </article>
             </div>    
             <div class="ac-sub">
               <input class="ac-input" id="ac-NIRv" name="ac-NIRv" type="checkbox" />
               <label class="ac-label" for="ac-NIRv">'NIRv'</label>
               <article class="ac-sub-text">
-                <p><b>'NIRv'</b> <i>aka</i> <b>'Near-infrared reflectance of vegetation (NIRV)'</b></p>
-                <p><i>NIRv = NDVI*NIR</i></p>
-                <p>*If NIRv is grayed-out, you will need to select a <b>calibration batch</b> 
+                <p><b>'NIRv'</b><b>('Near-infrared reflectance of vegetation')</b></p>
+                <p><i>NIRv = NDVI * NIR</i></p>
+                <p>*If NIRv is grayed out, you will need to select a <b>calibration batch</b> 
                   and determine the <b>distance</b> in which the subject was recorded* </p>
               </article>
             </div>        
@@ -204,7 +206,7 @@
               <input class="ac-input" id="ac-contact" name="ac-contact" type="checkbox" />
               <label class="ac-label" for="ac-contact">Contact Us</label>
               <article class="ac-sub-text">
-                <p>Contact us for suggestions, questions, and feedback at:
+                <p>For suggestions, questions, and feedback, contact:
                   <a href="mailto: STELLA@mail.nasa.gov" target="_blank" rel="noopener noreferrer">Stella@mail.nasa.gov</a>
                 </p>
               </article>
@@ -213,7 +215,7 @@
               <input class="ac-input" id="ac-specifics" name="ac-specifics" type="checkbox" />
               <label class="ac-label" for="ac-specifics">Device Specifics</label>
               <article class="ac-sub-text">
-                <p>For more information about assembly, technology, device updates, or the STELLA project in general, please visit our NASA webpage: 
+                <p>For more information about the assembly, technology, device updates, or the STELLA project in general, please visit our NASA webpage at: 
                   <a href="https://landsat.gsfc.nasa.gov/stella/" target="_blank" rel="noopener noreferrer">https://landsat.gsfc.nasa.gov/stella/</a></p>
               </article>
             </div>
@@ -222,11 +224,11 @@
               <label class="ac-label" for="ac-creators">Creators</label>
               <article class="ac-sub-text">
                 <p><b>Paul Mirel:</b>
-                  Device creator, designer, and lead engineer.</p>
-                <p><b>Petya Campbell:</b> Lead scientist.</p>  
-                <p><b>Jesse Barber:</b> Cal/Val scientist.</p>
-                <p><b>Michael Taylor:</b> Project coordinator and presenter.</p>
-                <p><b>Ross Walter:</b> Dataviewer designer and programmer.</p>
+                  Device creator, designer, and lead engineer</p>
+                <p><b>Petya Campbell:</b> Lead scientist</p>  
+                <p><b>Jesse Barber:</b> Cal/Val scientist</p>
+                <p><b>Michael Taylor:</b> Project coordinator and presenter</p>
+                <p><b>Ross Walter:</b> Dataviewer designer and programmer</p>
               </article>
             </div>
             
@@ -627,11 +629,16 @@
     <div
       class="controlSidebar"
       id="controlSidebar_live"
-    >
+      style="
+        grid-template-columns: minmax(1px, 1fr);
+        grid-template-rows: minmax(0.4fr, 1fr);
+        width: 10%;
+        min-width: 5rem;"
+      >
       <div class="controlSidebarheader" id="controlSidebarheader_live"></div>
       <h1>graphs</h1>
       <!-- <h1 id="dateHeader">2022/12/05</h1> -->
-      <div class="batchGrid" id="graphs">
+      <div class="batchGrid" id="graphs" contenteditable="true">
         <div
           id="graphs_raw_live"
           class="active selected"
