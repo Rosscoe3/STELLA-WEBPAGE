@@ -361,7 +361,6 @@
           </div>
           <!-- <input type="number" id="edit_start_input" name="quantity" min="1" max="5" value = "1"> -->
         </div>
-
         <!-- BOTTOM LEFT SIDEBAR FOR RECORDING GRAPH-->
         <div class="editContainer leftSided">
           <div class="recordContainer" id="recordContainer">
@@ -578,6 +577,7 @@
       </div>
     </div>
 
+    <!-- CONTROL SIDEBAR -->
     <div class="controlSidebar" id="controlSidebar">
       <div class="controlSidebarheader" id="controlSidebarheader"></div>
       <h1>graphs</h1>
@@ -619,11 +619,34 @@
         <h1>calibration batch:</h1>
         <div class="batchGrid" id="calibration_batch_grid"></div>
       </div>
-
       <!-- <div class="fav_batch" id="fav_batch" title="Select Calibration Batch">
         <i class="material-icons w3-large"> star_border </i>
       </div> -->
     </div>
+
+    <!-- DOWNLOAD SIDEBAR -->
+    <!-- <div class="downloadSidebar active" id="downloadSidebar">
+      <div class="downloadSidebar_header" id="downloadSidebar_header"></div>
+      <div class="close-icon" id="download_closeBtn">X</div>
+      <h1>Download</h1>
+      <div class="userInputContainer">
+        <input type="text" value="fileName.csv" id="fileName_download">
+        <i class="material-icons w3-large" title="Download All">download</i>
+        <div class="batchGrid" id="graphs">
+          <div
+            class="active"
+          >
+            1
+            <i class="material-icons w3-large" title="Download All">delete_forever</i>
+          </div>
+          <div
+            class="active"
+          >
+            2
+          </div>
+        </div>
+      </div>
+    </div> -->
 
     <!-- CONTROL SIDEBAR FOR LIVE SCREEN -->
     <div
@@ -638,7 +661,7 @@
       <div class="controlSidebarheader" id="controlSidebarheader_live"></div>
       <h1>graphs</h1>
       <!-- <h1 id="dateHeader">2022/12/05</h1> -->
-      <div class="batchGrid" id="graphs" contenteditable="true">
+      <div class="batchGrid" id="graphs">
         <div
           id="graphs_raw_live"
           class="active selected"

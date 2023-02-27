@@ -83,6 +83,8 @@ let recordButton = document.getElementById("recordButton");
 let recordContainer = document.getElementById("recordContainer");
 let recordingText = document.getElementById("recordingText");
 
+//let fileName_download = document.getElementById("fileName_download");
+
 let snapShotIcon = document.getElementById("snapshot");
 let snapShotIcon_2 = document.getElementById("snapshot_2");
 let snapShotIcon_3 = document.getElementById("snapshot_3");
@@ -3202,6 +3204,20 @@ trim_icon.addEventListener("click", function () {
   animPlay = false;
   clearTimeout(animWaitFunc);
 });
+
+//** DOWNLOAD SIDEBAR */
+// fileName_download.addEventListener("change", function () {
+//   console.log("CHANGE DOWNLOAD");
+  
+//   //**REMOVE BLANK SPACE */
+//   fileName_download.value = fileName_download.value.replace(/\s+/g, '');
+
+//   if(fileName_download.value == "")
+//   {
+//     fileName_download.value = "fileName";
+//   }
+//   fileName_download.value = fileName_download.value + ".csv";
+// });
 
 function resetTrim()
 {

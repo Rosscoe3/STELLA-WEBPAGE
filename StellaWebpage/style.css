@@ -831,7 +831,6 @@ h2 {
   align-content: flex-start;
   justify-content: flex-start;
 }
-
 .batchGrid div {
   display: inline-block;
   width: 100%;
@@ -872,6 +871,115 @@ h2 {
   cursor: default;
   left: 2.5%;
   font-size: 100%;
+}
+
+.downloadSidebar {
+  position: absolute;
+  bottom: 0%;
+  right: 0%;
+  /* transform: translate(-50%, 0%); */
+  background-color: white;
+  margin: 1% 1%;
+  z-index:99;
+
+  pointer-events: none;
+  opacity: 0%;
+
+  resize: both;
+  overflow-x: hidden;
+  overflow-y: hidden;
+
+  display: grid;
+  grid-template-columns: minmax(1px, 1fr);
+  grid-template-rows: minmax(1px, 0.3fr) minmax(1px, 1fr);
+
+  outline: solid 2px rgba(0, 0, 0, 1);
+  height: 15%;
+  width: 10%;
+
+  max-height: 30%;
+  min-height: 15%;
+  max-width: 20%;
+  min-width: 10rem;
+}
+.downloadSidebar.active {
+  pointer-events: auto;
+  opacity: 100%;
+  transition: all 0.25 ease-in-out;
+}
+.downloadSidebar h1 {
+  user-select: none;
+  margin: 0%;
+  padding: 2.5%;
+  bottom: 0%;
+  font-size: 125%;
+  text-align: left;
+  outline: solid 1px rgba(0, 0, 0, 1);
+}
+.downloadSidebar input {
+  user-select: none;
+  margin: 0%;
+  padding: 2.5%;
+  bottom: 0%;
+  font-size: 125%;
+  text-align: left;
+  outline: solid 1px rgba(0, 0, 0, 1);
+  font-family: "Inter", sans-serif;
+}
+.downloadSidebar i {
+  position: absolute;
+  text-align: center;
+  padding: 2.5%;
+  right: 0%;
+}
+.downloadSidebar i:hover {
+  opacity: 50%;
+  cursor: pointer;
+}
+
+.downloadSidebar_header{
+  z-index:99;
+  cursor: move;
+  position: absolute;
+  width: 80%;
+  height: 15%;
+  color: black;
+  background-color: bla;
+}
+
+.userInputContainer i {
+  position: relative;
+  text-align: center;
+  right: 0%;
+  top: 0%;
+}
+
+.downloadSidebar.active .batchGrid div.active {
+  pointer-events: auto;
+  opacity: 100%;
+}
+.downloadSidebar .batchGrid div.active:hover {
+  background-color: rgb(65, 65, 65);
+  color: white;
+  transition: all 0.25s ease-in-out;
+}
+.downloadSidebar .batchGrid
+{
+  position: relative;
+}
+.downloadSidebar .batchGrid div i{
+  position:absolute;
+  z-index:200;
+  text-align: left;
+  pointer-events: auto;
+  cursor: default;
+  left: 0%;
+  font-size: 200%;
+  opacity: 0%;
+}
+
+.downloadSidebar .batchGrid:hover div i{
+  opacity: 100%;
 }
 
 /* .batchGrid .indices{
