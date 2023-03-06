@@ -1598,6 +1598,7 @@ function updateChart(backward, index) {
     speedSlider.max = currentBatchArray.length;
     speedSlider.min = 1;
 
+    //** UPDATE TIMELINE */
     if (!index) {
       if (currentBatchArray.length >= 2) {
         if (animPlay) {
@@ -1646,27 +1647,27 @@ function updateChart(backward, index) {
     mainChart.data.datasets[13].data = [
       {
         x: 450,
-        y: currentBatchArray[dataTimeIndex].V450_irradiance,
+        y: currentBatchArray[dataTimeIndex].V450_irradiance_uW_per_cm_squared,
       },
       {
         x: 500,
-        y: currentBatchArray[dataTimeIndex].B500_irradiance,
+        y: currentBatchArray[dataTimeIndex].B500_irradiance_uW_per_cm_squared,
       },
       {
         x: 550,
-        y: currentBatchArray[dataTimeIndex].G550_irradiance,
+        y: currentBatchArray[dataTimeIndex].G550_irradiance_uW_per_cm_squared,
       },
       {
         x: 570,
-        y: currentBatchArray[dataTimeIndex].Y570_irradiance,
+        y: currentBatchArray[dataTimeIndex].Y570_irradiance_uW_per_cm_squared,
       },
       {
         x: 600,
-        y: currentBatchArray[dataTimeIndex].O600_irradiance,
+        y: currentBatchArray[dataTimeIndex].O600_irradiance_uW_per_cm_squared,
       },
       {
         x: 650,
-        y: currentBatchArray[dataTimeIndex].R650_irradiance,
+        y: currentBatchArray[dataTimeIndex].R650_irradiance_uW_per_cm_squared,
       },
     ];
 
@@ -1674,27 +1675,27 @@ function updateChart(backward, index) {
     mainChart.data.datasets[12].data = [
       {
         x: 610,
-        y: currentBatchArray[dataTimeIndex].nir610_irradiance,
+        y: currentBatchArray[dataTimeIndex].nir610_irradiance_uW_per_cm_squared,
       },
       {
         x: 680,
-        y: currentBatchArray[dataTimeIndex].nir680_irradiance,
+        y: currentBatchArray[dataTimeIndex].nir680_irradiance_uW_per_cm_squared,
       },
       {
         x: 730,
-        y: currentBatchArray[dataTimeIndex].nir730_irradiance,
+        y: currentBatchArray[dataTimeIndex].nir730_irradiance_uW_per_cm_squared,
       },
       {
         x: 760,
-        y: currentBatchArray[dataTimeIndex].nir760_irradiance,
+        y: currentBatchArray[dataTimeIndex].nir760_irradiance_uW_per_cm_squared,
       },
       {
         x: 810,
-        y: currentBatchArray[dataTimeIndex].nir810_irradiance,
+        y: currentBatchArray[dataTimeIndex].nir810_irradiance_uW_per_cm_squared,
       },
       {
         x: 860,
-        y: currentBatchArray[dataTimeIndex].nir860_irradiance,
+        y: currentBatchArray[dataTimeIndex].nir860_irradiance_uW_per_cm_squared,
       },
     ];
 
@@ -1705,37 +1706,37 @@ function updateChart(backward, index) {
       mainChart.data.datasets[6].data[i] = {
         x: parseInt(calibrationArray_Visible[i * step].wavelength),
         y:
-          currentBatchArray[dataTimeIndex].V450_irradiance *
+          currentBatchArray[dataTimeIndex].V450_irradiance_uW_per_cm_squared *
           parseFloat(calibrationArray_Visible[i * step].V450_power),
       };
       mainChart.data.datasets[7].data[i] = {
         x: parseInt(calibrationArray_Visible[i * step].wavelength),
         y:
-          currentBatchArray[dataTimeIndex].B500_irradiance *
+          currentBatchArray[dataTimeIndex].B500_irradiance_uW_per_cm_squared *
           parseFloat(calibrationArray_Visible[i * step].B500_power),
       };
       mainChart.data.datasets[8].data[i] = {
         x: parseInt(calibrationArray_Visible[i * step].wavelength),
         y:
-          currentBatchArray[dataTimeIndex].G550_irradiance *
+          currentBatchArray[dataTimeIndex].G550_irradiance_uW_per_cm_squared *
           parseFloat(calibrationArray_Visible[i * step].G550_power),
       };
       mainChart.data.datasets[9].data[i] = {
         x: parseInt(calibrationArray_Visible[i * step].wavelength),
         y:
-          currentBatchArray[dataTimeIndex].Y570_irradiance *
+          currentBatchArray[dataTimeIndex].Y570_irradiance_uW_per_cm_squared *
           parseFloat(calibrationArray_Visible[i * step].Y570_power),
       };
       mainChart.data.datasets[10].data[i] = {
         x: parseInt(calibrationArray_Visible[i * step].wavelength),
         y:
-          currentBatchArray[dataTimeIndex].O600_irradiance *
+          currentBatchArray[dataTimeIndex].O600_irradiance_uW_per_cm_squared *
           parseFloat(calibrationArray_Visible[i * step].O600_power),
       };
       mainChart.data.datasets[11].data[i] = {
         x: parseInt(calibrationArray_Visible[i * step].wavelength),
         y:
-          currentBatchArray[dataTimeIndex].R650_irradiance *
+          currentBatchArray[dataTimeIndex].R650_irradiance_uW_per_cm_squared *
           parseFloat(calibrationArray_Visible[i * step].R650_power),
       };
     }
@@ -1744,37 +1745,37 @@ function updateChart(backward, index) {
       mainChart.data.datasets[0].data[i] = {
         x: parseInt(calibrationArray_Infrared[i * step].Lambda),
         y:
-          currentBatchArray[dataTimeIndex].nir610_irradiance *
+          currentBatchArray[dataTimeIndex].nir610_irradiance_uW_per_cm_squared *
           parseFloat(calibrationArray_Infrared[i * step].nir610_power),
       };
       mainChart.data.datasets[1].data[i] = {
         x: parseInt(calibrationArray_Infrared[i * step].Lambda),
         y:
-          currentBatchArray[dataTimeIndex].nir680_irradiance *
+          currentBatchArray[dataTimeIndex].nir680_irradiance_uW_per_cm_squared *
           parseFloat(calibrationArray_Infrared[i * step].nir680_power),
       };
       mainChart.data.datasets[2].data[i] = {
         x: parseInt(calibrationArray_Infrared[i * step].Lambda),
         y:
-          currentBatchArray[dataTimeIndex].nir730_irradiance *
+          currentBatchArray[dataTimeIndex].nir730_irradiance_uW_per_cm_squared *
           parseFloat(calibrationArray_Infrared[i * step].nir730_power),
       };
       mainChart.data.datasets[3].data[i] = {
         x: parseInt(calibrationArray_Infrared[i * step].Lambda),
         y:
-          currentBatchArray[dataTimeIndex].nir760_irradiance *
+          currentBatchArray[dataTimeIndex].nir760_irradiance_uW_per_cm_squared *
           parseFloat(calibrationArray_Infrared[i * step].nir760_power),
       };
       mainChart.data.datasets[4].data[i] = {
         x: parseInt(calibrationArray_Infrared[i * step].Lambda),
         y:
-          currentBatchArray[dataTimeIndex].nir810_irradiance *
+          currentBatchArray[dataTimeIndex].nir810_irradiance_uW_per_cm_squared *
           parseFloat(calibrationArray_Infrared[i * step].nir810_power),
       };
       mainChart.data.datasets[5].data[i] = {
         x: parseInt(calibrationArray_Infrared[i * step].Lambda),
         y:
-          currentBatchArray[dataTimeIndex].nir860_irradiance *
+          currentBatchArray[dataTimeIndex].nir860_irradiance_uW_per_cm_squared *
           parseFloat(calibrationArray_Infrared[i * step].nir860_power),
       };
     }
@@ -1785,15 +1786,15 @@ function updateChart(backward, index) {
       for (let i = 0; i < currentBatchArray.length; i++) {
         //** GRAB LAST VALUE OF ARRAY TO SET THE MAX TIMESTAMP OF CHART */
         if (i == currentBatchArray.length - 1) {
-          chart2.options.scales.x.max = currentBatchArray[i].timestamp;
+          chart2.options.scales.x.max = currentBatchArray[i].timestamp.replace(/\s/g, "");
         }
         //** GRAB FIRST VALUE OF ARRAY TO SET THE MIN TIMESTAMP OF CHART */
         else if (i == 0) {
-          chart2.options.scales.x.min = currentBatchArray[i].timestamp;
+          chart2.options.scales.x.min = currentBatchArray[i].timestamp.replace(/\s/g, "");
         }
   
         chart2.data.datasets[0].data[i] = {
-          x: currentBatchArray[i].timestamp,
+          x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
           // x: parseFloat(currentBatchArray[i].decimal_hour),
           y: calculateNDVI(i),
         };
@@ -1806,15 +1807,16 @@ function updateChart(backward, index) {
       for (let i = 0; i < currentBatchArray.length; i++) {
         //** GRAB LAST VALUE OF ARRAY TO SET THE MAX TIMESTAMP OF CHART */
         if (i == currentBatchArray.length - 1) {
-          NIRv_chart.options.scales.x.max = currentBatchArray[i].timestamp;
+          NIRv_chart.options.scales.x.max = currentBatchArray[i].timestamp.replace(/\s/g, "");
+          console.log(currentBatchArray[i].timestamp.replace(/\s/g, ""));
         }
         //** GRAB FIRST VALUE OF ARRAY TO SET THE MIN TIMESTAMP OF CHART */
         else if (i == 0) {
-          NIRv_chart.options.scales.x.min = currentBatchArray[i].timestamp;
+          NIRv_chart.options.scales.x.min = currentBatchArray[i].timestamp.replace(/\s/g, "");
         }
   
         NIRv_chart.data.datasets[0].data[i] = {
-          x: currentBatchArray[i].timestamp,
+          x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
           // x: parseFloat(currentBatchArray[i].decimal_hour),
           y: currentBatchArray[i].NIRv,
         };
@@ -1829,22 +1831,22 @@ function updateChart(backward, index) {
       for (let i = 0; i < currentBatchArray.length; i++) {
         //** GRAB LAST VALUE OF ARRAY TO SET THE MAX TIMESTAMP OF CHART */
         if (i == currentBatchArray.length - 1) {
-          SR_chart.options.scales.x.max = currentBatchArray[i].timestamp;
+          SR_chart.options.scales.x.max = currentBatchArray[i].timestamp.replace(/\s/g, "");
         }
         //** GRAB FIRST VALUE OF ARRAY TO SET THE MIN TIMESTAMP OF CHART */
         else if (i == 0) {
-          SR_chart.options.scales.x.min = currentBatchArray[i].timestamp;
+          SR_chart.options.scales.x.min = currentBatchArray[i].timestamp.replace(/\s/g, "");
         }
   
-        currentBatchArray[i].simpleRatio = currentBatchArray[i].nir860_irradiance / currentBatchArray[i].R650_irradiance;
+        currentBatchArray[i].simpleRatio = currentBatchArray[i].nir860_irradiance_uW_per_cm_squared / currentBatchArray[i].R650_irradiance_uW_per_cm_squared;
         currentBatchArray[i].simpleRatio = currentBatchArray[i].nir860_reflectance / currentBatchArray[i].R650_reflectance;
   
         SR_chart.data.datasets[0].data[i] = {
-          x: currentBatchArray[i].timestamp,
+          x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
           y: currentBatchArray[i].simpleRatio,
         };
         
-        //console.log("GRAPHED Simple Ratio: " + currentBatchArray[i].B500_irradiance);
+        //console.log("GRAPHED Simple Ratio: " + currentBatchArray[i].B500_irradiance_uW_per_cm_squared);
       }
     }
 
@@ -1854,33 +1856,33 @@ function updateChart(backward, index) {
       for (let i = 0; i < currentBatchArray.length; i++) {
         //** GRAB LAST VALUE OF ARRAY TO SET THE MAX TIMESTAMP OF CHART */
         if (i == currentBatchArray.length - 1) {
-          DSWI_chart.options.scales.x.max = currentBatchArray[i].timestamp;
+          DSWI_chart.options.scales.x.max = currentBatchArray[i].timestamp.replace(/\s/g, "");
         }
         //** GRAB FIRST VALUE OF ARRAY TO SET THE MIN TIMESTAMP OF CHART */
         else if (i == 0) {
-          DSWI_chart.options.scales.x.min = currentBatchArray[i].timestamp;
+          DSWI_chart.options.scales.x.min = currentBatchArray[i].timestamp.replace(/\s/g, "");
         }
   
-        //currentBatchArray[i].DSWI = currentBatchArray[i].G550_irradiance / currentBatchArray[i].nir680_irradiance;
+        //currentBatchArray[i].DSWI = currentBatchArray[i].G550_irradiance_uW_per_cm_squared / currentBatchArray[i].nir680_irradiance_uW_per_cm_squared;
         currentBatchArray[i].DSWI = currentBatchArray[i].G550_reflectance / currentBatchArray[i].nir680_reflectance;
   
         DSWI_chart.data.datasets[0].data[i] = {
-          x: currentBatchArray[i].timestamp,
+          x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
           y: currentBatchArray[i].DSWI,
         };
       }
     }
     //** UPDATE EXTRA INFO LABELS */
     dateHeader_label.innerHTML =
-    currentBatchArray[dataTimeIndex].timestamp.substring(4, 6) +
+    currentBatchArray[dataTimeIndex].timestamp.replace(/\s/g, "").substring(4, 6) +
     "/" +
-    currentBatchArray[dataTimeIndex].timestamp.substring(6, 8) +
+    currentBatchArray[dataTimeIndex].timestamp.replace(/\s/g, "").substring(6, 8) +
     "/" +
-    currentBatchArray[dataTimeIndex].timestamp.substring(0, 4);
+    currentBatchArray[dataTimeIndex].timestamp.replace(/\s/g, "").substring(0, 4);
 
     uid_label.innerHTML = "UID: " + currentBatchArray[dataTimeIndex].UID;
 
-    var string = currentBatchArray[dataTimeIndex].timestamp,
+    var string = currentBatchArray[dataTimeIndex].timestamp.replace(/\s/g, ""),
       date = new Date(
         string.replace(/(....)(..)(.....)(..)(.*)/, "$1-$2-$3:$4:$5")
       );
@@ -1889,7 +1891,7 @@ function updateChart(backward, index) {
     time_label.innerHTML = "time: " + dateTime_time;
     airTemp_label.innerHTML =
       "air_temp: " +
-      currentBatchArray[dataTimeIndex].air_temperature +
+      currentBatchArray[dataTimeIndex].air_temperature_C +
       "&#8451";
     surfaceTemp_label.innerHTML =
       "surface_temp: " +
@@ -2065,8 +2067,8 @@ function updateChartLabels() {
 }
 
 function calculateNDVI(index) {
-  // var b1 = "nir810_irradiance";
-  // var b2 = "nir680_irradiance";
+  // var b1 = "nir810_irradiance_uW_per_cm_squared";
+  // var b2 = "nir680_irradiance_uW_per_cm_squared";
 
   var b1 = "nir810_reflectance";
   var b2 = "nir680_reflectance";
@@ -2099,6 +2101,7 @@ async function getSerialMessage() {
 
 function decipherSerialMessage(message) {
   let messageSplit = message.split(" ");
+  console.log(messageSplit);
   if (message.includes("paused")) {
     //console.log("PAUSED");
     paused = true;
@@ -2120,9 +2123,9 @@ function decipherSerialMessage(message) {
   //** IF THE MESSAGE CONTAINS... */
   else {
     //** SURFACE TEMP */
-    if (messageSplit.includes("surface_temp:")) {
+    if (messageSplit.includes("surface_temp,")) {
       let surface_temp =
-        messageSplit[messageSplit.indexOf("surface_temp:") + 1];
+        messageSplit[messageSplit.indexOf("surface_temp,") + 1];
       let surface_temp_float = parseFloat(surface_temp);
 
       if (!isNaN(surface_temp_float)) {
@@ -2137,9 +2140,8 @@ function decipherSerialMessage(message) {
       }
     }
     //** AIR TEMP */
-    if (messageSplit.includes("air_temp:")) {
-      let airTemp = messageSplit[messageSplit.indexOf("air_temp:") + 1];
-
+    if (messageSplit.includes("air_temp,")) {
+      let airTemp = messageSplit[messageSplit.indexOf("air_temp,") + 1];
       if (!isNaN(parseFloat(airTemp))) {
         document.getElementById("airTemp_label").innerHTML =
           "Air: " + parseFloat(airTemp) + "C";
@@ -2147,18 +2149,18 @@ function decipherSerialMessage(message) {
     }
     //** TIMESTAMP */
     if (
-      messageSplit.includes("hour:") &&
-      messageSplit.includes("min:") &&
-      messageSplit.includes("sec:")
+      messageSplit.includes("hour,") &&
+      messageSplit.includes("min,") &&
+      messageSplit.includes("sec,")
     ) {
       if (
-        messageSplit.indexOf("hour:") + 1 &&
-        messageSplit.indexOf("min:") + 1 &&
-        messageSplit.indexOf("sec:") + 1
+        messageSplit.indexOf("hour,") + 1 &&
+        messageSplit.indexOf("min,") + 1 &&
+        messageSplit.indexOf("sec,") + 1
       ) {
-        let hour = messageSplit[messageSplit.indexOf("hour:") + 1];
-        let min = messageSplit[messageSplit.indexOf("min:") + 1];
-        let sec = messageSplit[messageSplit.indexOf("sec:") + 1];
+        let hour = messageSplit[messageSplit.indexOf("hour,") + 1];
+        let min = messageSplit[messageSplit.indexOf("min,") + 1];
+        let sec = messageSplit[messageSplit.indexOf("sec,") + 1];
 
         if (
           !isNaN(parseFloat(hour)) &&
@@ -2188,18 +2190,18 @@ function decipherSerialMessage(message) {
     }
     //** DATESTAMP */
     if (
-      messageSplit.includes("year:") &&
-      messageSplit.includes("month:") &&
-      messageSplit.includes("day:")
+      messageSplit.includes("year,") &&
+      messageSplit.includes("month,") &&
+      messageSplit.includes("day,")
     ) {
       if (
-        messageSplit.indexOf("year:") + 1 &&
-        messageSplit.indexOf("month:") + 1 &&
-        messageSplit.indexOf("day:") + 1
+        messageSplit.indexOf("year,") + 1 &&
+        messageSplit.indexOf("month,") + 1 &&
+        messageSplit.indexOf("day,") + 1
       ) {
-        let year = messageSplit[messageSplit.indexOf("year:") + 1];
-        let month = messageSplit[messageSplit.indexOf("month:") + 1];
-        let day = messageSplit[messageSplit.indexOf("day:") + 1];
+        let year = messageSplit[messageSplit.indexOf("year,") + 1];
+        let month = messageSplit[messageSplit.indexOf("month,") + 1];
+        let day = messageSplit[messageSplit.indexOf("day,") + 1];
 
         if (
           !isNaN(parseInt(year)) &&
@@ -2227,16 +2229,16 @@ function decipherSerialMessage(message) {
         }
       }
     }
-    if (messageSplit.includes("batch:")) {
-      let batchNmb = messageSplit[messageSplit.indexOf("batch:") + 1];
+    if (messageSplit.includes("batch,")) {
+      let batchNmb = messageSplit[messageSplit.indexOf("batch,") + 1];
 
       if (!isNaN(parseFloat(batchNmb))) {
         document.getElementById("batchNmb_label").innerHTML =
           parseFloat(batchNmb);
       }
     }
-    if (messageSplit.includes("UID:")) {
-      let uid = messageSplit[messageSplit.indexOf("UID:") + 1];
+    if (messageSplit.includes("UID,")) {
+      let uid = messageSplit[messageSplit.indexOf("UID,") + 1];
       if (!isNaN(parseFloat(uid))) {
         document.getElementById("UID_label").innerHTML =
           "UID: " + parseFloat(uid);
@@ -2257,8 +2259,8 @@ function decipherSerialMessage(message) {
       i860_value = 0;
 
     //** UPDATE VISIBLE LIVE VALUES */
-    if (messageSplit.includes("v450:")) {
-      let v450 = messageSplit[messageSplit.indexOf("v450:") + 1];
+    if (messageSplit.includes("v450,")) {
+      let v450 = messageSplit[messageSplit.indexOf("v450,") + 1];
       v450_value = parseFloat(v450);
 
       if (!isNaN(v450_value)) {
@@ -2270,8 +2272,8 @@ function decipherSerialMessage(message) {
         liveChart.update();
       }
     }
-    if (messageSplit.includes("b500:")) {
-      let b500 = messageSplit[messageSplit.indexOf("b500:") + 1];
+    if (messageSplit.includes("b500,")) {
+      let b500 = messageSplit[messageSplit.indexOf("b500,") + 1];
       b500_value = parseFloat(b500);
 
       if (!isNaN(b500_value)) {
@@ -2283,8 +2285,8 @@ function decipherSerialMessage(message) {
         liveChart.update();
       }
     }
-    if (messageSplit.includes("g550:")) {
-      let g550 = messageSplit[messageSplit.indexOf("g550:") + 1];
+    if (messageSplit.includes("g550,")) {
+      let g550 = messageSplit[messageSplit.indexOf("g550,") + 1];
       g550_value = parseFloat(g550);
 
       if (!isNaN(g550_value)) {
@@ -2296,8 +2298,8 @@ function decipherSerialMessage(message) {
         liveChart.update();
       }
     }
-    if (messageSplit.includes("y570:")) {
-      let y570 = messageSplit[messageSplit.indexOf("y570:") + 1];
+    if (messageSplit.includes("y570,")) {
+      let y570 = messageSplit[messageSplit.indexOf("y570,") + 1];
       y570_value = parseFloat(y570);
 
       if (!isNaN(y570_value)) {
@@ -2309,8 +2311,8 @@ function decipherSerialMessage(message) {
         liveChart.update();
       }
     }
-    if (messageSplit.includes("o600:")) {
-      let o600 = messageSplit[messageSplit.indexOf("o600:") + 1];
+    if (messageSplit.includes("o600,")) {
+      let o600 = messageSplit[messageSplit.indexOf("o600,") + 1];
       o600_value = parseFloat(o600);
 
       if (!isNaN(parseFloat(o600))) {
@@ -2322,8 +2324,8 @@ function decipherSerialMessage(message) {
         liveChart.update();
       }
     }
-    if (messageSplit.includes("r650:")) {
-      let r650 = messageSplit[messageSplit.indexOf("r650:") + 1];
+    if (messageSplit.includes("r650,")) {
+      let r650 = messageSplit[messageSplit.indexOf("r650,") + 1];
       r650_value = parseFloat(r650);
 
       if (!isNaN(r650_value)) {
@@ -2337,8 +2339,8 @@ function decipherSerialMessage(message) {
     }
 
     //** UPDATE INFRARED VALUES */
-    if (messageSplit.includes("610:")) {
-      let i610 = messageSplit[messageSplit.indexOf("610:") + 1];
+    if (messageSplit.includes("610,")) {
+      let i610 = messageSplit[messageSplit.indexOf("610,") + 1];
       i610_value = parseFloat(i610);
 
       if (!isNaN(i610_value)) {
@@ -2350,8 +2352,8 @@ function decipherSerialMessage(message) {
         liveChart.update();
       }
     }
-    if (messageSplit.includes("680:")) {
-      let i680 = messageSplit[messageSplit.indexOf("680:") + 1];
+    if (messageSplit.includes("680,")) {
+      let i680 = messageSplit[messageSplit.indexOf("680,") + 1];
       i680_value = parseFloat(i680);
 
       if (!isNaN(i680_value)) {
@@ -2363,8 +2365,8 @@ function decipherSerialMessage(message) {
         liveChart.update();
       }
     }
-    if (messageSplit.includes("730:")) {
-      let i730 = messageSplit[messageSplit.indexOf("730:") + 1];
+    if (messageSplit.includes("730,")) {
+      let i730 = messageSplit[messageSplit.indexOf("730,") + 1];
       i730_value = parseFloat(i730);
 
       if (!isNaN(i730_value)) {
@@ -2376,8 +2378,8 @@ function decipherSerialMessage(message) {
         liveChart.update();
       }
     }
-    if (messageSplit.includes("760:")) {
-      let i760 = messageSplit[messageSplit.indexOf("760:") + 1];
+    if (messageSplit.includes("760,")) {
+      let i760 = messageSplit[messageSplit.indexOf("760,") + 1];
       i760_value = parseFloat(i760);
 
       if (!isNaN(i760_value)) {
@@ -2389,8 +2391,8 @@ function decipherSerialMessage(message) {
         liveChart.update();
       }
     }
-    if (messageSplit.includes("810:")) {
-      let i810 = messageSplit[messageSplit.indexOf("810:") + 1];
+    if (messageSplit.includes("810,")) {
+      let i810 = messageSplit[messageSplit.indexOf("810,") + 1];
       i810_value = parseFloat(i810);
 
       if (!isNaN(i810_value)) {
@@ -2402,8 +2404,8 @@ function decipherSerialMessage(message) {
         liveChart.update();
       }
     }
-    if (messageSplit.includes("860:")) {
-      let i860 = messageSplit[messageSplit.indexOf("860:") + 1];
+    if (messageSplit.includes("860,")) {
+      let i860 = messageSplit[messageSplit.indexOf("860,") + 1];
       i860_value = parseFloat(i860);
 
       if (!isNaN(i860_value)) {
@@ -2417,7 +2419,7 @@ function decipherSerialMessage(message) {
     }
 
     //** UPDATE CONTROL SIDEBAR */
-    if (messageSplit.includes("batch:")) {
+    if (messageSplit.includes("batch,")) {
     }
   }
 }
@@ -2482,16 +2484,17 @@ function addBatches(dataArray) {
           "  UID: " + currentBatchArray[0].UID;
         mainChart.update();
 
+        clearTimeout(animWaitFunc);
         batchChangeUpdate();
       }
     };
 
     var date =
-      dataArray[i][0].timestamp.substr(0, 4) +
+      dataArray[i][0].timestamp.replace(/\s/g, "").substr(0, 4) +
       "/" +
-      dataArray[i][0].timestamp.substr(4, 2) +
+      dataArray[i][0].timestamp.replace(/\s/g, "").substr(4, 2) +
       "/" +
-      dataArray[i][0].timestamp.substr(9, 2);
+      dataArray[i][0].timestamp.replace(/\s/g, "").substr(9, 2);
 
     div.innerHTML = dataArray[i][0].batch_number;
     div.index = i;
@@ -2537,6 +2540,7 @@ function addBatches(dataArray) {
         console.log(calibrationArray);
         calibrationBatchSelected = true;
 
+        clearTimeout(animWaitFunc);
         averageCalibrationArray(calibrationArray);
       }
     };
@@ -2686,18 +2690,18 @@ function averageCalibrationArray(cal_array) {
     average_860nm = 0;
 
   for (let i = 0; i < cal_array.length; i++) {
-    average_450nm += parseFloat(cal_array[i].V450_irradiance);
-    average_500nm += parseFloat(cal_array[i].B500_irradiance);
-    average_550nm += parseFloat(cal_array[i].G550_irradiance);
-    average_570nm += parseFloat(cal_array[i].Y570_irradiance);
-    average_600nm += parseFloat(cal_array[i].O600_irradiance);
-    average_650nm += parseFloat(cal_array[i].R650_irradiance);
-    average_610nm += parseFloat(cal_array[i].nir610_irradiance);
-    average_680nm += parseFloat(cal_array[i].nir680_irradiance);
-    average_730nm += parseFloat(cal_array[i].nir730_irradiance);
-    average_760nm += parseFloat(cal_array[i].nir760_irradiance);
-    average_810nm += parseFloat(cal_array[i].nir810_irradiance);
-    average_860nm += parseFloat(cal_array[i].nir860_irradiance);
+    average_450nm += parseFloat(cal_array[i].V450_irradiance_uW_per_cm_squared);
+    average_500nm += parseFloat(cal_array[i].B500_irradiance_uW_per_cm_squared);
+    average_550nm += parseFloat(cal_array[i].G550_irradiance_uW_per_cm_squared);
+    average_570nm += parseFloat(cal_array[i].Y570_irradiance_uW_per_cm_squared);
+    average_600nm += parseFloat(cal_array[i].O600_irradiance_uW_per_cm_squared);
+    average_650nm += parseFloat(cal_array[i].R650_irradiance_uW_per_cm_squared);
+    average_610nm += parseFloat(cal_array[i].nir610_irradiance_uW_per_cm_squared);
+    average_680nm += parseFloat(cal_array[i].nir680_irradiance_uW_per_cm_squared);
+    average_730nm += parseFloat(cal_array[i].nir730_irradiance_uW_per_cm_squared);
+    average_760nm += parseFloat(cal_array[i].nir760_irradiance_uW_per_cm_squared);
+    average_810nm += parseFloat(cal_array[i].nir810_irradiance_uW_per_cm_squared);
+    average_860nm += parseFloat(cal_array[i].nir860_irradiance_uW_per_cm_squared);
   }
 
   //** DIVIDE ALL BY LENGTH OF ARRAY TO GET AVERAGE*/
@@ -2800,29 +2804,29 @@ function convertToReflectance() {
     //** RADIANCE CALCULATION */
     //** radiance = irradiance * distance²/Area */
     currentBatchArray[i].V450_radiance =
-      currentBatchArray[i].V450_irradiance * (Math.pow(distance, 2) / area);
+      currentBatchArray[i].V450_irradiance_uW_per_cm_squared * (Math.pow(distance, 2) / area);
     currentBatchArray[i].B500_radiance =
-      currentBatchArray[i].B500_irradiance * (Math.pow(distance, 2) / area);
+      currentBatchArray[i].B500_irradiance_uW_per_cm_squared * (Math.pow(distance, 2) / area);
     currentBatchArray[i].G550_radiance =
-      currentBatchArray[i].G550_irradiance * (Math.pow(distance, 2) / area);
+      currentBatchArray[i].G550_irradiance_uW_per_cm_squared * (Math.pow(distance, 2) / area);
     currentBatchArray[i].Y570_radiance =
-      currentBatchArray[i].Y570_irradiance * (Math.pow(distance, 2) / area);
+      currentBatchArray[i].Y570_irradiance_uW_per_cm_squared * (Math.pow(distance, 2) / area);
     currentBatchArray[i].O600_radiance =
-      currentBatchArray[i].O600_irradiance * (Math.pow(distance, 2) / area);
+      currentBatchArray[i].O600_irradiance_uW_per_cm_squared * (Math.pow(distance, 2) / area);
     currentBatchArray[i].R650_radiance =
-      currentBatchArray[i].R650_irradiance * (Math.pow(distance, 2) / area);
+      currentBatchArray[i].R650_irradiance_uW_per_cm_squared * (Math.pow(distance, 2) / area);
     currentBatchArray[i].nir610_radiance =
-      currentBatchArray[i].nir610_irradiance * (Math.pow(distance, 2) / area);
+      currentBatchArray[i].nir610_irradiance_uW_per_cm_squared * (Math.pow(distance, 2) / area);
     currentBatchArray[i].nir680_radiance =
-      currentBatchArray[i].nir680_irradiance * (Math.pow(distance, 2) / area);
+      currentBatchArray[i].nir680_irradiance_uW_per_cm_squared * (Math.pow(distance, 2) / area);
     currentBatchArray[i].nir730_radiance =
-      currentBatchArray[i].nir730_irradiance * (Math.pow(distance, 2) / area);
+      currentBatchArray[i].nir730_irradiance_uW_per_cm_squared * (Math.pow(distance, 2) / area);
     currentBatchArray[i].nir760_radiance =
-      currentBatchArray[i].nir760_irradiance * (Math.pow(distance, 2) / area);
+      currentBatchArray[i].nir760_irradiance_uW_per_cm_squared * (Math.pow(distance, 2) / area);
     currentBatchArray[i].nir810_radiance =
-      currentBatchArray[i].nir810_irradiance * (Math.pow(distance, 2) / area);
+      currentBatchArray[i].nir810_irradiance_uW_per_cm_squared * (Math.pow(distance, 2) / area);
     currentBatchArray[i].nir860_radiance =
-      currentBatchArray[i].nir860_irradiance * (Math.pow(distance, 2) / area);
+      currentBatchArray[i].nir860_irradiance_uW_per_cm_squared * (Math.pow(distance, 2) / area);
 
     //** REFLECTANCE CALCULATION */
     //** Reflectance = Radiance from the plant / Radiance from the white reference */
@@ -3320,6 +3324,8 @@ ndvi_element.addEventListener("click", function () {
   graphGradients();
   updateChart();
 
+  clearTimeout(animWaitFunc);
+
   NIRv_chart.resize();
   mainChart.resize();
   chart2.resize();
@@ -3338,6 +3344,8 @@ nirv_element.addEventListener("click", function () {
   updateChartLabels();
   graphGradients();
   updateChart();
+
+  clearTimeout(animWaitFunc);
 
   NIRv_chart.resize();
   mainChart.resize();
@@ -3359,6 +3367,8 @@ sr_element.addEventListener('click', function() {
   updateChartLabels();
   graphGradients();
 
+  clearTimeout(animWaitFunc);
+
   NIRv_chart.resize();
   mainChart.resize();
   chart2.resize();
@@ -3379,6 +3389,8 @@ dswi_element.addEventListener('click', function() {
   updateChartLabels();
   graphGradients();
 
+  clearTimeout(animWaitFunc);
+
   NIRv_chart.resize();
   mainChart.resize();
   chart2.resize();
@@ -3396,6 +3408,8 @@ raw_element.addEventListener("click", function () {
   updateGraphGrid();
   updateChartLabels();
   graphGradients();
+
+  clearTimeout(animWaitFunc);
 
   NIRv_chart.resize();
   mainChart.resize();
@@ -3415,6 +3429,8 @@ raw_element_live.addEventListener("click", function () {
   updateGraphGrid();
   updateChartLabels();
   graphGradients();
+
+  clearTimeout(animWaitFunc);
 
   liveChart.resize();
 });
