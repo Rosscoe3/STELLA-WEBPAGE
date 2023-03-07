@@ -302,6 +302,12 @@ label {
   transition: all 0.25s ease-in-out;
 }
 
+.modeContainer select{
+  pointer-events: auto;
+
+  font-family: "Inter", sans-serif;
+}
+
 .dataMode.active:hover {
   cursor: pointer;
   opacity: 100%;

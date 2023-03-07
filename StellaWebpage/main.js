@@ -74,6 +74,11 @@ let sr_element = document.getElementById("graphs_SR");
 let dswi_element = document.getElementById("graphs_DSWI");
 let lastGraphed;
 
+//** SR GRAPH RATIO SELECTORS */
+let srGraph_numerator = document.getElementById("SR_Selector_1");
+let srGraph_denominator = document.getElementById("SR_Selector_2");
+let srGraph_numerator_value, srGraph_denominator_value;
+
 //** HELP BUTTONS FOR PICKING GRAPHS */
 let raw_element_live = document.getElementById("graphs_raw_live");
 let duplicate_element_live = document.getElementById("graphs_duplicate_live");
@@ -1837,9 +1842,109 @@ function updateChart(backward, index) {
         else if (i == 0) {
           SR_chart.options.scales.x.min = currentBatchArray[i].timestamp.replace(/\s/g, "");
         }
-  
-        currentBatchArray[i].simpleRatio = currentBatchArray[i].nir860_irradiance_uW_per_cm_squared / currentBatchArray[i].R650_irradiance_uW_per_cm_squared;
-        currentBatchArray[i].simpleRatio = currentBatchArray[i].nir860_reflectance / currentBatchArray[i].R650_reflectance;
+
+        //** SELECT NUMERATOR BASED ON SELECTOR VALUE */
+        if(srGraph_numerator.value == '450nm')
+        {
+          srGraph_numerator_value = currentBatchArray[i].V450_irradiance_uW_per_cm_squared;
+        }
+        else if(srGraph_numerator.value == '500nm')
+        {
+          srGraph_numerator_value = currentBatchArray[i].B500_irradiance_uW_per_cm_squared;
+        }
+        else if(srGraph_numerator.value == '550nm')
+        {
+          srGraph_numerator_value = currentBatchArray[i].G550_irradiance_uW_per_cm_squared;
+        }
+        else if(srGraph_numerator.value == '570nm')
+        {
+          srGraph_numerator_value = currentBatchArray[i].Y570_irradiance_uW_per_cm_squared;
+        }
+        else if(srGraph_numerator.value == '600nm')
+        {
+          srGraph_numerator_value = currentBatchArray[i].O600_irradiance_uW_per_cm_squared;
+        }
+        else if(srGraph_numerator.value == '650nm')
+        {
+          srGraph_numerator_value = currentBatchArray[i].R650_irradiance_uW_per_cm_squared;
+        }
+        else if(srGraph_numerator.value == '610nm')
+        {
+          srGraph_numerator_value = currentBatchArray[i].nir610_irradiance_uW_per_cm_squared;
+        }
+        else if(srGraph_numerator.value == '680nm')
+        {
+          srGraph_numerator_value = currentBatchArray[i].nir680_irradiance_uW_per_cm_squared;
+        }
+        else if(srGraph_numerator.value == '730nm')
+        {
+          srGraph_numerator_value = currentBatchArray[i].nir730_irradiance_uW_per_cm_squared;
+        }
+        else if(srGraph_numerator.value == '760nm')
+        {
+          srGraph_numerator_value = currentBatchArray[i].nir760_irradiance_uW_per_cm_squared;
+        }
+        else if(srGraph_numerator.value == '810nm')
+        {
+          srGraph_numerator_value = currentBatchArray[i].nir810_irradiance_uW_per_cm_squared;
+        }
+        else if(srGraph_numerator.value == '860nm')
+        {
+          srGraph_numerator_value = currentBatchArray[i].nir860_irradiance_uW_per_cm_squared;
+        }
+        //** DENOMINATOR */
+        if(srGraph_denominator.value == '450nm')
+        {
+          srGraph_denominator_value = currentBatchArray[i].V450_irradiance_uW_per_cm_squared;
+        }
+        else if(srGraph_denominator.value == '500nm')
+        {
+          srGraph_denominator_value = currentBatchArray[i].B500_irradiance_uW_per_cm_squared;
+        }
+        else if(srGraph_denominator.value == '550nm')
+        {
+          srGraph_denominator_value = currentBatchArray[i].G550_irradiance_uW_per_cm_squared;
+        }
+        else if(srGraph_denominator.value == '570nm')
+        {
+          srGraph_denominator_value = currentBatchArray[i].Y570_irradiance_uW_per_cm_squared;
+        }
+        else if(srGraph_denominator.value == '600nm')
+        {
+          srGraph_denominator_value = currentBatchArray[i].O600_irradiance_uW_per_cm_squared;
+        }
+        else if(srGraph_denominator.value == '650nm')
+        {
+          srGraph_denominator_value = currentBatchArray[i].R650_irradiance_uW_per_cm_squared;
+        }
+        else if(srGraph_denominator.value == '610nm')
+        {
+          srGraph_denominator_value = currentBatchArray[i].nir610_irradiance_uW_per_cm_squared;
+        }
+        else if(srGraph_denominator.value == '680nm')
+        {
+          srGraph_denominator_value = currentBatchArray[i].nir680_irradiance_uW_per_cm_squared;
+        }
+        else if(srGraph_denominator.value == '730nm')
+        {
+          srGraph_denominator_value = currentBatchArray[i].nir730_irradiance_uW_per_cm_squared;
+        }
+        else if(srGraph_denominator.value == '760nm')
+        {
+          srGraph_denominator_value = currentBatchArray[i].nir760_irradiance_uW_per_cm_squared;
+        }
+        else if(srGraph_denominator.value == '810nm')
+        {
+          srGraph_denominator_value = currentBatchArray[i].nir810_irradiance_uW_per_cm_squared;
+        }
+        else if(srGraph_denominator.value == '860nm')
+        {
+          srGraph_denominator_value = currentBatchArray[i].nir860_irradiance_uW_per_cm_squared;
+        }
+        
+        currentBatchArray[i].simpleRatio = srGraph_numerator_value / srGraph_denominator_value;
+        // currentBatchArray[i].simpleRatio = currentBatchArray[i].nir860_irradiance_uW_per_cm_squared / currentBatchArray[i].R650_irradiance_uW_per_cm_squared;
+        // currentBatchArray[i].simpleRatio = currentBatchArray[i].nir860_reflectance / currentBatchArray[i].R650_reflectance;
   
         SR_chart.data.datasets[0].data[i] = {
           x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
@@ -3222,6 +3327,16 @@ trim_icon.addEventListener("click", function () {
 //   }
 //   fileName_download.value = fileName_download.value + ".csv";
 // });
+
+//** CHANGE EVENT FOR SR SELECTOR */
+srGraph_numerator.addEventListener("change", function () {
+  console.log(srGraph_numerator.value);
+  updateChart();
+});
+srGraph_denominator.addEventListener("change", function () {
+  console.log(srGraph_denominator.value);
+  updateChart();
+});
 
 function resetTrim()
 {
