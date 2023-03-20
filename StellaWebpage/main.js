@@ -288,6 +288,9 @@ let infrared_filter_array = [
   "860nm",
 ];
 let rawData_array = ["Visible", "Infrared"];
+let averageData_array = ["Standard Deviation"];
+let dataIsAverage = false;
+let standardDeviation_array = [[]];
 let delayed;
 var calibrationData, calibrationData_Infrared;
 var calibrationArray_Visible, calibrationArray_Infrared;
@@ -300,7 +303,7 @@ let timerInterval = null;
 excludeLabelList = excludeLabelList.concat(
   visible_filter_array,
   infrared_filter_array,
-  "NDVI"
+  "Standard Deviation"
 );
 
 //** VARIABLES FOR CONTROLLING DATA */
@@ -637,6 +640,67 @@ var data = {
       fill: true,
       backgroundColor: visibleGradient,
       borderColor: "rgb(255, 255, 255)",
+      pointBackgroundColor: "rgb(189, 195, 199)",
+    },
+    //** STANDARD DEVIATION *14*/
+    {
+      data: [
+        {
+          x: 450,
+          y: 0,
+        },
+        {
+          x: 500,
+          y: visibleStartData[1],
+        },
+        {
+          x: 550,
+          y: 0,
+        },
+        {
+          x: 570,
+          y: 0,
+        },
+        {
+          x: 600,
+          y: 0,
+        },
+        {
+          x: 610,
+          y: 0,
+        },
+        {
+          x: 650,
+          y: 0,
+        },
+        {
+          x: 680,
+          y: 0,
+        },
+        {
+          x: 730,
+          y: 0,
+        },
+        {
+          x: 760,
+          y: 0,
+        },
+        {
+          x: 810,
+          y: 0,
+        },
+        {
+          x: 860,
+          y: 0,
+        },
+      ],
+      showLine: true,
+      label: "Standard Deviation",
+      fill: false,
+      hidden: true,
+      backgroundColor: "rgb(147,112,219)",
+      borderColor: "rgb(147,112,219)",
+      lineTension: 0.25,
       pointBackgroundColor: "rgb(189, 195, 199)",
     },
   ],
@@ -1539,12 +1603,28 @@ upload_file.addEventListener("input", function () {
       {
         console.log(reader.result.replace('average', ''));
         console.log("INCLUDES AVERAGE");
+        dataIsAverage = true;
+      }
+      else
+      {
+        dataIsAverage = false;
       }
 
       newDataArray = csvToArray(reader.result);
       let currentBatchNmb = newDataArray[0].batch_number;
       dataArrayBatches = [[]];
 
+      if(dataIsAverage)
+      {
+        newDataArray[newDataArray.length - 2].timestamp = newDataArray[0].timestamp;
+        standardDeviation_array[0] = newDataArray[newDataArray.length - 1];
+        standardDeviation_array[0].timestamp = newDataArray[0].timestamp;
+        var tempArray = newDataArray[newDataArray.length - 2];
+        newDataArray = [[]];
+        newDataArray[0] = tempArray;
+      }
+      
+      console.log(standardDeviation_array);
       console.log(newDataArray);
 
       let batchIndex = 0;
@@ -1567,6 +1647,7 @@ upload_file.addEventListener("input", function () {
       }
 
       batchesContainer.innerHTML = "";
+      document.getElementById("calibration_batch_grid").innerHTML = "";
       addBatches(dataArrayBatches);
 
       //** CLEAR THE ARRAY IF IT IS FULL */
@@ -1581,7 +1662,6 @@ upload_file.addEventListener("input", function () {
       for (var i = 0; i < lineSplit.length; i++) {
         dataArray.push(lineSplit[i].split(","));
       }
-
       if (!raw_element.classList.contains("selected")) {
         raw_element.classList.toggle("selected");
       }
@@ -1591,6 +1671,7 @@ upload_file.addEventListener("input", function () {
 
       RESOURCE_LOADED = true;
       updateChart();
+      updateChartLabels();
     };
 
     reader.readAsText(this.files[0]);
@@ -1703,6 +1784,61 @@ function updateChart(backward, index) {
         y: currentBatchArray[dataTimeIndex].nir860_irradiance_uW_per_cm_squared,
       },
     ];
+
+    if(dataIsAverage)
+    {
+      console.log(standardDeviation_array);
+      mainChart.data.datasets[14].data = [
+        {
+          x: 450,
+          y: standardDeviation_array[0].V450_irradiance_uW_per_cm_squared,
+        },
+        {
+          x: 500,
+          y: standardDeviation_array[0].B500_irradiance_uW_per_cm_squared,
+        },
+        {
+          x: 550,
+          y: standardDeviation_array[0].G550_irradiance_uW_per_cm_squared,
+        },
+        {
+          x: 570,
+          y: standardDeviation_array[0].Y570_irradiance_uW_per_cm_squared,
+        },
+        {
+          x: 600,
+          y: standardDeviation_array[0].O600_irradiance_uW_per_cm_squared,
+        },
+        {
+          x: 610,
+          y: standardDeviation_array[0].nir610_irradiance_uW_per_cm_squared,
+        },
+        {
+          x: 650,
+          y: standardDeviation_array[0].R650_irradiance_uW_per_cm_squared,
+        },
+        {
+          x: 680,
+          y: standardDeviation_array[0].nir680_irradiance_uW_per_cm_squared,
+        },
+        {
+          x: 730,
+          y: standardDeviation_array[0].nir730_irradiance_uW_per_cm_squared,
+        },
+        {
+          x: 760,
+          y: standardDeviation_array[0].nir760_irradiance_uW_per_cm_squared,
+        },
+        {
+          x: 810,
+          y: standardDeviation_array[0].nir810_irradiance_uW_per_cm_squared,
+        },
+        {
+          x: 860,
+          y: standardDeviation_array[0].nir860_irradiance_uW_per_cm_squared,
+        },
+      ];
+    }
 
     //** ADD ALL NORMALIZED VALUES TO CURVE, START AT ONE TO AVOID LABELS*/
 
@@ -2124,6 +2260,8 @@ function csvToArray(str, delimiter = ",") {
 function updateChartLabels() {
   excludeLabelList = [];
 
+  //excludeLabelList = excludeLabelList.concat(averageData_array);
+
   if (rawData_element.classList.contains("selected")) {
     mainChart.getDatasetMeta(12).hidden = false;
     mainChart.getDatasetMeta(13).hidden = false;
@@ -2167,7 +2305,17 @@ function updateChartLabels() {
     mainChart.getDatasetMeta(4).hidden = true;
     mainChart.getDatasetMeta(5).hidden = true;
   }
+  if(!dataIsAverage)
+  {
+    excludeLabelList = excludeLabelList.concat(averageData_array);
+    mainChart.getDatasetMeta(14).hidden = true;
+  }
+  else
+  {
+    mainChart.getDatasetMeta(14).hidden = false;
+  }
 
+  console.log(excludeLabelList);
   mainChart.update();
 }
 
@@ -2595,12 +2743,13 @@ function addBatches(dataArray) {
     };
 
     var date =
-      dataArray[i][0].timestamp.replace(/\s/g, "").substr(0, 4) +
-      "/" +
-      dataArray[i][0].timestamp.replace(/\s/g, "").substr(4, 2) +
-      "/" +
-      dataArray[i][0].timestamp.replace(/\s/g, "").substr(9, 2);
+    dataArray[i][0].timestamp.replace(/\s/g, "").substr(0, 4) +
+    "/" +
+    dataArray[i][0].timestamp.replace(/\s/g, "").substr(4, 2) +
+    "/" +
+    dataArray[i][0].timestamp.replace(/\s/g, "").substr(9, 2);
 
+    console.log(dataArray);
     div.innerHTML = dataArray[i][0].batch_number;
     div.index = i;
     div.title = date;
@@ -2712,7 +2861,10 @@ function batchChangeUpdate()
   //** CLOSE TRIM AND EDIT ICONS IF THE BATCH IS LESS THAN 2 */
   if(currentBatchArray.length < 3)
   {
-    trim_icon.classList.toggle("disabled");
+    if(!trim_icon.classList.contains("disabled"))
+    {
+      trim_icon.classList.toggle("disabled");
+    }
   }
   else if(trim_icon.classList.contains("disabled"))
   {

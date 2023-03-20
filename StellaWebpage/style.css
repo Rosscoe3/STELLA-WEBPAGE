@@ -1494,6 +1494,14 @@ div[slider] > input[type=range]::-ms-tooltip {
   user-select: text;
 }
 
+.disclaimer{
+  position: absolute;
+  right: 0%;
+  bottom: 0%;
+  margin: 0.5%;
+  font-family: "Inter", sans-serif;
+}
+
 .close-icon
 {
   position: absolute;
