@@ -698,10 +698,11 @@ var data = {
       label: "Standard Deviation",
       fill: false,
       hidden: true,
-      backgroundColor: "rgb(147,112,219)",
-      borderColor: "rgb(147,112,219)",
+      backgroundColor: "rgb(3,140,252)",
+      borderColor: "rgb(3,140,252)",
       lineTension: 0.25,
       pointBackgroundColor: "rgb(189, 195, 199)",
+      order: -100, 
     },
   ],
 };
@@ -1672,6 +1673,7 @@ upload_file.addEventListener("input", function () {
       RESOURCE_LOADED = true;
       updateChart();
       updateChartLabels();
+      batchChangeUpdate();
     };
 
     reader.readAsText(this.files[0]);
