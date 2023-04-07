@@ -168,7 +168,7 @@ let helpScreen = document.getElementById("helpContainer");
 let helpHeader = document.getElementById("helpHeader");
 
 for (var i = 0; i < acc.length; i++) {
-  acc[i].addEventListener("click", function() {
+  acc[i].addEventListener("click", function () {
     /* Toggle between adding and removing the "active" class,
     to highlight the button that controls the panel */
     this.classList.toggle("active");
@@ -694,15 +694,14 @@ var data = {
           y: 0,
         },
       ],
-      showLine: true,
+      showLine: false,
       label: "Standard Deviation",
-      fill: false,
       hidden: true,
+      fill: false,
       backgroundColor: "rgb(3,140,252)",
       borderColor: "rgb(3,140,252)",
-      lineTension: 0.25,
       pointBackgroundColor: "rgb(189, 195, 199)",
-      order: -100, 
+      order: -100,
     },
   ],
 };
@@ -1044,8 +1043,8 @@ const config2 = {
     },
     scales: {
       y: {
-        max : 1,    
-        min : -1,
+        max: 1,
+        min: -1,
         title: {
           display: true,
           text: "NDVI",
@@ -1057,7 +1056,7 @@ const config2 = {
       x: {
         position: "bottom",
         ticks: {
-          maxTicksLimit: 5
+          maxTicksLimit: 5,
         },
         title: {
           display: false,
@@ -1069,15 +1068,15 @@ const config2 = {
         },
         time: {
           displayFormats: {
-             'millisecond':'HH:mm:ss',
-             'second': 'HH:mm:ss',
-             'minute': 'HH:mm:ss',
-             'hour': 'HH:mm:ss',
-             'day': 'HH:mm:ss',
-             'week': 'HH:mm:ss',
-             'month': 'HH:mm:ss',
-             'quarter': 'HH:mm:ss',
-             'year': 'HH:mm:ss',
+            millisecond: "HH:mm:ss",
+            second: "HH:mm:ss",
+            minute: "HH:mm:ss",
+            hour: "HH:mm:ss",
+            day: "HH:mm:ss",
+            week: "HH:mm:ss",
+            month: "HH:mm:ss",
+            quarter: "HH:mm:ss",
+            year: "HH:mm:ss",
           },
         },
         type: "time",
@@ -1159,7 +1158,7 @@ const config_NIRv = {
         //     return value + "μW/cm²";
         //   }
         // },
-        // max : 1,    
+        // max : 1,
         // min : -1,
         title: {
           display: true,
@@ -1172,7 +1171,7 @@ const config_NIRv = {
       x: {
         position: "bottom",
         ticks: {
-          maxTicksLimit: 5
+          maxTicksLimit: 5,
         },
         title: {
           display: false,
@@ -1184,15 +1183,15 @@ const config_NIRv = {
         },
         time: {
           displayFormats: {
-             'millisecond':'HH:mm:ss',
-             'second': 'HH:mm:ss',
-             'minute': 'HH:mm:ss',
-             'hour': 'HH:mm:ss',
-             'day': 'HH:mm:ss',
-             'week': 'HH:mm:ss',
-             'month': 'HH:mm:ss',
-             'quarter': 'HH:mm:ss',
-             'year': 'HH:mm:ss',
+            millisecond: "HH:mm:ss",
+            second: "HH:mm:ss",
+            minute: "HH:mm:ss",
+            hour: "HH:mm:ss",
+            day: "HH:mm:ss",
+            week: "HH:mm:ss",
+            month: "HH:mm:ss",
+            quarter: "HH:mm:ss",
+            year: "HH:mm:ss",
           },
         },
         type: "time",
@@ -1275,7 +1274,7 @@ const config_SR = {
         //     return value + "μW/cm²";
         //   }
         // },
-        // max : 1,    
+        // max : 1,
         // min : -1,
         title: {
           display: true,
@@ -1288,7 +1287,7 @@ const config_SR = {
       x: {
         position: "bottom",
         ticks: {
-          maxTicksLimit: 5
+          maxTicksLimit: 5,
         },
         title: {
           display: false,
@@ -1300,15 +1299,15 @@ const config_SR = {
         },
         time: {
           displayFormats: {
-             'millisecond':'HH:mm:ss',
-             'second': 'HH:mm:ss',
-             'minute': 'HH:mm:ss',
-             'hour': 'HH:mm:ss',
-             'day': 'HH:mm:ss',
-             'week': 'HH:mm:ss',
-             'month': 'HH:mm:ss',
-             'quarter': 'HH:mm:ss',
-             'year': 'HH:mm:ss',
+            millisecond: "HH:mm:ss",
+            second: "HH:mm:ss",
+            minute: "HH:mm:ss",
+            hour: "HH:mm:ss",
+            day: "HH:mm:ss",
+            week: "HH:mm:ss",
+            month: "HH:mm:ss",
+            quarter: "HH:mm:ss",
+            year: "HH:mm:ss",
           },
         },
         type: "time",
@@ -1397,7 +1396,7 @@ const config_DSWI = {
       x: {
         position: "bottom",
         ticks: {
-          maxTicksLimit: 5
+          maxTicksLimit: 5,
         },
         title: {
           display: false,
@@ -1409,15 +1408,15 @@ const config_DSWI = {
         },
         time: {
           displayFormats: {
-             'millisecond':'HH:mm:ss',
-             'second': 'HH:mm:ss',
-             'minute': 'HH:mm:ss',
-             'hour': 'HH:mm:ss',
-             'day': 'HH:mm:ss',
-             'week': 'HH:mm:ss',
-             'month': 'HH:mm:ss',
-             'quarter': 'HH:mm:ss',
-             'year': 'HH:mm:ss',
+            millisecond: "HH:mm:ss",
+            second: "HH:mm:ss",
+            minute: "HH:mm:ss",
+            hour: "HH:mm:ss",
+            day: "HH:mm:ss",
+            week: "HH:mm:ss",
+            month: "HH:mm:ss",
+            quarter: "HH:mm:ss",
+            year: "HH:mm:ss",
           },
         },
         type: "time",
@@ -1599,15 +1598,11 @@ upload_file.addEventListener("input", function () {
 
     //** WHEN THE DATA FILE IS LOADED */
     reader.onload = function (event) {
-
-      if(reader.result.includes("average"))
-      {
-        console.log(reader.result.replace('average', ''));
+      if (reader.result.includes("average")) {
+        console.log(reader.result.replace("average", ""));
         console.log("INCLUDES AVERAGE");
         dataIsAverage = true;
-      }
-      else
-      {
+      } else {
         dataIsAverage = false;
       }
 
@@ -1615,16 +1610,16 @@ upload_file.addEventListener("input", function () {
       let currentBatchNmb = newDataArray[0].batch_number;
       dataArrayBatches = [[]];
 
-      if(dataIsAverage)
-      {
-        newDataArray[newDataArray.length - 2].timestamp = newDataArray[0].timestamp;
+      if (dataIsAverage) {
+        newDataArray[newDataArray.length - 2].timestamp =
+          newDataArray[0].timestamp;
         standardDeviation_array[0] = newDataArray[newDataArray.length - 1];
         standardDeviation_array[0].timestamp = newDataArray[0].timestamp;
         var tempArray = newDataArray[newDataArray.length - 2];
         newDataArray = [[]];
         newDataArray[0] = tempArray;
       }
-      
+
       console.log(standardDeviation_array);
       console.log(newDataArray);
 
@@ -1787,57 +1782,261 @@ function updateChart(backward, index) {
       },
     ];
 
-    if(dataIsAverage)
-    {
-      console.log(standardDeviation_array);
+    //** USED FOR GRAPHING STANDARD DEVIATION */
+    console.log(standardDeviation_array);
+    if (dataIsAverage) {
       mainChart.data.datasets[14].data = [
         {
           x: 450,
-          y: standardDeviation_array[0].V450_irradiance_uW_per_cm_squared,
+          y:
+            parseFloat(
+              currentBatchArray[dataTimeIndex].V450_irradiance_uW_per_cm_squared
+            ) +
+            parseFloat(
+              standardDeviation_array[0].V450_irradiance_uW_per_cm_squared
+            ),
+        },
+        {
+          x: 450,
+          y:
+            parseFloat(
+              currentBatchArray[dataTimeIndex].V450_irradiance_uW_per_cm_squared
+            ) -
+            parseFloat(
+              standardDeviation_array[0].V450_irradiance_uW_per_cm_squared
+            ),
         },
         {
           x: 500,
-          y: standardDeviation_array[0].B500_irradiance_uW_per_cm_squared,
+          y:
+            parseFloat(
+              currentBatchArray[dataTimeIndex].B500_irradiance_uW_per_cm_squared
+            ) +
+            parseFloat(
+              standardDeviation_array[0].B500_irradiance_uW_per_cm_squared
+            ),
+        },
+        {
+          x: 500,
+          y:
+            parseFloat(
+              currentBatchArray[dataTimeIndex].B500_irradiance_uW_per_cm_squared
+            ) -
+            parseFloat(
+              standardDeviation_array[0].B500_irradiance_uW_per_cm_squared
+            ),
         },
         {
           x: 550,
-          y: standardDeviation_array[0].G550_irradiance_uW_per_cm_squared,
+          y:
+            parseFloat(
+              currentBatchArray[dataTimeIndex].G550_irradiance_uW_per_cm_squared
+            ) +
+            parseFloat(
+              standardDeviation_array[0].G550_irradiance_uW_per_cm_squared
+            ),
+        },
+        {
+          x: 550,
+          y:
+            parseFloat(
+              currentBatchArray[dataTimeIndex].G550_irradiance_uW_per_cm_squared
+            ) -
+            parseFloat(
+              standardDeviation_array[0].G550_irradiance_uW_per_cm_squared
+            ),
         },
         {
           x: 570,
-          y: standardDeviation_array[0].Y570_irradiance_uW_per_cm_squared,
+          y:
+            parseFloat(
+              currentBatchArray[dataTimeIndex].Y570_irradiance_uW_per_cm_squared
+            ) +
+            parseFloat(
+              standardDeviation_array[0].Y570_irradiance_uW_per_cm_squared
+            ),
+        },
+        {
+          x: 570,
+          y:
+            parseFloat(
+              currentBatchArray[dataTimeIndex].Y570_irradiance_uW_per_cm_squared
+            ) -
+            parseFloat(
+              standardDeviation_array[0].Y570_irradiance_uW_per_cm_squared
+            ),
         },
         {
           x: 600,
-          y: standardDeviation_array[0].O600_irradiance_uW_per_cm_squared,
+          y:
+            parseFloat(
+              currentBatchArray[dataTimeIndex].O600_irradiance_uW_per_cm_squared
+            ) +
+            parseFloat(
+              standardDeviation_array[0].O600_irradiance_uW_per_cm_squared
+            ),
+        },
+        {
+          x: 600,
+          y:
+            parseFloat(
+              currentBatchArray[dataTimeIndex].O600_irradiance_uW_per_cm_squared
+            ) -
+            parseFloat(
+              standardDeviation_array[0].O600_irradiance_uW_per_cm_squared
+            ),
         },
         {
           x: 610,
-          y: standardDeviation_array[0].nir610_irradiance_uW_per_cm_squared,
+          y:
+            parseFloat(
+              currentBatchArray[dataTimeIndex]
+                .nir610_irradiance_uW_per_cm_squared
+            ) +
+            parseFloat(
+              standardDeviation_array[0].nir610_irradiance_uW_per_cm_squared
+            ),
+        },
+        {
+          x: 610,
+          y:
+            parseFloat(
+              currentBatchArray[dataTimeIndex]
+                .nir610_irradiance_uW_per_cm_squared
+            ) -
+            parseFloat(
+              standardDeviation_array[0].nir610_irradiance_uW_per_cm_squared
+            ),
         },
         {
           x: 650,
-          y: standardDeviation_array[0].R650_irradiance_uW_per_cm_squared,
+          y:
+            parseFloat(
+              currentBatchArray[dataTimeIndex].R650_irradiance_uW_per_cm_squared
+            ) +
+            parseFloat(
+              standardDeviation_array[0].R650_irradiance_uW_per_cm_squared
+            ),
+        },
+        {
+          x: 650,
+          y:
+            parseFloat(
+              currentBatchArray[dataTimeIndex].R650_irradiance_uW_per_cm_squared
+            ) -
+            parseFloat(
+              standardDeviation_array[0].R650_irradiance_uW_per_cm_squared
+            ),
         },
         {
           x: 680,
-          y: standardDeviation_array[0].nir680_irradiance_uW_per_cm_squared,
+          y:
+            parseFloat(
+              currentBatchArray[dataTimeIndex]
+                .nir680_irradiance_uW_per_cm_squared
+            ) +
+            parseFloat(
+              standardDeviation_array[0].nir680_irradiance_uW_per_cm_squared
+            ),
+        },
+        {
+          x: 680,
+          y:
+            parseFloat(
+              currentBatchArray[dataTimeIndex]
+                .nir680_irradiance_uW_per_cm_squared
+            ) -
+            parseFloat(
+              standardDeviation_array[0].nir680_irradiance_uW_per_cm_squared
+            ),
         },
         {
           x: 730,
-          y: standardDeviation_array[0].nir730_irradiance_uW_per_cm_squared,
+          y:
+            parseFloat(
+              currentBatchArray[dataTimeIndex]
+                .nir730_irradiance_uW_per_cm_squared
+            ) +
+            parseFloat(
+              standardDeviation_array[0].nir730_irradiance_uW_per_cm_squared
+            ),
+        },
+        {
+          x: 730,
+          y:
+            parseFloat(
+              currentBatchArray[dataTimeIndex]
+                .nir730_irradiance_uW_per_cm_squared
+            ) -
+            parseFloat(
+              standardDeviation_array[0].nir730_irradiance_uW_per_cm_squared
+            ),
         },
         {
           x: 760,
-          y: standardDeviation_array[0].nir760_irradiance_uW_per_cm_squared,
+          y:
+            parseFloat(
+              currentBatchArray[dataTimeIndex]
+                .nir760_irradiance_uW_per_cm_squared
+            ) +
+            parseFloat(
+              standardDeviation_array[0].nir760_irradiance_uW_per_cm_squared
+            ),
+        },
+        {
+          x: 760,
+          y:
+            parseFloat(
+              currentBatchArray[dataTimeIndex]
+                .nir760_irradiance_uW_per_cm_squared
+            ) -
+            parseFloat(
+              standardDeviation_array[0].nir760_irradiance_uW_per_cm_squared
+            ),
         },
         {
           x: 810,
-          y: standardDeviation_array[0].nir810_irradiance_uW_per_cm_squared,
+          y:
+            parseFloat(
+              currentBatchArray[dataTimeIndex]
+                .nir810_irradiance_uW_per_cm_squared
+            ) +
+            parseFloat(
+              standardDeviation_array[0].nir810_irradiance_uW_per_cm_squared
+            ),
+        },
+        {
+          x: 810,
+          y:
+            parseFloat(
+              currentBatchArray[dataTimeIndex]
+                .nir810_irradiance_uW_per_cm_squared
+            ) -
+            parseFloat(
+              standardDeviation_array[0].nir810_irradiance_uW_per_cm_squared
+            ),
         },
         {
           x: 860,
-          y: standardDeviation_array[0].nir860_irradiance_uW_per_cm_squared,
+          y:
+            parseFloat(
+              currentBatchArray[dataTimeIndex]
+                .nir860_irradiance_uW_per_cm_squared
+            ) +
+            parseFloat(
+              standardDeviation_array[0].nir860_irradiance_uW_per_cm_squared
+            ),
+        },
+        {
+          x: 860,
+          y:
+            parseFloat(
+              currentBatchArray[dataTimeIndex]
+                .nir860_irradiance_uW_per_cm_squared
+            ) -
+            parseFloat(
+              standardDeviation_array[0].nir860_irradiance_uW_per_cm_squared
+            ),
         },
       ];
     }
@@ -1924,18 +2123,23 @@ function updateChart(backward, index) {
     }
 
     //** UPDATE NDVI */
-    if(ndvi_element.classList.contains("selected"))
-    {
+    if (ndvi_element.classList.contains("selected")) {
       for (let i = 0; i < currentBatchArray.length; i++) {
         //** GRAB LAST VALUE OF ARRAY TO SET THE MAX TIMESTAMP OF CHART */
         if (i == currentBatchArray.length - 1) {
-          chart2.options.scales.x.max = currentBatchArray[i].timestamp.replace(/\s/g, "");
+          chart2.options.scales.x.max = currentBatchArray[i].timestamp.replace(
+            /\s/g,
+            ""
+          );
         }
         //** GRAB FIRST VALUE OF ARRAY TO SET THE MIN TIMESTAMP OF CHART */
         else if (i == 0) {
-          chart2.options.scales.x.min = currentBatchArray[i].timestamp.replace(/\s/g, "");
+          chart2.options.scales.x.min = currentBatchArray[i].timestamp.replace(
+            /\s/g,
+            ""
+          );
         }
-  
+
         chart2.data.datasets[0].data[i] = {
           x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
           // x: parseFloat(currentBatchArray[i].decimal_hour),
@@ -1945,170 +2149,159 @@ function updateChart(backward, index) {
     }
 
     //** UPDATE NIRv */
-    if(calibrationBatchSelected)
-    {
+    if (calibrationBatchSelected) {
       for (let i = 0; i < currentBatchArray.length; i++) {
         //** GRAB LAST VALUE OF ARRAY TO SET THE MAX TIMESTAMP OF CHART */
         if (i == currentBatchArray.length - 1) {
-          NIRv_chart.options.scales.x.max = currentBatchArray[i].timestamp.replace(/\s/g, "");
+          NIRv_chart.options.scales.x.max = currentBatchArray[
+            i
+          ].timestamp.replace(/\s/g, "");
           console.log(currentBatchArray[i].timestamp.replace(/\s/g, ""));
         }
         //** GRAB FIRST VALUE OF ARRAY TO SET THE MIN TIMESTAMP OF CHART */
         else if (i == 0) {
-          NIRv_chart.options.scales.x.min = currentBatchArray[i].timestamp.replace(/\s/g, "");
+          NIRv_chart.options.scales.x.min = currentBatchArray[
+            i
+          ].timestamp.replace(/\s/g, "");
         }
-  
+
         NIRv_chart.data.datasets[0].data[i] = {
           x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
           // x: parseFloat(currentBatchArray[i].decimal_hour),
           y: currentBatchArray[i].NIRv,
         };
-  
       }
       console.log("GRAPHED NIRv");
     }
-    
-    //** UPDATE SR or SIMPLE RATIO **// 
-    if(sr_element.classList.contains("selected"))
-    {
+
+    //** UPDATE SR or SIMPLE RATIO **//
+    if (sr_element.classList.contains("selected")) {
       for (let i = 0; i < currentBatchArray.length; i++) {
         //** GRAB LAST VALUE OF ARRAY TO SET THE MAX TIMESTAMP OF CHART */
         if (i == currentBatchArray.length - 1) {
-          SR_chart.options.scales.x.max = currentBatchArray[i].timestamp.replace(/\s/g, "");
+          SR_chart.options.scales.x.max = currentBatchArray[
+            i
+          ].timestamp.replace(/\s/g, "");
         }
         //** GRAB FIRST VALUE OF ARRAY TO SET THE MIN TIMESTAMP OF CHART */
         else if (i == 0) {
-          SR_chart.options.scales.x.min = currentBatchArray[i].timestamp.replace(/\s/g, "");
+          SR_chart.options.scales.x.min = currentBatchArray[
+            i
+          ].timestamp.replace(/\s/g, "");
         }
 
         //** SELECT NUMERATOR BASED ON SELECTOR VALUE */
-        if(srGraph_numerator.value == '450nm')
-        {
-          srGraph_numerator_value = currentBatchArray[i].V450_irradiance_uW_per_cm_squared;
-        }
-        else if(srGraph_numerator.value == '500nm')
-        {
-          srGraph_numerator_value = currentBatchArray[i].B500_irradiance_uW_per_cm_squared;
-        }
-        else if(srGraph_numerator.value == '550nm')
-        {
-          srGraph_numerator_value = currentBatchArray[i].G550_irradiance_uW_per_cm_squared;
-        }
-        else if(srGraph_numerator.value == '570nm')
-        {
-          srGraph_numerator_value = currentBatchArray[i].Y570_irradiance_uW_per_cm_squared;
-        }
-        else if(srGraph_numerator.value == '600nm')
-        {
-          srGraph_numerator_value = currentBatchArray[i].O600_irradiance_uW_per_cm_squared;
-        }
-        else if(srGraph_numerator.value == '650nm')
-        {
-          srGraph_numerator_value = currentBatchArray[i].R650_irradiance_uW_per_cm_squared;
-        }
-        else if(srGraph_numerator.value == '610nm')
-        {
-          srGraph_numerator_value = currentBatchArray[i].nir610_irradiance_uW_per_cm_squared;
-        }
-        else if(srGraph_numerator.value == '680nm')
-        {
-          srGraph_numerator_value = currentBatchArray[i].nir680_irradiance_uW_per_cm_squared;
-        }
-        else if(srGraph_numerator.value == '730nm')
-        {
-          srGraph_numerator_value = currentBatchArray[i].nir730_irradiance_uW_per_cm_squared;
-        }
-        else if(srGraph_numerator.value == '760nm')
-        {
-          srGraph_numerator_value = currentBatchArray[i].nir760_irradiance_uW_per_cm_squared;
-        }
-        else if(srGraph_numerator.value == '810nm')
-        {
-          srGraph_numerator_value = currentBatchArray[i].nir810_irradiance_uW_per_cm_squared;
-        }
-        else if(srGraph_numerator.value == '860nm')
-        {
-          srGraph_numerator_value = currentBatchArray[i].nir860_irradiance_uW_per_cm_squared;
+        if (srGraph_numerator.value == "450nm") {
+          srGraph_numerator_value =
+            currentBatchArray[i].V450_irradiance_uW_per_cm_squared;
+        } else if (srGraph_numerator.value == "500nm") {
+          srGraph_numerator_value =
+            currentBatchArray[i].B500_irradiance_uW_per_cm_squared;
+        } else if (srGraph_numerator.value == "550nm") {
+          srGraph_numerator_value =
+            currentBatchArray[i].G550_irradiance_uW_per_cm_squared;
+        } else if (srGraph_numerator.value == "570nm") {
+          srGraph_numerator_value =
+            currentBatchArray[i].Y570_irradiance_uW_per_cm_squared;
+        } else if (srGraph_numerator.value == "600nm") {
+          srGraph_numerator_value =
+            currentBatchArray[i].O600_irradiance_uW_per_cm_squared;
+        } else if (srGraph_numerator.value == "650nm") {
+          srGraph_numerator_value =
+            currentBatchArray[i].R650_irradiance_uW_per_cm_squared;
+        } else if (srGraph_numerator.value == "610nm") {
+          srGraph_numerator_value =
+            currentBatchArray[i].nir610_irradiance_uW_per_cm_squared;
+        } else if (srGraph_numerator.value == "680nm") {
+          srGraph_numerator_value =
+            currentBatchArray[i].nir680_irradiance_uW_per_cm_squared;
+        } else if (srGraph_numerator.value == "730nm") {
+          srGraph_numerator_value =
+            currentBatchArray[i].nir730_irradiance_uW_per_cm_squared;
+        } else if (srGraph_numerator.value == "760nm") {
+          srGraph_numerator_value =
+            currentBatchArray[i].nir760_irradiance_uW_per_cm_squared;
+        } else if (srGraph_numerator.value == "810nm") {
+          srGraph_numerator_value =
+            currentBatchArray[i].nir810_irradiance_uW_per_cm_squared;
+        } else if (srGraph_numerator.value == "860nm") {
+          srGraph_numerator_value =
+            currentBatchArray[i].nir860_irradiance_uW_per_cm_squared;
         }
         //** DENOMINATOR */
-        if(srGraph_denominator.value == '450nm')
-        {
-          srGraph_denominator_value = currentBatchArray[i].V450_irradiance_uW_per_cm_squared;
+        if (srGraph_denominator.value == "450nm") {
+          srGraph_denominator_value =
+            currentBatchArray[i].V450_irradiance_uW_per_cm_squared;
+        } else if (srGraph_denominator.value == "500nm") {
+          srGraph_denominator_value =
+            currentBatchArray[i].B500_irradiance_uW_per_cm_squared;
+        } else if (srGraph_denominator.value == "550nm") {
+          srGraph_denominator_value =
+            currentBatchArray[i].G550_irradiance_uW_per_cm_squared;
+        } else if (srGraph_denominator.value == "570nm") {
+          srGraph_denominator_value =
+            currentBatchArray[i].Y570_irradiance_uW_per_cm_squared;
+        } else if (srGraph_denominator.value == "600nm") {
+          srGraph_denominator_value =
+            currentBatchArray[i].O600_irradiance_uW_per_cm_squared;
+        } else if (srGraph_denominator.value == "650nm") {
+          srGraph_denominator_value =
+            currentBatchArray[i].R650_irradiance_uW_per_cm_squared;
+        } else if (srGraph_denominator.value == "610nm") {
+          srGraph_denominator_value =
+            currentBatchArray[i].nir610_irradiance_uW_per_cm_squared;
+        } else if (srGraph_denominator.value == "680nm") {
+          srGraph_denominator_value =
+            currentBatchArray[i].nir680_irradiance_uW_per_cm_squared;
+        } else if (srGraph_denominator.value == "730nm") {
+          srGraph_denominator_value =
+            currentBatchArray[i].nir730_irradiance_uW_per_cm_squared;
+        } else if (srGraph_denominator.value == "760nm") {
+          srGraph_denominator_value =
+            currentBatchArray[i].nir760_irradiance_uW_per_cm_squared;
+        } else if (srGraph_denominator.value == "810nm") {
+          srGraph_denominator_value =
+            currentBatchArray[i].nir810_irradiance_uW_per_cm_squared;
+        } else if (srGraph_denominator.value == "860nm") {
+          srGraph_denominator_value =
+            currentBatchArray[i].nir860_irradiance_uW_per_cm_squared;
         }
-        else if(srGraph_denominator.value == '500nm')
-        {
-          srGraph_denominator_value = currentBatchArray[i].B500_irradiance_uW_per_cm_squared;
-        }
-        else if(srGraph_denominator.value == '550nm')
-        {
-          srGraph_denominator_value = currentBatchArray[i].G550_irradiance_uW_per_cm_squared;
-        }
-        else if(srGraph_denominator.value == '570nm')
-        {
-          srGraph_denominator_value = currentBatchArray[i].Y570_irradiance_uW_per_cm_squared;
-        }
-        else if(srGraph_denominator.value == '600nm')
-        {
-          srGraph_denominator_value = currentBatchArray[i].O600_irradiance_uW_per_cm_squared;
-        }
-        else if(srGraph_denominator.value == '650nm')
-        {
-          srGraph_denominator_value = currentBatchArray[i].R650_irradiance_uW_per_cm_squared;
-        }
-        else if(srGraph_denominator.value == '610nm')
-        {
-          srGraph_denominator_value = currentBatchArray[i].nir610_irradiance_uW_per_cm_squared;
-        }
-        else if(srGraph_denominator.value == '680nm')
-        {
-          srGraph_denominator_value = currentBatchArray[i].nir680_irradiance_uW_per_cm_squared;
-        }
-        else if(srGraph_denominator.value == '730nm')
-        {
-          srGraph_denominator_value = currentBatchArray[i].nir730_irradiance_uW_per_cm_squared;
-        }
-        else if(srGraph_denominator.value == '760nm')
-        {
-          srGraph_denominator_value = currentBatchArray[i].nir760_irradiance_uW_per_cm_squared;
-        }
-        else if(srGraph_denominator.value == '810nm')
-        {
-          srGraph_denominator_value = currentBatchArray[i].nir810_irradiance_uW_per_cm_squared;
-        }
-        else if(srGraph_denominator.value == '860nm')
-        {
-          srGraph_denominator_value = currentBatchArray[i].nir860_irradiance_uW_per_cm_squared;
-        }
-        
-        currentBatchArray[i].simpleRatio = srGraph_numerator_value / srGraph_denominator_value;
+
+        currentBatchArray[i].simpleRatio =
+          srGraph_numerator_value / srGraph_denominator_value;
         // currentBatchArray[i].simpleRatio = currentBatchArray[i].nir860_irradiance_uW_per_cm_squared / currentBatchArray[i].R650_irradiance_uW_per_cm_squared;
         // currentBatchArray[i].simpleRatio = currentBatchArray[i].nir860_reflectance / currentBatchArray[i].R650_reflectance;
-  
+
         SR_chart.data.datasets[0].data[i] = {
           x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
           y: currentBatchArray[i].simpleRatio,
         };
-        
+
         //console.log("GRAPHED Simple Ratio: " + currentBatchArray[i].B500_irradiance_uW_per_cm_squared);
       }
     }
 
-    //** UPDATE DSWI 4 **// 
-    if(dswi_element.classList.contains("selected"))
-    {
+    //** UPDATE DSWI 4 **//
+    if (dswi_element.classList.contains("selected")) {
       for (let i = 0; i < currentBatchArray.length; i++) {
         //** GRAB LAST VALUE OF ARRAY TO SET THE MAX TIMESTAMP OF CHART */
         if (i == currentBatchArray.length - 1) {
-          DSWI_chart.options.scales.x.max = currentBatchArray[i].timestamp.replace(/\s/g, "");
+          DSWI_chart.options.scales.x.max = currentBatchArray[
+            i
+          ].timestamp.replace(/\s/g, "");
         }
         //** GRAB FIRST VALUE OF ARRAY TO SET THE MIN TIMESTAMP OF CHART */
         else if (i == 0) {
-          DSWI_chart.options.scales.x.min = currentBatchArray[i].timestamp.replace(/\s/g, "");
+          DSWI_chart.options.scales.x.min = currentBatchArray[
+            i
+          ].timestamp.replace(/\s/g, "");
         }
-  
+
         //currentBatchArray[i].DSWI = currentBatchArray[i].G550_irradiance_uW_per_cm_squared / currentBatchArray[i].nir680_irradiance_uW_per_cm_squared;
-        currentBatchArray[i].DSWI = currentBatchArray[i].G550_reflectance / currentBatchArray[i].nir680_reflectance;
-  
+        currentBatchArray[i].DSWI =
+          currentBatchArray[i].G550_reflectance /
+          currentBatchArray[i].nir680_reflectance;
+
         DSWI_chart.data.datasets[0].data[i] = {
           x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
           y: currentBatchArray[i].DSWI,
@@ -2117,11 +2310,17 @@ function updateChart(backward, index) {
     }
     //** UPDATE EXTRA INFO LABELS */
     dateHeader_label.innerHTML =
-    currentBatchArray[dataTimeIndex].timestamp.replace(/\s/g, "").substring(4, 6) +
-    "/" +
-    currentBatchArray[dataTimeIndex].timestamp.replace(/\s/g, "").substring(6, 8) +
-    "/" +
-    currentBatchArray[dataTimeIndex].timestamp.replace(/\s/g, "").substring(0, 4);
+      currentBatchArray[dataTimeIndex].timestamp
+        .replace(/\s/g, "")
+        .substring(4, 6) +
+      "/" +
+      currentBatchArray[dataTimeIndex].timestamp
+        .replace(/\s/g, "")
+        .substring(6, 8) +
+      "/" +
+      currentBatchArray[dataTimeIndex].timestamp
+        .replace(/\s/g, "")
+        .substring(0, 4);
 
     uid_label.innerHTML = "UID: " + currentBatchArray[dataTimeIndex].UID;
 
@@ -2169,11 +2368,10 @@ function updateChart(backward, index) {
 
 //** UPDATES THE GRAPHS GRADIENTS BASED ON THEIR SCREEN SIZE*/
 function graphGradients() {
-  
   //** USE TIMEOUT TO GIVE GRAPHS A CHANCE TO RESIZE */
   setTimeout(() => {
     //console.log("HEIGHT: " + chart2.height + ", WIDTH: " + chart2.width);
-    
+
     //** MAIN GRAPH */
     visibleGradient = ctx.createLinearGradient(0, 0, mainChart.width / 2, 0);
     visibleGradient.addColorStop(0.1, "rgba(0, 0, 255, 0.75)");
@@ -2181,27 +2379,27 @@ function graphGradients() {
     visibleGradient.addColorStop(0.5, "rgba(255, 255, 0, 0.75)");
     visibleGradient.addColorStop(0.75, "rgba(255, 102, 0, 0.75)");
     visibleGradient.addColorStop(1, "rgba(255, 0, 0, 0.75)");
-  
+
     infraredGradient = ctx.createLinearGradient(0, 0, mainChart.width, 0);
     infraredGradient.addColorStop(0, "rgba(255, 0, 0, 1)");
     infraredGradient.addColorStop(1, "rgba(173, 173, 173, 0.75)");
-  
+
     mainChart.data.datasets[13].backgroundColor = visibleGradient;
     mainChart.data.datasets[13].borderColor = visibleGradient;
-    
+
     mainChart.data.datasets[12].backgroundColor = infraredGradient;
     mainChart.data.datasets[12].borderColor = infraredGradient;
 
     //** NDVI GRAPH */
-    ndviGradient = ctx2.createLinearGradient(0, 0, 0, chart2.height/2);
+    ndviGradient = ctx2.createLinearGradient(0, 0, 0, chart2.height / 2);
     ndviGradient.addColorStop(0, "rgba(3, 252, 49, 1)");
     ndviGradient.addColorStop(1, "rgba(194, 155, 0)");
 
     chart2.data.datasets[0].backgroundColor = ndviGradient;
     chart2.data.datasets[0].borderColor = ndviGradient;
-    
+
     //** NIRv GRAPH */
-    nirvGradient = ctx4.createLinearGradient(0, 0, 0, NIRv_chart.height/2);
+    nirvGradient = ctx4.createLinearGradient(0, 0, 0, NIRv_chart.height / 2);
     nirvGradient.addColorStop(0, "rgb(252, 187, 5)");
     nirvGradient.addColorStop(1, "rgb(194, 85, 2)");
 
@@ -2220,7 +2418,7 @@ function graphGradients() {
 
     SR_chart.data.datasets[0].backgroundColor = srGradient;
     SR_chart.data.datasets[0].borderColor = srGradient;
-  
+
     mainChart.update();
     chart2.update();
     NIRv_chart.update();
@@ -2307,13 +2505,10 @@ function updateChartLabels() {
     mainChart.getDatasetMeta(4).hidden = true;
     mainChart.getDatasetMeta(5).hidden = true;
   }
-  if(!dataIsAverage)
-  {
+  if (!dataIsAverage) {
     excludeLabelList = excludeLabelList.concat(averageData_array);
     mainChart.getDatasetMeta(14).hidden = true;
-  }
-  else
-  {
+  } else {
     mainChart.getDatasetMeta(14).hidden = false;
   }
 
@@ -2745,11 +2940,11 @@ function addBatches(dataArray) {
     };
 
     var date =
-    dataArray[i][0].timestamp.replace(/\s/g, "").substr(0, 4) +
-    "/" +
-    dataArray[i][0].timestamp.replace(/\s/g, "").substr(4, 2) +
-    "/" +
-    dataArray[i][0].timestamp.replace(/\s/g, "").substr(9, 2);
+      dataArray[i][0].timestamp.replace(/\s/g, "").substr(0, 4) +
+      "/" +
+      dataArray[i][0].timestamp.replace(/\s/g, "").substr(4, 2) +
+      "/" +
+      dataArray[i][0].timestamp.replace(/\s/g, "").substr(9, 2);
 
     console.log(dataArray);
     div.innerHTML = dataArray[i][0].batch_number;
@@ -2776,20 +2971,16 @@ function addBatches(dataArray) {
         this.classList.toggle("selected");
         let calibrationArray = dataArrayBatches[this.index];
 
-        if(!ndvi_element.classList.contains("active"))
-        {
+        if (!ndvi_element.classList.contains("active")) {
           ndvi_element.classList.toggle("active");
         }
-        if(!sr_element.classList.contains("active"))
-        {
+        if (!sr_element.classList.contains("active")) {
           sr_element.classList.toggle("active");
         }
-        if(!dswi_element.classList.contains("active"))
-        {
+        if (!dswi_element.classList.contains("active")) {
           dswi_element.classList.toggle("active");
         }
-        if(!nirv_element.classList.contains("active"))
-        {
+        if (!nirv_element.classList.contains("active")) {
           nirv_element.classList.toggle("active");
         }
 
@@ -2828,8 +3019,7 @@ function addBatches(dataArray) {
   mainChart.options.plugins.title.text = "  UID: " + currentBatchArray[0].UID;
 }
 
-function batchChangeUpdate()
-{
+function batchChangeUpdate() {
   //** CLEAR DATA VALUES TO ALLOW FOR NEW DATA TO POPULATE THE GRAPHS */
   chart2.data.labels = Object.keys(data);
   chart2.data.datasets.forEach((dataset) => {
@@ -2855,21 +3045,16 @@ function batchChangeUpdate()
   clearTimeout(animWaitFunc);
   updateChart();
 
-  if(calibrationBatchSelected)
-  {
+  if (calibrationBatchSelected) {
     convertToReflectance();
   }
 
   //** CLOSE TRIM AND EDIT ICONS IF THE BATCH IS LESS THAN 2 */
-  if(currentBatchArray.length < 3)
-  {
-    if(!trim_icon.classList.contains("disabled"))
-    {
+  if (currentBatchArray.length < 3) {
+    if (!trim_icon.classList.contains("disabled")) {
       trim_icon.classList.toggle("disabled");
     }
-  }
-  else if(trim_icon.classList.contains("disabled"))
-  {
+  } else if (trim_icon.classList.contains("disabled")) {
     trim_icon.classList.toggle("disabled");
   }
 }
@@ -2955,12 +3140,24 @@ function averageCalibrationArray(cal_array) {
     average_570nm += parseFloat(cal_array[i].Y570_irradiance_uW_per_cm_squared);
     average_600nm += parseFloat(cal_array[i].O600_irradiance_uW_per_cm_squared);
     average_650nm += parseFloat(cal_array[i].R650_irradiance_uW_per_cm_squared);
-    average_610nm += parseFloat(cal_array[i].nir610_irradiance_uW_per_cm_squared);
-    average_680nm += parseFloat(cal_array[i].nir680_irradiance_uW_per_cm_squared);
-    average_730nm += parseFloat(cal_array[i].nir730_irradiance_uW_per_cm_squared);
-    average_760nm += parseFloat(cal_array[i].nir760_irradiance_uW_per_cm_squared);
-    average_810nm += parseFloat(cal_array[i].nir810_irradiance_uW_per_cm_squared);
-    average_860nm += parseFloat(cal_array[i].nir860_irradiance_uW_per_cm_squared);
+    average_610nm += parseFloat(
+      cal_array[i].nir610_irradiance_uW_per_cm_squared
+    );
+    average_680nm += parseFloat(
+      cal_array[i].nir680_irradiance_uW_per_cm_squared
+    );
+    average_730nm += parseFloat(
+      cal_array[i].nir730_irradiance_uW_per_cm_squared
+    );
+    average_760nm += parseFloat(
+      cal_array[i].nir760_irradiance_uW_per_cm_squared
+    );
+    average_810nm += parseFloat(
+      cal_array[i].nir810_irradiance_uW_per_cm_squared
+    );
+    average_860nm += parseFloat(
+      cal_array[i].nir860_irradiance_uW_per_cm_squared
+    );
   }
 
   //** DIVIDE ALL BY LENGTH OF ARRAY TO GET AVERAGE*/
@@ -3063,29 +3260,41 @@ function convertToReflectance() {
     //** RADIANCE CALCULATION */
     //** radiance = irradiance * distance²/Area */
     currentBatchArray[i].V450_radiance =
-      currentBatchArray[i].V450_irradiance_uW_per_cm_squared * (Math.pow(distance, 2) / area);
+      currentBatchArray[i].V450_irradiance_uW_per_cm_squared *
+      (Math.pow(distance, 2) / area);
     currentBatchArray[i].B500_radiance =
-      currentBatchArray[i].B500_irradiance_uW_per_cm_squared * (Math.pow(distance, 2) / area);
+      currentBatchArray[i].B500_irradiance_uW_per_cm_squared *
+      (Math.pow(distance, 2) / area);
     currentBatchArray[i].G550_radiance =
-      currentBatchArray[i].G550_irradiance_uW_per_cm_squared * (Math.pow(distance, 2) / area);
+      currentBatchArray[i].G550_irradiance_uW_per_cm_squared *
+      (Math.pow(distance, 2) / area);
     currentBatchArray[i].Y570_radiance =
-      currentBatchArray[i].Y570_irradiance_uW_per_cm_squared * (Math.pow(distance, 2) / area);
+      currentBatchArray[i].Y570_irradiance_uW_per_cm_squared *
+      (Math.pow(distance, 2) / area);
     currentBatchArray[i].O600_radiance =
-      currentBatchArray[i].O600_irradiance_uW_per_cm_squared * (Math.pow(distance, 2) / area);
+      currentBatchArray[i].O600_irradiance_uW_per_cm_squared *
+      (Math.pow(distance, 2) / area);
     currentBatchArray[i].R650_radiance =
-      currentBatchArray[i].R650_irradiance_uW_per_cm_squared * (Math.pow(distance, 2) / area);
+      currentBatchArray[i].R650_irradiance_uW_per_cm_squared *
+      (Math.pow(distance, 2) / area);
     currentBatchArray[i].nir610_radiance =
-      currentBatchArray[i].nir610_irradiance_uW_per_cm_squared * (Math.pow(distance, 2) / area);
+      currentBatchArray[i].nir610_irradiance_uW_per_cm_squared *
+      (Math.pow(distance, 2) / area);
     currentBatchArray[i].nir680_radiance =
-      currentBatchArray[i].nir680_irradiance_uW_per_cm_squared * (Math.pow(distance, 2) / area);
+      currentBatchArray[i].nir680_irradiance_uW_per_cm_squared *
+      (Math.pow(distance, 2) / area);
     currentBatchArray[i].nir730_radiance =
-      currentBatchArray[i].nir730_irradiance_uW_per_cm_squared * (Math.pow(distance, 2) / area);
+      currentBatchArray[i].nir730_irradiance_uW_per_cm_squared *
+      (Math.pow(distance, 2) / area);
     currentBatchArray[i].nir760_radiance =
-      currentBatchArray[i].nir760_irradiance_uW_per_cm_squared * (Math.pow(distance, 2) / area);
+      currentBatchArray[i].nir760_irradiance_uW_per_cm_squared *
+      (Math.pow(distance, 2) / area);
     currentBatchArray[i].nir810_radiance =
-      currentBatchArray[i].nir810_irradiance_uW_per_cm_squared * (Math.pow(distance, 2) / area);
+      currentBatchArray[i].nir810_irradiance_uW_per_cm_squared *
+      (Math.pow(distance, 2) / area);
     currentBatchArray[i].nir860_radiance =
-      currentBatchArray[i].nir860_irradiance_uW_per_cm_squared * (Math.pow(distance, 2) / area);
+      currentBatchArray[i].nir860_irradiance_uW_per_cm_squared *
+      (Math.pow(distance, 2) / area);
 
     //** REFLECTANCE CALCULATION */
     //** Reflectance = Radiance from the plant / Radiance from the white reference */
@@ -3118,7 +3327,6 @@ function convertToReflectance() {
 }
 
 function calculateNIRV() {
-
   for (let i = 0; i < currentBatchArray.length; i++) {
     //** NIRv Calculation */
     let NIRv =
@@ -3229,29 +3437,18 @@ function updateGraphGrid(currentlyGraphed) {
     myElement.style.gridTemplateColumns =
       "minmax(200px, 1fr) minmax(200px, 1fr)";
     myElement.style.gridTemplateRows = "minmax(200px, 1fr) minmax(200px, 1fr)";
-  }
-  else if(counter > 4)
-  {
+  } else if (counter > 4) {
     document.getElementById(lastGraphed).classList.toggle("active");
 
-    if(lastGraphed == "mainGraph")
-    {
+    if (lastGraphed == "mainGraph") {
       raw_element.classList.toggle("selected");
-    }
-    else if(lastGraphed == "DSWI_Graph")
-    {
+    } else if (lastGraphed == "DSWI_Graph") {
       dswi_element.classList.toggle("selected");
-    }
-    else if(lastGraphed == "SR_Graph")
-    {
+    } else if (lastGraphed == "SR_Graph") {
       sr_element.classList.toggle("selected");
-    }
-    else if(lastGraphed == "NIRv_Graph")
-    {
+    } else if (lastGraphed == "NIRv_Graph") {
       nirv_element.classList.toggle("selected");
-    }
-    else if(lastGraphed == "calcGraph")
-    {
+    } else if (lastGraphed == "calcGraph") {
       ndvi_element.classList.toggle("selected");
     }
 
@@ -3259,8 +3456,7 @@ function updateGraphGrid(currentlyGraphed) {
   }
 
   //** UPDATE LAST GRAPHED VARIABLE */
-  if(currentlyGraphed)
-  {
+  if (currentlyGraphed) {
     lastGraphed = currentlyGraphed;
   }
 }
@@ -3471,7 +3667,7 @@ trim_icon.addEventListener("click", function () {
 //** DOWNLOAD SIDEBAR */
 // fileName_download.addEventListener("change", function () {
 //   console.log("CHANGE DOWNLOAD");
-  
+
 //   //**REMOVE BLANK SPACE */
 //   fileName_download.value = fileName_download.value.replace(/\s+/g, '');
 
@@ -3492,8 +3688,7 @@ srGraph_denominator.addEventListener("change", function () {
   updateChart();
 });
 
-function resetTrim()
-{
+function resetTrim() {
   //** SET EDIT RANGE BACK TO NORMAL */
   var children = editRange_start.parentNode.childNodes[1].childNodes;
   children[1].style.width = "0%";
@@ -3515,10 +3710,14 @@ function resetTrim()
 }
 
 done_trim.addEventListener("click", function () {
-
-  console.log("START: " + editRange_start.value + " End: " + editRange_end.value)
+  console.log(
+    "START: " + editRange_start.value + " End: " + editRange_end.value
+  );
   console.log(currentBatchArray.length);
-  currentBatchArray = currentBatchArray.slice(editRange_start.value-1, editRange_end.value);
+  currentBatchArray = currentBatchArray.slice(
+    editRange_start.value - 1,
+    editRange_end.value
+  );
   console.log(currentBatchArray.length);
 
   console.log(currentBatchArray);
@@ -3623,7 +3822,7 @@ nirv_element.addEventListener("click", function () {
   DSWI_chart.resize();
 });
 
-sr_element.addEventListener('click', function() {
+sr_element.addEventListener("click", function () {
   sr_element.classList.toggle("selected");
   if (!sr_element.classList.contains("selected")) {
     SR_chart.update();
@@ -3645,7 +3844,7 @@ sr_element.addEventListener('click', function() {
   DSWI_chart.resize();
 });
 
-dswi_element.addEventListener('click', function() {
+dswi_element.addEventListener("click", function () {
   dswi_element.classList.toggle("selected");
   if (!dswi_element.classList.contains("selected")) {
     DSWI_chart.update();
@@ -3746,48 +3945,63 @@ recordContainer.addEventListener("click", function () {
   }
 });
 
-snapShotIcon.addEventListener('click', function () {
-  var image = document.getElementById("graph").toDataURL("image/png").replace("image/png", "image/octet-stream");  // here is the most important part because if you dont replace you will get a DOM 18 exception.
+snapShotIcon.addEventListener("click", function () {
+  var image = document
+    .getElementById("graph")
+    .toDataURL("image/png")
+    .replace("image/png", "image/octet-stream"); // here is the most important part because if you dont replace you will get a DOM 18 exception.
 
-  var link = document.getElementById('link');
-  link.setAttribute('download', 'stella_graph.png');
-  link.setAttribute('href', image);
+  var link = document.getElementById("link");
+  link.setAttribute("download", "stella_graph.png");
+  link.setAttribute("href", image);
   link.click();
 });
 
-snapShotIcon_2.addEventListener('click', function () {
-  var image = document.getElementById("graph2").toDataURL("image/png").replace("image/png", "image/octet-stream");  // here is the most important part because if you dont replace you will get a DOM 18 exception.
+snapShotIcon_2.addEventListener("click", function () {
+  var image = document
+    .getElementById("graph2")
+    .toDataURL("image/png")
+    .replace("image/png", "image/octet-stream"); // here is the most important part because if you dont replace you will get a DOM 18 exception.
 
-  var link = document.getElementById('link');
-  link.setAttribute('download', 'stella_graph.png');
-  link.setAttribute('href', image);
+  var link = document.getElementById("link");
+  link.setAttribute("download", "stella_graph.png");
+  link.setAttribute("href", image);
   link.click();
 });
 
-snapShotIcon_3.addEventListener('click', function () {
-  var image = document.getElementById("graph_NIRv").toDataURL("image/png").replace("image/png", "image/octet-stream");  // here is the most important part because if you dont replace you will get a DOM 18 exception.
+snapShotIcon_3.addEventListener("click", function () {
+  var image = document
+    .getElementById("graph_NIRv")
+    .toDataURL("image/png")
+    .replace("image/png", "image/octet-stream"); // here is the most important part because if you dont replace you will get a DOM 18 exception.
 
-  var link = document.getElementById('link');
-  link.setAttribute('download', 'stella_graph.png');
-  link.setAttribute('href', image);
+  var link = document.getElementById("link");
+  link.setAttribute("download", "stella_graph.png");
+  link.setAttribute("href", image);
   link.click();
 });
 
-snapShotIcon_4.addEventListener('click', function () {
-  var image = document.getElementById("graph_SR").toDataURL("image/png").replace("image/png", "image/octet-stream");  // here is the most important part because if you dont replace you will get a DOM 18 exception.
+snapShotIcon_4.addEventListener("click", function () {
+  var image = document
+    .getElementById("graph_SR")
+    .toDataURL("image/png")
+    .replace("image/png", "image/octet-stream"); // here is the most important part because if you dont replace you will get a DOM 18 exception.
 
-  var link = document.getElementById('link');
-  link.setAttribute('download', 'stella_graph.png');
-  link.setAttribute('href', image);
+  var link = document.getElementById("link");
+  link.setAttribute("download", "stella_graph.png");
+  link.setAttribute("href", image);
   link.click();
 });
 
-snapShotIcon_5.addEventListener('click', function () {
-  var image = document.getElementById("graph_DSWI").toDataURL("image/png").replace("image/png", "image/octet-stream");  // here is the most important part because if you dont replace you will get a DOM 18 exception.
+snapShotIcon_5.addEventListener("click", function () {
+  var image = document
+    .getElementById("graph_DSWI")
+    .toDataURL("image/png")
+    .replace("image/png", "image/octet-stream"); // here is the most important part because if you dont replace you will get a DOM 18 exception.
 
-  var link = document.getElementById('link');
-  link.setAttribute('download', 'stella_graph.png');
-  link.setAttribute('href', image);
+  var link = document.getElementById("link");
+  link.setAttribute("download", "stella_graph.png");
+  link.setAttribute("href", image);
   link.click();
 });
 
@@ -3831,14 +4045,13 @@ window.addEventListener("mouseover", (event) => {
 });
 
 //** MENU HELP BUTTON */
-menu_help.addEventListener("click", function(){
+menu_help.addEventListener("click", function () {
   helpScreen.classList.toggle("active");
 });
 
 //** CLOSE BUTTON FOR HELP SCREEN */
-help_closeBtn.addEventListener("click", function(){
-  if(helpScreen.classList.contains("active"))
-  {
+help_closeBtn.addEventListener("click", function () {
+  if (helpScreen.classList.contains("active")) {
     helpScreen.classList.toggle("active");
   }
 });
@@ -3861,21 +4074,21 @@ controlSidebarHeader.addEventListener("mousedown", (e) => {
       controlSidebarHeader.addEventListener("mousemove", onDrag);
   }
 }),
-controlSidebarHeader_live.addEventListener("mousedown", () => {
-  if (controlSidebar_live.classList.contains("active")) {
-    wrapper = controlSidebar_live;
-    controlSidebarHeader_live.classList.add("active"),
-      controlSidebarHeader_live.addEventListener("mousemove", onDrag);
-  }
-}),
-helpHeader.addEventListener("mousedown", (e) => {
-  e.stopPropagation();
-  if (helpScreen.classList.contains("active")) {
-    wrapper = helpScreen;
-    helpScreen.classList.add("active"),
-    helpHeader.addEventListener("mousemove", onDrag);
-  }
-});
+  controlSidebarHeader_live.addEventListener("mousedown", () => {
+    if (controlSidebar_live.classList.contains("active")) {
+      wrapper = controlSidebar_live;
+      controlSidebarHeader_live.classList.add("active"),
+        controlSidebarHeader_live.addEventListener("mousemove", onDrag);
+    }
+  }),
+  helpHeader.addEventListener("mousedown", (e) => {
+    e.stopPropagation();
+    if (helpScreen.classList.contains("active")) {
+      wrapper = helpScreen;
+      helpScreen.classList.add("active"),
+        helpHeader.addEventListener("mousemove", onDrag);
+    }
+  });
 document.addEventListener("mouseup", () => {
   if (controlSidebar.classList.contains("active")) {
     controlSidebarHeader.classList.remove("active"),
@@ -3889,7 +4102,6 @@ document.addEventListener("mouseup", () => {
     helpHeader.removeEventListener("mousemove", onDrag);
   }
 });
-
 
 update();
 function update() {
