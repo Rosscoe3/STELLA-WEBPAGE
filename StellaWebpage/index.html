@@ -18,650 +18,757 @@
     />
   </head>
   <body>
-    <!-- LANDING AND ALL ITS ELEMENTS -->
-    <div class="landing active" id="landing">
-      <h1 id="title">stella_dataviewer</h1>
-      <img src="images/stellaSpin.gif" class="introGif" id="spin" />
-      <div class="landingNav">
-        <div id="about">about</div>
-        <label class="custom-file-upload">
-          <input
-            type="file"
-            id="upload_file"
-            accept=".txt, .csv"
-            onclick="this.value=null;"
-          />
-          upload_file
-        </label>
-        <div id="plugInDevice">connect_device</div>
+    <div class="container">
+      <div class="sidebar" id="sidebar">
+        <div class="sidebarTitle">
+          <b>Graphs</b>
+        </div>
+        <div class="scrollContainer">
+          <div class="batchGrid" id="graphs">
+            <div id="graphs_raw" class="active selected" title="RAW data from the device">
+              RAW
+            </div>
+            <div
+              id="graphs_ndvi"
+              class=""
+              title="An indicator of density and health in vegetation"
+            >
+              NDVI
+            </div>
+            <div
+              id="graphs_reflectance"
+              class=""
+              title="A graph of the reflectance values generated"
+            >
+              REFLECTANCE
+            </div>
+            <div id="graphs_SR" class="">
+              SR
+            </div>
+            <div id="graphs_DSWI" class="">
+              DSWI 4
+            </div>
+            <div id="graphs_nirv" class="">
+              NIRv
+            </div>
+          </div>
+        </div>
+        <div class="sidebarTitle">
+          <b>#batch</b>
+        </div>
+        <div class="scrollContainer" id="batches" style="height: 20%;">
+          <div class="batchGrid" id="batchGrid">
+          </div>
+        </div>
+        <div class="sidebarTitle">
+          <b>distance (cm)</b>
+        </div>
+        <input type="number" id="distanceInput" value="1" step="0.1" min="0" />
+        <div class="sidebarTitle">
+          <b>calibration #batch</b>
+        </div>
+        <div class="scrollContainer" id="batches_calibration">
+          <div class="batchGrid" id="calibration_batch_grid"></div>
+        </div>
+        <div class="sidebarTitle" id="dateHeader">
+          <b></b>
+        </div>
+        <div class="extraInfo">
+          <div id="Time">time: 10:20:30:40</div>
+          <div id="air_temp">air_temp: 23.7 C</div>
+          <div id="surface_temp">surface_temp: 20.8 C</div>
+          <div id="relative_humidity">relative_humidity: 3%</div>
+          <div id="battery_voltage">battery_voltage: 3.81 V</div>
+          <div id="UID">UID: 3875</div>
+        </div>
       </div>
-      <div class="disclaimer">
-        <b>*works best on chrome*</b>
+      <div class="sidebar" id="sidebar_live">
+        <div class="sidebarTitle">
+          <b>Graphs</b>
+        </div>
+        <div class="scrollContainer">
+          <div class="batchGrid" id="graphs" style="height: fit-content">
+            <div id="graphs_raw_live" class="active selected" title="RAW data from the device" style="padding: 5%">
+              RAW
+            </div>
+            <div id="graphs_duplicate_live" class="active selected" title="Duplicate screen from the device" style="padding: 5%">
+              SCREEN
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-
-    <!-- USED TO DOWNLOAD SCREENSHOTS -->
-    <a id="link"></a>
-
-    <!-- HELP SCREEN -->
-    <div class="helpContainer" id="helpContainer">
-      <div class="helpHeader" id="helpHeader">
-        <div class="close-icon" id="help_closeBtn">X</div>
-        <h1>Help</h1>
-        <!-- <h3>Because we can.</h3> -->
-      </div>
-      <div class="helpScroll">
-        
-        <!-- HOW TO USE THIS APP -->
-        <div class="ac">
-          <input class="ac-input" id="ac-4" name="ac-4" type="checkbox" />
-          <label class="ac-label" for="ac-4">How to use</label>
-          <article class="ac-text">
-            <div class="ac-sub">
-              <input class="ac-input" id="ac-graphs" name="ac-graphs" type="checkbox" />
-              <label class="ac-label" for="ac-graphs">'Graphs'</label>
-              <article class="ac-sub-text">
-                <p>The <b>‘Graphs’</b> section of the sidebar is used to select which graphs are visible on screen. 
-                  Simply click on an index to have it toggle on or off. When an index is selected, it will highlight in black. 
-                  A total of four graphs are shown on the screen at one time. </p>
-                <img src="images/graphs.png" alt="" draggable="false">
-                <p>*Note that if an index is grayed out, you will need to select a calibration batch.*</p>
-              </article>
-            </div>
-            <div class="ac-sub">
-              <input class="ac-input" id="ac-batch" name="ac-batch" type="checkbox" />
-              <label class="ac-label" for="ac-batch">'#Batch'</label>
-              <article class="ac-sub-text">
-                <p>The <b>‘#Batch’</b> section of the sidebar is used to select which batch is currently visible. 
-                  Simply click on a batch number to have it displayed on the graph. 
-                  When a batch is selected, it will highlight in black and any other indices you have selected will be updated.</p>
-                <img src="images/batch.png" alt="" draggable="false">  
-              </article>
-            </div>
-            <div class="ac-sub">
-              <input class="ac-input" id="ac-extraInfo" name="ac-extraInfo" type="checkbox" />
-              <label class="ac-label" for="ac-extraInfo">'Extra Info'</label>
-              <article class="ac-sub-text">
-                <p>The <b>‘extra info’</b> section of the sidebar is used to contain data from the selected batch that cannot be represented in a graph. 
-                  This includes the date, time, air temperature, surface temperature, relative humidity, battery voltage, and UID number.</p>
-                <img src="images/extra_info.png" alt="" draggable="false">  
-              </article>
-            </div>
-            <div class="ac-sub">
-              <input class="ac-input" id="ac-distance_calibration" name="ac-distance_calibration" type="checkbox" />
-              <label class="ac-label" for="ac-distance_calibration">'Distance / Calibration Batch'</label>
-              <article class="ac-sub-text">
-                <p>The <b>‘distance’</b> section of the sidebar is used to determine the distance at which the currently selected batch was taken from its subject in cm. 
-                  This value is important in accurately calculating reflectance.</p>
-                <p>The <b>‘calibration batch’</b> section of the sidebar is used to select which batch to compare against for various indices. 
-                  Once selected, the values of this batch will be averaged over time and used to calculate the reflectance for the currently selected batch.</p>  
-                <img src="images/calibration_batch.png" alt="" draggable="false">  
-              </article>
-            </div>
-            <div class="ac-sub">
-              <input class="ac-input" id="ac-trim" name="ac-trim" type="checkbox" />
-              <label class="ac-label" for="ac-trim">Editing Data</label>
-              <article class="ac-sub-text">
-                <p>To trim the currently selected batch, select the <i class="material-icons w3-large">content_cut</i> icon. 
-                  Once selected, two sliders on each end of the timeline will appear. 
-                  Click and drag each slider to the desired start and end point, and click done to save your changes.</p>
-                <img src="images/trim.png" alt="" draggable="false">  
-                <p>*Note that clicking ‘done’ will remove the data you have trimmed. 
-                  However you can always re-upload your data file to recover previous changes you have made.*</p>
-              </article>
-            </div>
-            <div class="ac-sub">
-              <input class="ac-input" id="ac-download" name="ac-download" type="checkbox" />
-              <label class="ac-label" for="ac-download">Downloading data</label>
-              <article class="ac-sub-text">
-                <p>To download your data, click the <i class="material-icons w3-large">download</i> icon. 
-                  Once clicked, the currently selected batch will download automatically as a .csv file. 
-                  This file can be re-uploaded to perform the same graphing as before.</p>
-              </article>
-            </div>
-            <div class="ac-sub">
-              <input class="ac-input" id="ac-recording" name="ac-recording" type="checkbox" />
-              <label class="ac-label" for="ac-recording">Recording</label>
-              <article class="ac-sub-text">
-                <p>To record a graph, click on the <b>‘Record’</b> button in the bottom left corner. 
-                  Once clicked, a timer will appear displaying the amount of time you have recorded. 
-                  To stop recording, click the <b>‘Record’</b> button again and a new tab will appear with your video file. 
-                  Once your file has fully loaded, click the hamburger icon in the bottom right corner to download the file as a .mp4.</p>
-                <p>*Note that only the <b>‘RAW’</b> graph is available for video recording because all other indices will not change as the timeline is moved.*</p>
-                <p>To capture a static image of your graph, click on the <i class="material-icons w3-large">camera_alt</i> button in the bottom left corner. 
-                  Once clicked, a .png file will automatically download to your computer.</p>
-              </article>
-            </div>
-          </article>
+      <div class="content-area">
+        <div class="openSidebarIcon" id="openSidebarIcon">
+          >
         </div>
         
-        <!-- GRAPHS AND INDICES -->
-        <div class="ac">
-          
-          <input class="ac-input" id="ac-1" name="ac-1" type="checkbox" />
-          <label class="ac-label" for="ac-1">Graphs and Indices</label>
-          
-          <article class="ac-text">
-            <div class="ac-sub">
-              <input class="ac-input" id="ac-2" name="ac-2" type="checkbox" />
-              <label class="ac-label" for="ac-2">'RAW'</label>
-              <article class="ac-sub-text">
-                <p>The <b>‘RAW’</b> graph refers to the unfiltered data that are received directly from the STELLA device. 
-                  Data values are recorded as irradiance measurements at the following wavelengths:
-                </p>
-                <p>
-                  <i>Visible</i>: <b>450nm, 500nm, 550nm, 570nm, 600nm, 650nm.</b>
-                </p>
-                <p>
-                  <i>Near Infrared</i>: <b>610nm, 680nm, 730nm, 760nm, 810nm, 860nm.</b>
-                </p>
-                <p>
-                  Toggling <b>‘Visible (filtered)’</b> or <b>‘Infrared (filtered)’</b> on top of the graph will show the current data points filtered through each sensor's calibration curve.
-                </p>
-              </article>
-            </div>
-            
-            <div class="ac-sub">
-              <input class="ac-input" id="ac-3" name="ac-3" type="checkbox" />
-              <label class="ac-label" for="ac-3">'NDVI'</label>
-              <article class="ac-sub-text">
-                <p><b>'NDVI'</b> <b>'Normalized Difference Vegetation Index'</b></p>
-                <p><i>NDVI = (NIR - RED) / (NIR + RED)</i></p>
-                <p>The output range of NDVI is <b>-1</b> to <b>+1</b>.
-                  If the NDVI value is <b>negative</b>, it is probable that your subject is water, barren rock, or an impervious surface. 
-                  If the NDVI value is close to <b>+1</b>, there is a high likelihood that your subject has dense green and photosynthetically active vegetation. 
-                  NDVI values that are close to <b>zero</b> suggest that the subject has little to no vegetation.</p>
-                <p>Since NDVI corresponds to photosynthetic activity, it has broad applications in remote sensing. 
-                  In agricultural studies, NDVI has been used to assess crop biomass and to monitor the fraction of plant cover in specific fields. 
-                  Specifically, models based on NDVI have been developed to predict winter wheat yield at large scales. 
-                  In forestry applications, NDVI measurements can provide important information about forest dynamics and it can be used in 
-                  conjunction with a suite of other biophysical and meteorological variables to model wildfire risk</p>
-              </article>
-            </div>
-            <div class="ac-sub">
-              <input class="ac-input" id="ac-SR" name="ac-SR" type="checkbox" />
-              <label class="ac-label" for="ac-SR">'SR'</label>
-              <article class="ac-sub-text">
-                <p><b>'SR'</b> <b>('Simple Ratio')</b></p>
-                <p><i>SR = R860/R650</i></p>
-                <p>Vegetation indices are commonly used as quick indicators of relative crop condition (e.g., as compared to prior observation).</p>
-              </article>
-            </div>    
-            <div class="ac-sub">
-              <input class="ac-input" id="ac-NIRv" name="ac-NIRv" type="checkbox" />
-              <label class="ac-label" for="ac-NIRv">'NIRv'</label>
-              <article class="ac-sub-text">
-                <p><b>'NIRv'</b><b>('Near-infrared reflectance of vegetation')</b></p>
-                <p><i>NIRv = NDVI * NIR</i></p>
-                <p>*If NIRv is grayed out, you will need to select a <b>calibration batch</b> 
-                  and determine the <b>distance</b> in which the subject was recorded* </p>
-              </article>
-            </div>        
-          </article><!--/ac-text-->
-        </div><!--/ac-->
-
-        <!-- CONTACT US -->
-        <div class="ac">
-          <input class="ac-input" id="ac-about" name="ac-about" type="checkbox" />
-          <label class="ac-label" for="ac-about">About</label>
-          <article class="ac-text">
-            <div class="ac-sub">
-              <input class="ac-input" id="ac-contact" name="ac-contact" type="checkbox" />
-              <label class="ac-label" for="ac-contact">Contact Us</label>
-              <article class="ac-sub-text">
-                <p>For suggestions, questions, and feedback, contact:
-                  <a href="mailto: STELLA@mail.nasa.gov" target="_blank" rel="noopener noreferrer">Stella@mail.nasa.gov</a>
-                </p>
-              </article>
-            </div>
-            <div class="ac-sub">
-              <input class="ac-input" id="ac-specifics" name="ac-specifics" type="checkbox" />
-              <label class="ac-label" for="ac-specifics">Device Specifics</label>
-              <article class="ac-sub-text">
-                <p>For more information about the assembly, technology, device updates, or the STELLA project in general, please visit our NASA webpage at: 
-                  <a href="https://landsat.gsfc.nasa.gov/stella/" target="_blank" rel="noopener noreferrer">https://landsat.gsfc.nasa.gov/stella/</a></p>
-              </article>
-            </div>
-            <div class="ac-sub">
-              <input class="ac-input" id="ac-creators" name="ac-creators" type="checkbox" />
-              <label class="ac-label" for="ac-creators">Creators</label>
-              <article class="ac-sub-text">
-                <p><b>Paul Mirel:</b>
-                  Device creator, designer, and lead engineer</p>
-                <p><b>Petya Campbell:</b> Lead scientist</p>  
-                <p><b>Jesse Barber:</b> Cal/Val scientist</p>
-                <p><b>Michael Taylor:</b> Project coordinator and presenter</p>
-                <p><b>Ross Walter:</b> Dataviewer designer and programmer</p>
-              </article>
-            </div>
-            
-          </article><!--/ac-text-->
-          
-        </div><!--/ac-->
-
-        <!-- FAQ -->
-        <!-- <div class="ac">
-          <input class="ac-input" id="ac-7" name="ac-7" type="checkbox" />
-          <label class="ac-label" for="ac-7">FAQ</label>
-          <article class="ac-text">
-            <div class="ac-sub">
-              <input class="ac-input" id="ac-8" name="ac-8" type="checkbox" />
-              <label class="ac-label" for="ac-8">How do I download my data?</label>
-              <article class="ac-sub-text">
-                <p>Content, Content, Content</p>
-              </article>
-            </div>
-            <div class="ac-sub">
-              <input class="ac-input" id="ac-9" name="ac-9" type="checkbox" />
-              <label class="ac-label" for="ac-9">'Upload File'</label>
-              <article class="ac-sub-text">
-                <p>Content, Content, Content</p>
-              </article>
-            </div>
-          </article>
-        </div> -->
-      </div>
-  
-    </div>
-
-    <!-- GRAPHS AND GRAPH CONTROLLERS-->
-    <div class="chartCard" id="chartCard">
-      <div class="chartBox" id="mainGraph">
-        <canvas id="graph">
-          <div id="canvasBG"></div>
-        </canvas>
-        <div class="boxContainer">
-          <div class="timelineContainer active" id="timelineContainer">
-            <input
-              type="range"
-              min="1"
-              max="10"
-              value="5"
-              class="slider"
-              id="myRange"
-            />
-            <div class="track">
-              <div class="track-inner"></div>
-            </div>
-            <div class="box center pause" id="playPauseBtn"></div>
-            <!-- <div class="frameNumber" id="timeStamp" style ="left: 0%">1/100</div> -->
+        <!-- LANDING AND ALL ITS ELEMENTS -->
+        <div class="landing active" id="landing">
+          <h1 id="title">stella_dataviewer</h1>
+          <img src="images/stellaSpin.gif" class="introGif" id="spin" />
+          <div class="landingNav">
+            <div id="about">about</div>
+            <label class="custom-file-upload">
+              <input
+                type="file"
+                id="upload_file"
+                accept=".txt, .csv"
+                onclick="this.value=null;"
+              />
+              upload_file
+            </label>
+            <div id="plugInDevice">connect_device</div>
           </div>
-          <div class="arrow right active" id="arrowRight"></div>
-          <div class="arrow left active" id="arrowLeft"></div>
-          <!-- DOUBLE SIDED SLIDER -->
-          <div slider id="slider-distance">
-            <div>
-              <div inverse-left></div>
-              <div inverse-right></div>
-              <div range style="left: 0%; right: 0%"></div>
-              <span thumb id="editRange_thumb_start" style="left: 0%"></span>
-              <span thumb id="editRange_thumb_end" style="left: 100%"></span>
-              <div sign style="left: 0%">
-                <span id="value">1</span>
-              </div>
-              <div sign style="left: 100%">
-                <span id="value">4</span>
-              </div>
-            </div>
-            <input
-              type="range"
-              id="editRange_start"
-              tabindex="0"
-              value="1"
-              max="13"
-              min="1"
-              step="1"
-            />
-            <input
-              type="range"
-              id="editRange_end"
-              tabindex="0"
-              value="13"
-              max="13"
-              min="1"
-              step="1"
-            />
-            
-            <div class="modeContainer" id ="trimBtns_container">
-              <div class="trimButton" id="done_trim">
-                <b>DONE</b>
-              </div>
-            </div>
-          </div>
-
-          <div class="frameNumber" id="frameNumber">1/100</div>
-        </div>
-
-        <!-- BOTTOM RIGHT SIDEBAR FOR MULTIPLE BUTTONS -->
-        <div class="editContainer">
-          <div
-            class="editIcon active"
-            id="downloadBtn"
-            title="Download batch data"
-          >
-            <i class="material-icons w3-large"> download </i>
-          </div>
-          <div class="editIcon active" id="trimIcon" title="Edit Current Batch">
-            <i class="material-icons w3-xlarge"> content_cut </i>
-          </div>
-          <div
-            class="editIcon active"
-            id="unitsToggle"
-            title="Toggle unit labels"
-            style="z-index: 99"
-          >
-            <i class="material-icons w3-large"> equalizer </i>
-          </div>
-          <div
-            class="editIcon active"
-            id="visibility_raw"
-            title="Toggle data labels"
-            style="z-index: 99"
-          >
-            <i class="material-icons w3-large" id="visibleIcon_raw">
-              visibility
-            </i>
-          </div>
-          <!-- <input type="number" id="edit_start_input" name="quantity" min="1" max="5" value = "1"> -->
-        </div>
-        <!-- BOTTOM LEFT SIDEBAR FOR RECORDING GRAPH-->
-        <div class="editContainer leftSided">
-          <div class="recordContainer" id="recordContainer">
-            <div class="record active" id="recordButton">
-            </div>
-            <div class="recordingText" id="recordingText"><b>Record</b></div>
-          </div>
-          <div class="editIcon active" id="snapshot" title="Take a screenshot of the current graph">
-            <i class="material-icons w3-xlarge"> camera_alt </i>
-          </div>
-        </div>
-
-        <div class="modeContainer">
-          <div
-            class="dataMode selected"
-            id="rawData"
-            title="Graph of RAW data from the device"
-          >
-            <b>Raw Data</b>
-          </div>
-
-          <div
-            class="dataMode"
-            id="visible_filter"
-            title="Visible Calibration Curve"
-          >
-            <b>Visible (filtered)</b>
-          </div>
-
-          <div
-            class="dataMode"
-            id="infrared_filter"
-            title="Infrared Calibration Curve"
-          >
-            <b>Infrared (filtered)</b>
-          </div>
-
-          <!-- <div class="record" id="recordButton">
-            <div class="recordingText" id="recordingText"><b>Record</b></div>
+          <!-- <div class="disclaimer">
+            <b>*works best on chrome*</b>
           </div> -->
         </div>
-      </div>
-      <div class="chartBox" id="calcGraph">
-        <canvas id="graph2"> </canvas>
-        <div class="editContainer">
-          <div
-            class="editIcon active"
-            id="visibility_ndvi"
-            title="Toggle data labels"
-          >
-            <i class="material-icons w3-large" id="visibleIcon_ndvi">
-              visibility
-            </i>
+    
+        <!-- USED TO DOWNLOAD SCREENSHOTS -->
+        <a id="link"></a>
+    
+        <!-- HELP SCREEN -->
+        <div class="helpContainer" id="helpContainer">
+          <div class="helpHeader" id="helpHeader">
+            <div class="close-icon" id="help_closeBtn">X</div>
+            <h1>Help</h1>
+            <!-- <h3>Because we can.</h3> -->
+          </div>
+          <div class="helpScroll">
+            
+            <!-- HOW TO USE THIS APP -->
+            <div class="ac">
+              <input class="ac-input" id="ac-4" name="ac-4" type="checkbox" />
+              <label class="ac-label" for="ac-4">How to use</label>
+              <article class="ac-text">
+                <div class="ac-sub">
+                  <input class="ac-input" id="ac-graphs" name="ac-graphs" type="checkbox" />
+                  <label class="ac-label" for="ac-graphs">'Graphs'</label>
+                  <article class="ac-sub-text">
+                    <p>The <b>‘Graphs’</b> section of the sidebar is used to select which graphs are visible on screen. 
+                      Simply click on an index to have it toggle on or off. When an index is selected, it will highlight in black. 
+                      A total of four graphs are shown on the screen at one time. </p>
+                    <img src="images/graphs.png" alt="" draggable="false">
+                    <p>*Note that if an index is grayed out, you will need to select a calibration batch.*</p>
+                  </article>
+                </div>
+                <div class="ac-sub">
+                  <input class="ac-input" id="ac-batch" name="ac-batch" type="checkbox" />
+                  <label class="ac-label" for="ac-batch">'#Batch'</label>
+                  <article class="ac-sub-text">
+                    <p>The <b>‘#Batch’</b> section of the sidebar is used to select which batch is currently visible. 
+                      Simply click on a batch number to have it displayed on the graph. 
+                      When a batch is selected, it will highlight in black and any other indices you have selected will be updated.</p>
+                    <img src="images/batch.png" alt="" draggable="false">  
+                  </article>
+                </div>
+                <div class="ac-sub">
+                  <input class="ac-input" id="ac-extraInfo" name="ac-extraInfo" type="checkbox" />
+                  <label class="ac-label" for="ac-extraInfo">'Extra Info'</label>
+                  <article class="ac-sub-text">
+                    <p>The <b>‘extra info’</b> section of the sidebar is used to contain data from the selected batch that cannot be represented in a graph. 
+                      This includes the date, time, air temperature, surface temperature, relative humidity, battery voltage, and UID number.</p>
+                    <img src="images/extra_info.png" alt="" draggable="false">  
+                  </article>
+                </div>
+                <div class="ac-sub">
+                  <input class="ac-input" id="ac-distance_calibration" name="ac-distance_calibration" type="checkbox" />
+                  <label class="ac-label" for="ac-distance_calibration">'Distance / Calibration Batch'</label>
+                  <article class="ac-sub-text">
+                    <p>The <b>‘distance’</b> section of the sidebar is used to determine the distance at which the currently selected batch was taken from its subject in cm. 
+                      This value is important in accurately calculating reflectance.</p>
+                    <p>The <b>‘calibration batch’</b> section of the sidebar is used to select which batch to compare against for various indices. 
+                      Once selected, the values of this batch will be averaged over time and used to calculate the reflectance for the currently selected batch.</p>  
+                    <img src="images/calibration_batch.png" alt="" draggable="false">  
+                  </article>
+                </div>
+                <div class="ac-sub">
+                  <input class="ac-input" id="ac-trim" name="ac-trim" type="checkbox" />
+                  <label class="ac-label" for="ac-trim">Editing Data</label>
+                  <article class="ac-sub-text">
+                    <p>To trim the currently selected batch, select the <i class="material-icons w3-large">content_cut</i> icon. 
+                      Once selected, two sliders on each end of the timeline will appear. 
+                      Click and drag each slider to the desired start and end point, and click done to save your changes.</p>
+                    <img src="images/trim.png" alt="" draggable="false">  
+                    <p>*Note that clicking ‘done’ will remove the data you have trimmed. 
+                      However you can always re-upload your data file to recover previous changes you have made.*</p>
+                  </article>
+                </div>
+                <div class="ac-sub">
+                  <input class="ac-input" id="ac-download" name="ac-download" type="checkbox" />
+                  <label class="ac-label" for="ac-download">Downloading data</label>
+                  <article class="ac-sub-text">
+                    <p>To download your data, click the <i class="material-icons w3-large">download</i> icon. 
+                      Once clicked, the currently selected batch will download automatically as a .csv file. 
+                      This file can be re-uploaded to perform the same graphing as before.</p>
+                  </article>
+                </div>
+                <div class="ac-sub">
+                  <input class="ac-input" id="ac-recording" name="ac-recording" type="checkbox" />
+                  <label class="ac-label" for="ac-recording">Recording</label>
+                  <article class="ac-sub-text">
+                    <p>To record a graph, click on the <b>‘Record’</b> button in the bottom left corner. 
+                      Once clicked, a timer will appear displaying the amount of time you have recorded. 
+                      To stop recording, click the <b>‘Record’</b> button again and a new tab will appear with your video file. 
+                      Once your file has fully loaded, click the hamburger icon in the bottom right corner to download the file as a .mp4.</p>
+                    <p>*Note that only the <b>‘RAW’</b> graph is available for video recording because all other indices will not change as the timeline is moved.*</p>
+                    <p>To capture a static image of your graph, click on the <i class="material-icons w3-large">camera_alt</i> button in the bottom left corner. 
+                      Once clicked, a .png file will automatically download to your computer.</p>
+                  </article>
+                </div>
+              </article>
+            </div>
+            
+            <!-- GRAPHS AND INDICES -->
+            <div class="ac">
+              
+              <input class="ac-input" id="ac-1" name="ac-1" type="checkbox" />
+              <label class="ac-label" for="ac-1">Graphs and Indices</label>
+              
+              <article class="ac-text">
+                <div class="ac-sub">
+                  <input class="ac-input" id="ac-2" name="ac-2" type="checkbox" />
+                  <label class="ac-label" for="ac-2">'RAW'</label>
+                  <article class="ac-sub-text">
+                    <p>The <b>‘RAW’</b> graph refers to the unfiltered data that are received directly from the STELLA device. 
+                      Data values are recorded as irradiance measurements at the following wavelengths:
+                    </p>
+                    <p>
+                      <i>Visible</i>: <b>450nm, 500nm, 550nm, 570nm, 600nm, 650nm.</b>
+                    </p>
+                    <p>
+                      <i>Near Infrared</i>: <b>610nm, 680nm, 730nm, 760nm, 810nm, 860nm.</b>
+                    </p>
+                    <p>
+                      Toggling <b>‘Visible (filtered)’</b> or <b>‘Infrared (filtered)’</b> on top of the graph will show the current data points filtered through each sensor's calibration curve.
+                    </p>
+                  </article>
+                </div>
+                
+                <div class="ac-sub">
+                  <input class="ac-input" id="ac-3" name="ac-3" type="checkbox" />
+                  <label class="ac-label" for="ac-3">'NDVI'</label>
+                  <article class="ac-sub-text">
+                    <p><b>'NDVI'</b> <b>'Normalized Difference Vegetation Index'</b></p>
+                    <p><i>NDVI = (NIR - RED) / (NIR + RED)</i></p>
+                    <p>The output range of NDVI is <b>-1</b> to <b>+1</b>.
+                      If the NDVI value is <b>negative</b>, it is probable that your subject is water, barren rock, or an impervious surface. 
+                      If the NDVI value is close to <b>+1</b>, there is a high likelihood that your subject has dense green and photosynthetically active vegetation. 
+                      NDVI values that are close to <b>zero</b> suggest that the subject has little to no vegetation.</p>
+                    <p>Since NDVI corresponds to photosynthetic activity, it has broad applications in remote sensing. 
+                      In agricultural studies, NDVI has been used to assess crop biomass and to monitor the fraction of plant cover in specific fields. 
+                      Specifically, models based on NDVI have been developed to predict winter wheat yield at large scales. 
+                      In forestry applications, NDVI measurements can provide important information about forest dynamics and it can be used in 
+                      conjunction with a suite of other biophysical and meteorological variables to model wildfire risk</p>
+                  </article>
+                </div>
+                <div class="ac-sub">
+                  <input class="ac-input" id="ac-SR" name="ac-SR" type="checkbox" />
+                  <label class="ac-label" for="ac-SR">'SR'</label>
+                  <article class="ac-sub-text">
+                    <p><b>'SR'</b> <b>('Simple Ratio')</b></p>
+                    <p><i>SR = R860/R650</i></p>
+                    <p>Vegetation indices are commonly used as quick indicators of relative crop condition (e.g., as compared to prior observation).</p>
+                  </article>
+                </div>    
+                <div class="ac-sub">
+                  <input class="ac-input" id="ac-NIRv" name="ac-NIRv" type="checkbox" />
+                  <label class="ac-label" for="ac-NIRv">'NIRv'</label>
+                  <article class="ac-sub-text">
+                    <p><b>'NIRv'</b><b>('Near-infrared reflectance of vegetation')</b></p>
+                    <p><i>NIRv = NDVI * NIR</i></p>
+                    <p>*If NIRv is grayed out, you will need to select a <b>calibration batch</b> 
+                      and determine the <b>distance</b> in which the subject was recorded* </p>
+                  </article>
+                </div>        
+              </article><!--/ac-text-->
+            </div><!--/ac-->
+    
+            <!-- CONTACT US -->
+            <div class="ac">
+              <input class="ac-input" id="ac-about" name="ac-about" type="checkbox" />
+              <label class="ac-label" for="ac-about">About</label>
+              <article class="ac-text">
+                <div class="ac-sub">
+                  <input class="ac-input" id="ac-contact" name="ac-contact" type="checkbox" />
+                  <label class="ac-label" for="ac-contact">Contact Us</label>
+                  <article class="ac-sub-text">
+                    <p>For suggestions, questions, and feedback, contact:
+                      <a href="mailto: STELLA@mail.nasa.gov" target="_blank" rel="noopener noreferrer">Stella@mail.nasa.gov</a>
+                    </p>
+                  </article>
+                </div>
+                <div class="ac-sub">
+                  <input class="ac-input" id="ac-specifics" name="ac-specifics" type="checkbox" />
+                  <label class="ac-label" for="ac-specifics">Device Specifics</label>
+                  <article class="ac-sub-text">
+                    <p>For more information about the assembly, technology, device updates, or the STELLA project in general, please visit our NASA webpage at: 
+                      <a href="https://landsat.gsfc.nasa.gov/stella/" target="_blank" rel="noopener noreferrer">https://landsat.gsfc.nasa.gov/stella/</a></p>
+                  </article>
+                </div>
+                <div class="ac-sub">
+                  <input class="ac-input" id="ac-creators" name="ac-creators" type="checkbox" />
+                  <label class="ac-label" for="ac-creators">Creators</label>
+                  <article class="ac-sub-text">
+                    <p><b>Paul Mirel:</b>
+                      Device creator, designer, and lead engineer</p>
+                    <p><b>Petya Campbell:</b> Lead scientist</p>  
+                    <p><b>Jesse Barber:</b> Cal/Val scientist</p>
+                    <p><b>Michael Taylor:</b> Project coordinator and presenter</p>
+                    <p><b>Ross Walter:</b> Dataviewer designer and programmer</p>
+                  </article>
+                </div>
+                
+              </article><!--/ac-text-->
+              
+            </div><!--/ac-->
+    
+            <!-- FAQ -->
+            <!-- <div class="ac">
+              <input class="ac-input" id="ac-7" name="ac-7" type="checkbox" />
+              <label class="ac-label" for="ac-7">FAQ</label>
+              <article class="ac-text">
+                <div class="ac-sub">
+                  <input class="ac-input" id="ac-8" name="ac-8" type="checkbox" />
+                  <label class="ac-label" for="ac-8">How do I download my data?</label>
+                  <article class="ac-sub-text">
+                    <p>Content, Content, Content</p>
+                  </article>
+                </div>
+                <div class="ac-sub">
+                  <input class="ac-input" id="ac-9" name="ac-9" type="checkbox" />
+                  <label class="ac-label" for="ac-9">'Upload File'</label>
+                  <article class="ac-sub-text">
+                    <p>Content, Content, Content</p>
+                  </article>
+                </div>
+              </article>
+            </div> -->
+          </div>
+      
+        </div>
+    
+        <!-- GRAPHS AND GRAPH CONTROLLERS-->
+        <div class="chartCard" id="chartCard">
+          <div class="chartBox" id="mainGraph">
+            <canvas id="graph">
+              <div id="canvasBG"></div>
+            </canvas>
+            <div class="boxContainer">
+              <div class="timelineContainer active" id="timelineContainer">
+                <input
+                  type="range"
+                  min="1"
+                  max="10"
+                  value="5"
+                  class="slider"
+                  id="myRange"
+                />
+                <div class="track">
+                  <div class="track-inner"></div>
+                </div>
+                <div class="box center pause" id="playPauseBtn"></div>
+                <!-- <div class="frameNumber" id="timeStamp" style ="left: 0%">1/100</div> -->
+              </div>
+              <div class="arrow right active" id="arrowRight"></div>
+              <div class="arrow left active" id="arrowLeft"></div>
+              <!-- DOUBLE SIDED SLIDER -->
+              <div slider id="slider-distance">
+                <div>
+                  <div inverse-left></div>
+                  <div inverse-right></div>
+                  <div range style="left: 0%; right: 0%"></div>
+                  <span thumb id="editRange_thumb_start" style="left: 0%"></span>
+                  <span thumb id="editRange_thumb_end" style="left: 100%"></span>
+                  <div sign style="left: 0%">
+                    <span id="value">1</span>
+                  </div>
+                  <div sign style="left: 100%">
+                    <span id="value">4</span>
+                  </div>
+                </div>
+                <input
+                  type="range"
+                  id="editRange_start"
+                  tabindex="0"
+                  value="1"
+                  max="13"
+                  min="1"
+                  step="1"
+                />
+                <input
+                  type="range"
+                  id="editRange_end"
+                  tabindex="0"
+                  value="13"
+                  max="13"
+                  min="1"
+                  step="1"
+                />           
+                <div class="modeContainer" id ="trimBtns_container">
+                  <div class="trimButton" id="done_trim">
+                    <b>DONE</b>
+                  </div>
+                </div>
+              </div>
+    
+              <div class="frameNumber" id="frameNumber">1/100</div>
+            </div>
+    
+            <!-- BOTTOM RIGHT SIDEBAR FOR MULTIPLE BUTTONS -->
+            <div class="editContainer">
+              <div
+                class="editIcon active"
+                id="downloadBtn"
+                title="Download batch data"
+              >
+                <i class="material-icons w3-large"> download </i>
+              </div>
+              <div class="editIcon active" id="trimIcon" title="Edit Current Batch">
+                <i class="material-icons w3-xlarge"> content_cut </i>
+              </div>
+              <div
+                class="editIcon active"
+                id="unitsToggle"
+                title="Toggle unit labels"
+                style="z-index: 99"
+              >
+                <i class="material-icons w3-large"> equalizer </i>
+              </div>
+              <div
+                class="editIcon active"
+                id="visibility_raw"
+                title="Toggle data labels"
+                style="z-index: 99"
+              >
+                <i class="material-icons w3-large" id="visibleIcon_raw">
+                  visibility
+                </i>
+              </div>
+              <!-- <input type="number" id="edit_start_input" name="quantity" min="1" max="5" value = "1"> -->
+            </div>
+            <!-- BOTTOM LEFT SIDEBAR FOR RECORDING GRAPH-->
+            <div class="editContainer leftSided">
+              <div class="recordContainer" id="recordContainer">
+                <div class="record active" id="recordButton">
+                </div>
+                <div class="recordingText" id="recordingText"><b>Record</b></div>
+              </div>
+              <div class="editIcon active" id="snapshot" title="Take a screenshot of the current graph">
+                <i class="material-icons w3-xlarge"> camera_alt </i>
+              </div>
+            </div>
+    
+            <div class="modeContainer">
+              <div
+                class="dataMode selected"
+                id="rawData"
+                title="Graph of RAW data from the device"
+              >
+                <b>Raw Data</b>
+              </div>
+    
+              <div
+                class="dataMode"
+                id="visible_filter"
+                title="Visible Calibration Curve"
+              >
+                <b>Visible (filtered)</b>
+              </div>
+    
+              <div
+                class="dataMode"
+                id="infrared_filter"
+                title="Infrared Calibration Curve"
+              >
+                <b>Infrared (filtered)</b>
+              </div>
+    
+              <!-- <div class="record" id="recordButton">
+                <div class="recordingText" id="recordingText"><b>Record</b></div>
+              </div> -->
+            </div>
+          </div>
+          <div class="chartBox" id="calcGraph">
+            <canvas id="graph2"> </canvas>
+            <div class="editContainer">
+              <div
+                class="editIcon active"
+                id="visibility_ndvi"
+                title="Toggle data labels"
+              >
+                <i class="material-icons w3-large" id="visibleIcon_ndvi">
+                  visibility
+                </i>
+              </div>
+            </div>
+    
+            <!-- BOTTOM LEFT SIDEBAR FOR RECORDING GRAPH-->
+            <div class="editContainer leftSided">
+              <div class="editIcon active" id="snapshot_2" title="Take a screenshot of the current graph">
+                <i class="material-icons w3-xlarge"> camera_alt </i>
+              </div>
+            </div>
+          </div>
+          <div class="chartBox" id="SR_Graph">
+            <canvas id="graph_SR"> </canvas>
+            <div class="editContainer">
+              <div
+                class="editIcon active"
+                id="visibility_sr"
+                title="Toggle data labels"
+              >
+                <i class="material-icons w3-large" id="visibilityIcon_sr">
+                  visibility
+                </i>
+              </div>
+            </div>
+    
+            <!-- SR RATIO PICKER -->
+            <div class="modeContainer active">
+              <select id="SR_Selector_1">
+                <option>450nm</option>
+                <option>500nm</option>
+                <option>550nm</option>
+                <option>570nm</option>
+                <option>600nm</option>
+                <option>650nm</option>
+                <option>610nm</option>
+                <option>680nm</option>
+                <option>730nm</option>
+                <option>760nm</option>
+                <option>810nm</option>
+                <option selected>860nm</option>
+              </select>
+              <div>&nbsp;/&nbsp;</div>
+              <select id="SR_Selector_2">
+                <option>450nm</option>
+                <option>500nm</option>
+                <option>550nm</option>
+                <option>570nm</option>
+                <option>600nm</option>
+                <option selected>650nm</option>
+                <option>610nm</option>
+                <option>680nm</option>
+                <option>730nm</option>
+                <option>760nm</option>
+                <option>810nm</option>
+                <option>860nm</option>
+              </select>
+            </div>
+    
+            <!-- BOTTOM LEFT SIDEBAR FOR RECORDING GRAPH-->
+            <div class="editContainer leftSided">
+              <div class="editIcon active" id="snapshot_4" title="Take a screenshot of the current graph">
+                <i class="material-icons w3-xlarge"> camera_alt </i>
+              </div>
+            </div>
+          </div>
+          <div class="chartBox" id="DSWI_Graph">
+            <canvas id="graph_DSWI"> </canvas>
+            <div class="editContainer">
+              <div
+                class="editIcon active"
+                id="visibility_dswi"
+                title="Toggle data labels"
+              >
+                <i class="material-icons w3-large" id="visibilityIcon_dswi">
+                  visibility
+                </i>
+              </div>
+            </div>
+    
+            <!-- BOTTOM LEFT SIDEBAR FOR RECORDING GRAPH-->
+            <div class="editContainer leftSided">
+              <div class="editIcon active" id="snapshot_5" title="Take a screenshot of the current graph">
+                <i class="material-icons w3-xlarge"> camera_alt </i>
+              </div>
+            </div>
+          </div>
+          <div class="chartBox" id="NIRv_Graph">
+            <canvas id="graph_NIRv"> </canvas>
+            <div class="editContainer">
+              <div
+                class="editIcon active"
+                id="visibility_nirv"
+                title="Toggle data labels"
+              >
+                <i class="material-icons w3-large" id="visibleIcon_nirv">
+                  visibility
+                </i>
+              </div>
+            </div>
+    
+            <!-- BOTTOM LEFT SIDEBAR FOR RECORDING GRAPH-->
+            <div class="editContainer leftSided">
+              <div class="editIcon active" id="snapshot_3" title="Take a screenshot of the current graph">
+                <i class="material-icons w3-xlarge"> camera_alt </i>
+              </div>
+            </div>
+          </div>
+          <div class="chartBox" id="reflectance_Graph">
+            <canvas id="graph_reflectance"> </canvas>
+            <div class="editContainer">
+              <div
+                class="editIcon active"
+                id="reflectance_nirv"
+                title="Toggle data labels"
+              >
+                <i class="material-icons w3-large" id="visibleIcon_nirv">
+                  visibility
+                </i>
+              </div>
+            </div>
+    
+            <!-- BOTTOM LEFT SIDEBAR FOR RECORDING GRAPH-->
+            <div class="editContainer leftSided">
+              <div class="editIcon active" id="snapshot_4" title="Take a screenshot of the current graph">
+                <i class="material-icons w3-xlarge"> camera_alt </i>
+              </div>
+            </div>
           </div>
         </div>
-
-        <!-- BOTTOM LEFT SIDEBAR FOR RECORDING GRAPH-->
-        <div class="editContainer leftSided">
-          <div class="editIcon active" id="snapshot_2" title="Take a screenshot of the current graph">
-            <i class="material-icons w3-xlarge"> camera_alt </i>
+    
+        <!-- MENU BUTTON -->
+    
+        <div class="editContainer disable" id="menuContainer" style="top: 1%; right: 1%;">
+          <div class="editIcon" id="help" 
+          style=
+          "height: 2vw;
+          width: 2vw;">
+            <!-- <b>Menu</b> -->
+            <i class="material-icons w3-xlarge" style="font-size: 2vw;"> help_outline </i>
+          </div>
+          <div class="editIcon" id="menu" 
+          style=
+          "height: 2vw;
+          width: 2vw;">
+            <!-- <b>Menu</b> -->
+            <i class="material-icons w3-xlarge" style="font-size: 2vw;"> home </i>
           </div>
         </div>
-      </div>
-      <div class="chartBox" id="SR_Graph">
-        <canvas id="graph_SR"> </canvas>
-        <div class="editContainer">
-          <div
-            class="editIcon active"
-            id="visibility_sr"
-            title="Toggle data labels"
-          >
-            <i class="material-icons w3-large" id="visibilityIcon_sr">
-              visibility
-            </i>
-          </div>
+    
+        <!-- SCREEN RECORDING -->
+        <!-- <div class="record" id="recordButton">
+          <div class="recordingText" id="recordingText">Record</div>
+        </div> -->
+    
+        <h2 class="" id="descriptionText" style="opacity: 0%">
+          FILTERED VISIBLE LIGHT
+        </h2>
+    
+        <!-- DATA_STREAM READ BUTTON -->
+        <div class="newFile" id="read" style="bottom: -75%; right: 0%">
+          <b>read</b>
         </div>
-
-        <!-- SR RATIO PICKER -->
-        <div class="modeContainer active">
-          <select id="SR_Selector_1">
-            <option>450nm</option>
-            <option>500nm</option>
-            <option>550nm</option>
-            <option>570nm</option>
-            <option>600nm</option>
-            <option>650nm</option>
-            <option>610nm</option>
-            <option>680nm</option>
-            <option>730nm</option>
-            <option>760nm</option>
-            <option>810nm</option>
-            <option selected>860nm</option>
-          </select>
-          <div>&nbsp;/&nbsp;</div>
-          <select id="SR_Selector_2">
-            <option>450nm</option>
-            <option>500nm</option>
-            <option>550nm</option>
-            <option>570nm</option>
-            <option>600nm</option>
-            <option selected>650nm</option>
-            <option>610nm</option>
-            <option>680nm</option>
-            <option>730nm</option>
-            <option>760nm</option>
-            <option>810nm</option>
-            <option>860nm</option>
-          </select>
-        </div>
-
-        <!-- BOTTOM LEFT SIDEBAR FOR RECORDING GRAPH-->
-        <div class="editContainer leftSided">
-          <div class="editIcon active" id="snapshot_4" title="Take a screenshot of the current graph">
-            <i class="material-icons w3-xlarge"> camera_alt </i>
-          </div>
-        </div>
-      </div>
-      <div class="chartBox" id="DSWI_Graph">
-        <canvas id="graph_DSWI"> </canvas>
-        <div class="editContainer">
-          <div
-            class="editIcon active"
-            id="visibility_dswi"
-            title="Toggle data labels"
-          >
-            <i class="material-icons w3-large" id="visibilityIcon_dswi">
-              visibility
-            </i>
-          </div>
-        </div>
-
-        <!-- BOTTOM LEFT SIDEBAR FOR RECORDING GRAPH-->
-        <div class="editContainer leftSided">
-          <div class="editIcon active" id="snapshot_5" title="Take a screenshot of the current graph">
-            <i class="material-icons w3-xlarge"> camera_alt </i>
-          </div>
-        </div>
-      </div>
-      <div class="chartBox" id="NIRv_Graph">
-        <canvas id="graph_NIRv"> </canvas>
-        <div class="editContainer">
-          <div
-            class="editIcon active"
-            id="visibility_nirv"
-            title="Toggle data labels"
-          >
-            <i class="material-icons w3-large" id="visibleIcon_nirv">
-              visibility
-            </i>
-          </div>
-        </div>
-
-        <!-- BOTTOM LEFT SIDEBAR FOR RECORDING GRAPH-->
-        <div class="editContainer leftSided">
-          <div class="editIcon active" id="snapshot_3" title="Take a screenshot of the current graph">
-            <i class="material-icons w3-xlarge"> camera_alt </i>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- MENU BUTTON -->
-
-    <div class="editContainer disable" id="menuContainer" style="top: 1%; right: 1%;">
-      <div class="editIcon" id="help" 
-      style=
-      "height: 2vw;
-      width: 2vw;">
-        <!-- <b>Menu</b> -->
-        <i class="material-icons w3-xlarge" style="font-size: 2vw;"> help_outline </i>
-      </div>
-      <div class="editIcon" id="menu" 
-      style=
-      "height: 2vw;
-      width: 2vw;">
-        <!-- <b>Menu</b> -->
-        <i class="material-icons w3-xlarge" style="font-size: 2vw;"> home </i>
-      </div>
-    </div>
-
-    <!-- SCREEN RECORDING -->
-    <!-- <div class="record" id="recordButton">
-      <div class="recordingText" id="recordingText">Record</div>
-    </div> -->
-
-    <h2 class="" id="descriptionText" style="opacity: 0%">
-      FILTERED VISIBLE LIGHT
-    </h2>
-
-    <!-- DATA_STREAM READ BUTTON -->
-    <div class="newFile" id="read" style="bottom: -75%; right: 0%">
-      <b>read</b>
-    </div>
-
-    <!-- LIVE DUPLICATE SCREEN-->
-    <div
-      class="chartCard"
-      id="chartCardLive"
-      style="grid-template-columns: minmax(200px, 1fr) minmax(200px, 1fr)"
-    >
-      <div class="chartBox" id="liveGraph">
-        <canvas id="graph3"> </canvas>
-        <div class="editContainer">
-          <div
-            class="editIcon active"
-            id="units_live_toggle"
-            title="Toggle unit labels"
-            style="z-index: 99"
-          >
-            <i class="material-icons w3-large"> equalizer </i>
-          </div>
-          <div
-            class="editIcon active"
-            id="visible_raw_live"
-            title="Toggle data labels"
-            style="z-index: 99"
-          >
-            <i class="material-icons w3-large" id="visibleIcon_raw_live">
-              visibility
-            </i>
-          </div>
-          <!-- <input type="number" id="edit_start_input" name="quantity" min="1" max="5" value = "1"> -->
-        </div>
-      </div>
-      <div class="duplicateScreen" id="duplicateScreen">
-        <div id="batchNmb_label" class="batchNmb">0.9</div>
-        <div id="recording_label" class="recording pause"></div>
-
-        <div id="UID_label">UID: 8535</div>
-        <div id="date_label">2020-12-07</div>
-        <div id="timestamp_label">13:35:19Z</div>
-        <div id="surfaceTemp_label">Surface: 21.0C</div>
-        <div>nm: uW/cm^2</div>
-        <div id="airTemp_label">Air: 20.4C</div>
-        <div id="v450_label">V450: 8.9</div>
-        <div id="610_label">610: 1.4</div>
-        <div id="b500_label">B500: 11.8</div>
-        <div id="680_label">680: 1.1</div>
-        <div id="g550_label">G550: 10.2</div>
-        <div id="730_label">730: 1.1</div>
-        <div id="y570_label">Y570: 10.5</div>
-        <div id="760_label">760: 1.1</div>
-        <div id="o600_label">O600: 10.5</div>
-        <div id="810_label">810: 1.0</div>
-        <div id="r650_label">R650: 11.1</div>
-        <div id="860_label">860: 1.3</div>
-      </div>
-    </div>
-
-    <!-- CONTROL SIDEBAR -->
-    <div class="controlSidebar" id="controlSidebar">
-      <div class="controlSidebarheader" id="controlSidebarheader"></div>
-      <h1>graphs</h1>
-      <h1>#batch</h1>
-      <h1 id="dateHeader">2022/12/05</h1>
-      <h1 style="font-size: 100%">distance(cm):</h1>
-      <div class="batchGrid" id="graphs">
-        <div id="graphs_raw" class="active selected" title="RAW data from the device">
-          RAW
-        </div>
+    
+        <!-- LIVE DUPLICATE SCREEN-->
         <div
-          id="graphs_ndvi"
-          class=""
-          title="An indicator of density and health in vegetation"
+          class="chartCard"
+          id="chartCardLive"
+          style="grid-template-columns: minmax(200px, 1fr) minmax(200px, 1fr)"
         >
-          NDVI
+          <div class="chartBox" id="liveGraph">
+            <canvas id="graph3"> </canvas>
+            <div class="editContainer">
+              <div
+                class="editIcon active"
+                id="units_live_toggle"
+                title="Toggle unit labels"
+                style="z-index: 99"
+              >
+                <i class="material-icons w3-large"> equalizer </i>
+              </div>
+              <div
+                class="editIcon active"
+                id="visible_raw_live"
+                title="Toggle data labels"
+                style="z-index: 99"
+              >
+                <i class="material-icons w3-large" id="visibleIcon_raw_live">
+                  visibility
+                </i>
+              </div>
+              <!-- <input type="number" id="edit_start_input" name="quantity" min="1" max="5" value = "1"> -->
+            </div>
+          </div>
+          <div class="duplicateScreen" id="duplicateScreen">
+            <div id="batchNmb_label" class="batchNmb">0.9</div>
+            <div id="recording_label" class="recording pause"></div>
+    
+            <div id="UID_label">UID: 8535</div>
+            <div id="date_label">2020-12-07</div>
+            <div id="timestamp_label">13:35:19Z</div>
+            <div id="surfaceTemp_label">Surface: 21.0C</div>
+            <div>nm: uW/cm^2</div>
+            <div id="airTemp_label">Air: 20.4C</div>
+            <div id="v450_label">V450: 8.9</div>
+            <div id="610_label">610: 1.4</div>
+            <div id="b500_label">B500: 11.8</div>
+            <div id="680_label">680: 1.1</div>
+            <div id="g550_label">G550: 10.2</div>
+            <div id="730_label">730: 1.1</div>
+            <div id="y570_label">Y570: 10.5</div>
+            <div id="760_label">760: 1.1</div>
+            <div id="o600_label">O600: 10.5</div>
+            <div id="810_label">810: 1.0</div>
+            <div id="r650_label">R650: 11.1</div>
+            <div id="860_label">860: 1.3</div>
+          </div>
         </div>
-        <div id="graphs_SR" class="">
-          SR
-        </div>
-        <div id="graphs_DSWI" class="">
-          DSWI 4
-        </div>
-        <div id="graphs_nirv" class="">
-          NIRv
-        </div>
+    
+        <!-- CONTROL SIDEBAR -->
+        <!-- <div class="controlSidebar" id="controlSidebar">
+          <div class="controlSidebarheader" id="controlSidebarheader"></div>
+          <h1>graphs</h1>
+          <h1>#batch</h1>
+          <h1 id="dateHeader">2022/12/05</h1>
+          <h1 style="font-size: 100%">distance(cm):</h1>
+          <div class="batchGrid" id="graphs">
+            <div id="graphs_raw" class="active selected" title="RAW data from the device">
+              RAW
+            </div>
+            <div
+              id="graphs_ndvi"
+              class=""
+              title="An indicator of density and health in vegetation"
+            >
+              NDVI
+            </div>
+            <div id="graphs_SR" class="">
+              SR
+            </div>
+            <div id="graphs_DSWI" class="">
+              DSWI 4
+            </div>
+            <div id="graphs_nirv" class="">
+              NIRv
+            </div>
+          </div>
+          <div class="batchGrid" id="batchGrid"></div>
+          <div class="extraInfo">
+            <div id="Time">time: 10:20:30:40</div>
+            <div id="air_temp">air_temp: 23.7 C</div>
+            <div id="surface_temp">surface_temp: 20.8 C</div>
+            <div id="relative_humidity">relative_humidity: 3%</div>
+            <div id="battery_voltage">battery_voltage: 3.81 V</div>
+            <div id="UID">UID: 3875</div>
+          </div>
+          <div class="userInputContainer">
+            <input type="number" id="distanceInput" value="1" step="0.1" min="0" />
+            <h1>calibration batch:</h1>
+            <div class="batchGrid" id="calibration_batch_grid"></div>
+          </div>
+        </div> -->
+        <!-- <div class="fav_batch" id="fav_batch" title="Select Calibration Batch">
+          <i class="material-icons w3-large"> star_border </i>
+        </div> -->
+
       </div>
-      <div class="batchGrid" id="batchGrid"></div>
-      <div class="extraInfo">
-        <div id="Time">time: 10:20:30:40</div>
-        <div id="air_temp">air_temp: 23.7 C</div>
-        <div id="surface_temp">surface_temp: 20.8 C</div>
-        <div id="relative_humidity">relative_humidity: 3%</div>
-        <div id="battery_voltage">battery_voltage: 3.81 V</div>
-        <div id="UID">UID: 3875</div>
-      </div>
-      <div class="userInputContainer">
-        <input type="number" id="distanceInput" value="1" step="0.1" min="0" />
-        <h1>calibration batch:</h1>
-        <div class="batchGrid" id="calibration_batch_grid"></div>
-      </div>
-      <!-- <div class="fav_batch" id="fav_batch" title="Select Calibration Batch">
-        <i class="material-icons w3-large"> star_border </i>
-      </div> -->
     </div>
 
     <!-- DOWNLOAD SIDEBAR -->
-    <div class="downloadSidebar active" id="downloadSidebar">
+    <!-- <div class="downloadSidebar active" id="downloadSidebar">
       <div class="downloadSidebar_header" id="downloadSidebar_header"></div>
       <div class="close-icon" id="download_closeBtn">X</div>
       <h1>Download</h1>
@@ -682,10 +789,10 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
 
     <!-- CONTROL SIDEBAR FOR LIVE SCREEN -->
-    <div
+    <!-- <div
       class="controlSidebar"
       id="controlSidebar_live"
       style="
@@ -696,7 +803,6 @@
       >
       <div class="controlSidebarheader" id="controlSidebarheader_live"></div>
       <h1>graphs</h1>
-      <!-- <h1 id="dateHeader">2022/12/05</h1> -->
       <div class="batchGrid" id="graphs">
         <div
           id="graphs_raw_live"
@@ -713,11 +819,7 @@
           SCREEN
         </div>
       </div>
-      <!-- <div class="extraInfo">
-        <div id="batch_live">batch: 2</div>
-        <div id="UID_live">UID: 3875</div>
-      </div> -->
-    </div>
+    </div> -->
 
     <script type="module" src="/main.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

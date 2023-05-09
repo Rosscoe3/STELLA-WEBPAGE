@@ -6,6 +6,11 @@ const ctx3 = document.getElementById("graph3").getContext("2d");
 const ctx4 = document.getElementById("graph_NIRv").getContext("2d");
 const ctx5 = document.getElementById("graph_SR").getContext("2d");
 const ctx6 = document.getElementById("graph_DSWI").getContext("2d");
+const ctx7 = document.getElementById("graph_reflectance").getContext("2d");
+
+setTimeout(() => {
+  alert("Thank you for using the STELLA Dataviewer.\nSome functionality is not compatible with certain browsers.\n\n*Please use Google Chrome for the most optimized experience.*");
+}, 1000);
 
 //** GRADIENT FILL */
 let visibleGradient = ctx.createLinearGradient(0, 0, 500, 0);
@@ -16,6 +21,8 @@ visibleGradient.addColorStop(0.75, "rgba(255, 102, 0, 0.75)");
 visibleGradient.addColorStop(1, "rgba(255, 0, 0, 0.75)");
 
 var graph = document.getElementById("graph");
+
+var viewMode = 0;
 
 Chart.defaults.set("plugins.datalabels", {
   color: "black",
@@ -68,6 +75,7 @@ let rawData_element = document.getElementById("rawData");
 let visible_filter_element = document.getElementById("visible_filter");
 let infrared_filter_element = document.getElementById("infrared_filter");
 let ndvi_element = document.getElementById("graphs_ndvi");
+let reflectance_element = document.getElementById("graphs_reflectance");
 let raw_element = document.getElementById("graphs_raw");
 let nirv_element = document.getElementById("graphs_nirv");
 let sr_element = document.getElementById("graphs_SR");
@@ -96,12 +104,16 @@ let snapShotIcon_3 = document.getElementById("snapshot_3");
 let snapShotIcon_4 = document.getElementById("snapshot_4");
 let snapShotIcon_5 = document.getElementById("snapshot_5");
 
+let sidebar = document.getElementById("sidebar");
+let sidebar_live = document.getElementById("sidebar_live");
+let sidebarButton = document.getElementById("openSidebarIcon");
+
 let readDeviceBtn = document.getElementById("read");
 let recording_live_label = document.getElementById("recording_label");
 let controlSidebar = document.getElementById("controlSidebar");
 let controlSidebarHeader = document.getElementById("controlSidebarheader");
 
-let controlSidebar_live = document.getElementById("controlSidebar_live");
+// let controlSidebar_live = document.getElementById("controlSidebar_live");
 let controlSidebarHeader_live = document.getElementById(
   "controlSidebarheader_live"
 );
@@ -204,12 +216,20 @@ class SerialScaleController {
 
         console.log("DEVICE PAIRED");
         deviceConnected = true;
+        viewMode = 2;
         getSerialMessage();
 
-        controlSidebar_live.classList.toggle("active");
+        //controlSidebar_live.classList.toggle("active");
         menuElement.classList.toggle("active");
         menuContainer.classList.toggle("disable");
         helpButton.classList.toggle("active");
+        sidebar_live.classList.toggle("active");
+        sidebarButton.classList.toggle("active");
+        if(sidebar_live.classList.contains("active"))
+        {
+          sidebarButton.innerHTML = "<";
+        }
+
         landing.classList.toggle("active");
         duplicateScreen.classList.toggle("active");
         readDeviceBtn.classList.toggle("active");
@@ -226,10 +246,18 @@ class SerialScaleController {
         console.log(err == "DOMException: No port selected by the user.");
         if ("The port is already open." in err) {
           console.log("Port is already open");
+          viewMode = 2;
           getSerialMessage();
           menuElement.classList.toggle("active");
           menuContainer.classList.toggle("disable");
           helpButton.classList.toggle("active");
+          sidebar.classList.toggle("active");
+          sidebarButton.classList.toggle("active");
+          if(sidebar.classList.contains("active"))
+          {
+            sidebarButton.innerHTML = "<";
+          }
+
           landing.classList.toggle("active");
           duplicateScreen.classList.toggle("active");
           readDeviceBtn.classList.toggle("active");
@@ -1204,6 +1232,121 @@ const config_NIRv = {
   plugins: [ChartDataLabels, plugin],
 };
 
+//** CONFIG SETUP FOR NIRv CHART */
+const config_reflectance = {
+  type: "scatter",
+  data: data_NIRv,
+  options: {
+    radius: 3,
+    hitRadius: 10,
+    hoverRadius: 8,
+    spanGaps: false,
+    responsive: false,
+    maintainAspectRatio: false,
+    tension: 0,
+    plugins: {
+      customCanvasBackgroundColor: {
+        color: "white",
+      },
+      title: {
+        display: true,
+        text: "NIRv",
+      },
+      legend: {
+        display: false,
+      },
+      //** STYLING FOR DATA LABELS */
+      datalabels: {
+        formatter: (value) => {
+          if (nirv_labels_visible) {
+            return Math.round((value.y + Number.EPSILON) * 100) / 100;
+          } else {
+            return "";
+          }
+        },
+        color: "white",
+        anchor: "end",
+        align: "top",
+        backgroundColor: function (context) {
+          if (nirv_labels_visible) {
+            return "rgba(0, 0, 0, 0.75)";
+          } else {
+            return "rgba(0, 0, 0, 0)";
+          }
+        },
+        borderWidth: 0.5,
+        borderRadius: 5,
+        font: {
+          weight: "bold",
+        },
+      },
+    },
+    //** ADDS NM to the Y axis lables */
+    animation: {
+      onComplete: () => {
+        delayed = true;
+      },
+      delay: (context) => {
+        let delay = 0;
+        if (context.type === "data" && context.mode === "default" && !delayed) {
+          delay = context.dataIndex * 75 + context.datasetIndex * 25;
+        }
+        return delay;
+      },
+    },
+    scales: {
+      y: {
+        // ticks: {
+        //   callback: function (value){
+        //     return value + "μW/cm²";
+        //   }
+        // },
+        // max : 1,
+        // min : -1,
+        title: {
+          display: true,
+          text: "Reflectance",
+          font: {
+            size: 15,
+          },
+        },
+      },
+      x: {
+        position: "bottom",
+        ticks: {
+          maxTicksLimit: 5,
+        },
+        title: {
+          display: false,
+          text: "Time",
+          align: "center",
+          font: {
+            size: 15,
+          },
+        },
+        // time: {
+        //   displayFormats: {
+        //     millisecond: "HH:mm:ss",
+        //     second: "HH:mm:ss",
+        //     minute: "HH:mm:ss",
+        //     hour: "HH:mm:ss",
+        //     day: "HH:mm:ss",
+        //     week: "HH:mm:ss",
+        //     month: "HH:mm:ss",
+        //     quarter: "HH:mm:ss",
+        //     year: "HH:mm:ss",
+        //   },
+        // },
+        // type: "time",
+        // min: "20211017T143405Z",
+        // max: "20221117T143405Z",
+        // parsing: false,
+      },
+    },
+  },
+  plugins: [ChartDataLabels, plugin],
+};
+
 //** CONFIG SETUP FOR SIMPLE RATIO CHART */
 const config_SR = {
   type: "scatter",
@@ -1541,6 +1684,7 @@ const config3 = {
 const mainChart = new Chart(ctx, config);
 const chart2 = new Chart(ctx2, config2);
 const NIRv_chart = new Chart(ctx4, config_NIRv);
+const reflectance_chart = new Chart(ctx7, config_reflectance);
 const SR_chart = new Chart(ctx5, config_SR);
 const DSWI_chart = new Chart(ctx6, config_DSWI);
 const liveChart = new Chart(ctx3, config3);
@@ -1584,7 +1728,7 @@ upload_file.addEventListener("input", function () {
   if (!RESOURCE_LOADED) {
     var reader = new FileReader();
     document.getElementById("mainGraph").classList.toggle("active");
-    controlSidebar.classList.toggle("active");
+    //controlSidebar.classList.toggle("active");
     rawData_element.classList.toggle("active");
     visible_filter_element.classList.toggle("active");
     infrared_filter_element.classList.toggle("active");
@@ -1592,6 +1736,12 @@ upload_file.addEventListener("input", function () {
     menuElement.classList.toggle("active");
     menuContainer.classList.toggle("disable");
     helpButton.classList.toggle("active");
+    sidebar.classList.toggle("active");
+    sidebarButton.classList.toggle("active");
+    if(sidebar.classList.contains("active"))
+    {
+      sidebarButton.innerHTML = "<";
+    }
     landing.classList.toggle("active");
 
     graphGradients();
@@ -1666,6 +1816,7 @@ upload_file.addEventListener("input", function () {
       }
 
       RESOURCE_LOADED = true;
+      viewMode = 1;
       updateChart();
       updateChartLabels();
       batchChangeUpdate();
@@ -2148,6 +2299,62 @@ function updateChart(backward, index) {
       }
     }
 
+    //** UPDATE REFLECTANCE */
+    if (reflectance_element.classList.contains("selected")) {
+      reflectance_chart.data.datasets[0].data = [
+        {
+          x: 450,
+          y: currentBatchArray[dataTimeIndex].V450_reflectance,
+        },
+        {
+          x: 500,
+          y: currentBatchArray[dataTimeIndex].B500_reflectance,
+        },
+        {
+          x: 550,
+          y: currentBatchArray[dataTimeIndex].G550_reflectance,
+        },
+        {
+          x: 570,
+          y: currentBatchArray[dataTimeIndex].Y570_reflectance,
+        },
+        {
+          x: 600,
+          y: currentBatchArray[dataTimeIndex].O600_reflectance,
+        },
+        {
+          x: 610,
+          y: currentBatchArray[dataTimeIndex].nir610_reflectance,
+        },
+        {
+          x: 650,
+          y: currentBatchArray[dataTimeIndex].R650_reflectance,
+        },
+        {
+          x: 680,
+          y: currentBatchArray[dataTimeIndex].nir680_reflectance,
+        },
+        {
+          x: 730,
+          y: currentBatchArray[dataTimeIndex].nir730_reflectance,
+        },
+        {
+          x: 760,
+          y: currentBatchArray[dataTimeIndex].nir760_reflectance,
+        },
+        {
+          x: 810,
+          y: currentBatchArray[dataTimeIndex].nir810_reflectance,
+        },
+        {
+          x: 860,
+          y: currentBatchArray[dataTimeIndex].nir860_reflectance,
+        },
+      ];
+
+      console.log(currentBatchArray[dataTimeIndex]);
+    }
+
     //** UPDATE NIRv */
     if (calibrationBatchSelected) {
       for (let i = 0; i < currentBatchArray.length; i++) {
@@ -2349,6 +2556,7 @@ function updateChart(backward, index) {
       "V";
 
     mainChart.update();
+    reflectance_chart.update();
     chart2.update();
     liveChart.update();
     NIRv_chart.update();
@@ -2357,11 +2565,16 @@ function updateChart(backward, index) {
 
     //** CALLS AN UPDATE FUNCTION */
     if (animPlay) {
+      clearTimeout(animWaitFunc);
       animWaitFunc = setTimeout(function () {
         if (animPlay) {
           updateChart();
         }
       }, animationTime);
+    }
+    else
+    {
+      clearTimeout(animWaitFunc);
     }
   }
 }
@@ -2944,9 +3157,10 @@ function addBatches(dataArray) {
       "/" +
       dataArray[i][0].timestamp.replace(/\s/g, "").substr(4, 2) +
       "/" +
-      dataArray[i][0].timestamp.replace(/\s/g, "").substr(9, 2);
+      dataArray[i][0].timestamp.replace(/\s/g, "").substr(6, 2);
 
     console.log(dataArray);
+    console.log("Date: " + date);
     div.innerHTML = dataArray[i][0].batch_number;
     div.index = i;
     div.title = date;
@@ -2973,6 +3187,9 @@ function addBatches(dataArray) {
 
         if (!ndvi_element.classList.contains("active")) {
           ndvi_element.classList.toggle("active");
+        }
+        if (!reflectance_element.classList.contains("active")) {
+          reflectance_element.classList.toggle("active");
         }
         if (!sr_element.classList.contains("active")) {
           sr_element.classList.toggle("active");
@@ -3015,6 +3232,27 @@ function addBatches(dataArray) {
     document.getElementById("calibration_batch_grid").appendChild(div2);
     document.getElementById("batchGrid").appendChild(div);
   }
+
+  console.log(batchesContainer.childElementCount);
+
+  //** ADJUST SIZING DEPENDING ON SIZE OF BATCHES */
+  if(batchesContainer.childElementCount > 7)
+  {
+    document.getElementById("batches").style.height = "20%";
+    document.getElementById("batches_calibration").style.height = "10%";
+    console.log("20%");
+  }
+  else
+  {
+    document.getElementById("batches").style.height = "fit-content";
+    document.getElementById("batches_calibration").style.height = "10%";
+    console.log("fit-content");
+  }
+  if(batchesContainer.childElementCount < 3)
+  {
+    document.getElementById("batches_calibration").style.height = "fit-content";
+  }
+
   //** UDPATE UID ON CHART TITLE AT BATCH INIT */
   mainChart.options.plugins.title.text = "  UID: " + currentBatchArray[0].UID;
 }
@@ -3339,6 +3577,8 @@ function calculateNIRV() {
     currentBatchArray[i].NIRv = NIRv;
   }
 
+  console.log(currentBatchArray);
+
   updateChart();
 }
 
@@ -3349,16 +3589,30 @@ function getTanFromDegrees(degrees) {
 //** CLICK EVENT FOR UPLOAD NEW BUTTON */
 menuElement.addEventListener("click", function (ev) {
   ev.stopPropagation(); // prevent event from bubbling up to .container
+  clearTimeout(animWaitFunc);
   menuElement.classList.toggle("active");
   menuContainer.classList.toggle("disable");
   helpButton.classList.toggle("active");
+  sidebarButton.classList.toggle("active");
+  viewMode = 0;
+  
+  if(sidebar.classList.contains("active"))
+  {
+    sidebarButton.innerHTML = "<";
+    sidebar.classList.toggle("active");
+  }
+  else if(sidebar_live.classList.contains("active"))
+  {
+    sidebarButton.innerHTML = "<";
+    sidebar_live.classList.toggle("active");
+  }
 
-  if (controlSidebar.classList.contains("active")) {
-    controlSidebar.classList.toggle("active");
-  }
-  if (controlSidebar_live.classList.contains("active")) {
-    controlSidebar_live.classList.toggle("active");
-  }
+  // if (controlSidebar.classList.contains("active")) {
+  //   controlSidebar.classList.toggle("active");
+  // }
+  // if (controlSidebar_live.classList.contains("active")) {
+  //   controlSidebar_live.classList.toggle("active");
+  // }
   if (document.getElementById("calcGraph").classList.contains("active")) {
     document.getElementById("calcGraph").classList.toggle("active");
   }
@@ -3377,6 +3631,9 @@ menuElement.addEventListener("click", function (ev) {
 
   if (ndvi_element.classList.contains("selected")) {
     ndvi_element.classList.toggle("selected");
+  }
+  if (reflectance_element.classList.contains("selected")) {
+    reflectance_element.classList.toggle("selected");
   }
   if (nirv_element.classList.contains("selected")) {
     nirv_element.classList.toggle("selected");
@@ -3412,12 +3669,14 @@ function updateGraphGrid(currentlyGraphed) {
   let myElement;
 
   //** CHOOSE MY ELEMENT, WHETHER IN CONNECT_DEVICE OR UPLOAD_FILE MODE */
-  if (controlSidebar.classList.contains("active")) {
+  if (sidebar.classList.contains("active")) {
     myElement = document.getElementById("chartCard");
-  } else if (controlSidebar_live.classList.contains("active")) {
+  } 
+  // else if (controlSidebar_live.classList.contains("active")) {
+  //   myElement = document.getElementById("chartCardLive");
+  // } 
+  else {
     myElement = document.getElementById("chartCardLive");
-  } else {
-    myElement = document.getElementById("chartCard");
   }
 
   let counter = 0;
@@ -3795,6 +4054,30 @@ ndvi_element.addEventListener("click", function () {
   clearTimeout(animWaitFunc);
 
   NIRv_chart.resize();
+  reflectance_chart.resize();
+  mainChart.resize();
+  chart2.resize();
+  SR_chart.resize();
+  DSWI_chart.resize();
+});
+
+reflectance_element.addEventListener("click", function () {
+  reflectance_element.classList.toggle("selected");
+  if (!reflectance_element.classList.contains("selected")) {
+    mainChart.update();
+  }
+
+  //** TOGGLE ON GRAPH */
+  document.getElementById("reflectance_Graph").classList.toggle("active");
+  updateGraphGrid("reflectance_Graph");
+  updateChartLabels();
+  graphGradients();
+  updateChart();
+
+  clearTimeout(animWaitFunc);
+
+  NIRv_chart.resize();
+  reflectance_chart.resize();
   mainChart.resize();
   chart2.resize();
   SR_chart.resize();
@@ -3816,6 +4099,7 @@ nirv_element.addEventListener("click", function () {
   clearTimeout(animWaitFunc);
 
   NIRv_chart.resize();
+  reflectance_chart.resize();
   mainChart.resize();
   chart2.resize();
   SR_chart.resize();
@@ -3838,6 +4122,7 @@ sr_element.addEventListener("click", function () {
   clearTimeout(animWaitFunc);
 
   NIRv_chart.resize();
+  reflectance_chart.resize();
   mainChart.resize();
   chart2.resize();
   SR_chart.resize();
@@ -3860,6 +4145,7 @@ dswi_element.addEventListener("click", function () {
   clearTimeout(animWaitFunc);
 
   NIRv_chart.resize();
+  reflectance_chart.resize();
   mainChart.resize();
   chart2.resize();
   SR_chart.resize();
@@ -3880,6 +4166,7 @@ raw_element.addEventListener("click", function () {
   clearTimeout(animWaitFunc);
 
   NIRv_chart.resize();
+  reflectance_chart.resize();
   mainChart.resize();
   chart2.resize();
   SR_chart.resize();
@@ -4017,14 +4304,19 @@ navigator.serial.addEventListener("disconnect", (e) => {
   deviceConnected = false;
   alert("STELLA Disconnected");
 
-  if (duplicateScreen.classList.contains("active")) {
+  if (viewMode == 2) {
     document.getElementById("liveGraph").classList.toggle("active");
     duplicateScreen.classList.toggle("active");
     menuElement.classList.toggle("active");
     menuContainer.classList.toggle("disable");
     helpButton.classList.toggle("active");
+    sidebarButton.classList.toggle("active");
+    if(sidebar_live.classList.contains("active"))
+    {
+      sidebar_live.classList.toggle("active");
+    }
     landing.classList.toggle("active");
-    controlSidebar_live.classList.toggle("active");
+    //controlSidebar_live.classList.toggle("active");
   }
 });
 
@@ -4066,40 +4358,61 @@ function onDrag({ movementX: e, movementY: r }) {
 }
 
 //** MOUSE EVENTS FOR CONTROL SIDEBARS */
-controlSidebarHeader.addEventListener("mousedown", (e) => {
+// controlSidebarHeader.addEventListener("mousedown", (e) => {
+//   e.stopPropagation();
+//   if (controlSidebar.classList.contains("active")) {
+//     wrapper = controlSidebar;
+//     controlSidebarHeader.classList.add("active"),
+//       controlSidebarHeader.addEventListener("mousemove", onDrag);
+//   }
+// }),
+// controlSidebarHeader_live.addEventListener("mousedown", () => {
+//   if (controlSidebar_live.classList.contains("active")) {
+//     wrapper = controlSidebar_live;
+//     controlSidebarHeader_live.classList.add("active"),
+//       controlSidebarHeader_live.addEventListener("mousemove", onDrag);
+//   }
+// }),
+helpHeader.addEventListener("mousedown", (e) => {
   e.stopPropagation();
-  if (controlSidebar.classList.contains("active")) {
-    wrapper = controlSidebar;
-    controlSidebarHeader.classList.add("active"),
-      controlSidebarHeader.addEventListener("mousemove", onDrag);
+  if (helpScreen.classList.contains("active")) {
+    wrapper = helpScreen;
+    helpScreen.classList.add("active"),
+      helpHeader.addEventListener("mousemove", onDrag);
   }
-}),
-  controlSidebarHeader_live.addEventListener("mousedown", () => {
-    if (controlSidebar_live.classList.contains("active")) {
-      wrapper = controlSidebar_live;
-      controlSidebarHeader_live.classList.add("active"),
-        controlSidebarHeader_live.addEventListener("mousemove", onDrag);
-    }
-  }),
-  helpHeader.addEventListener("mousedown", (e) => {
-    e.stopPropagation();
-    if (helpScreen.classList.contains("active")) {
-      wrapper = helpScreen;
-      helpScreen.classList.add("active"),
-        helpHeader.addEventListener("mousemove", onDrag);
-    }
-  });
+});
 document.addEventListener("mouseup", () => {
-  if (controlSidebar.classList.contains("active")) {
-    controlSidebarHeader.classList.remove("active"),
-      controlSidebarHeader.removeEventListener("mousemove", onDrag);
-  }
-  if (controlSidebar_live.classList.contains("active")) {
-    controlSidebarHeader_live.classList.remove("active"),
-      controlSidebarHeader_live.removeEventListener("mousemove", onDrag);
-  }
+  // if (controlSidebar.classList.contains("active")) {
+  //   controlSidebarHeader.classList.remove("active"),
+  //     controlSidebarHeader.removeEventListener("mousemove", onDrag);
+  // }
+  // if (controlSidebar_live.classList.contains("active")) {
+  //   controlSidebarHeader_live.classList.remove("active"),
+  //     controlSidebarHeader_live.removeEventListener("mousemove", onDrag);
+  // }
   if (helpScreen.classList.contains("active")) {
     helpHeader.removeEventListener("mousemove", onDrag);
+  }
+});
+
+//** SIDEBAR FUNCTIONALITY */
+sidebarButton.addEventListener("click", function () {
+  if(viewMode == 2)
+  {
+    sidebar_live.classList.toggle("active");
+  }
+  else if(viewMode == 1)
+  {
+    sidebar.classList.toggle("active");
+  }
+
+  if(sidebar.classList.contains("active") || sidebar_live.classList.contains("active"))
+  {
+    sidebarButton.innerHTML = "<";
+  }
+  else
+  {
+    sidebarButton.innerHTML = ">";
   }
 });
 
@@ -4109,6 +4422,7 @@ function update() {
   chart2.resize();
   liveChart.resize();
   NIRv_chart.resize();
+  reflectance_chart.resize();
   SR_chart.resize();
   DSWI_chart.resize();
 

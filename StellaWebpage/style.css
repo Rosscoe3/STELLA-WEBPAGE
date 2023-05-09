@@ -23,9 +23,99 @@ body {
   font-family: "Inter", sans-serif;
   overflow: hidden;
   margin: 0%;
+  right: 0%;
+
+  transition: all 0.5s ease-in-out;
 
   background: radial-gradient(rgba(0, 0, 0, 0.25) 1px, transparent 1px);
   background-size: 50px 50px;
+}
+
+.container{
+  left: 0%;
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  flex-flow: row nowrap;
+}
+
+.content-area{
+  position: relative;
+  flex-grow:1;
+  max-width: 100%;
+}
+
+.sidebar{
+  position: relative;
+  width: 0%;
+  height: 100%;
+  background-color: white;
+  outline: solid 0px rgba(0, 0, 0, 1);
+  transition: all 0.5s ease-in-out;
+  flex-flow: column nowrap;
+
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  display: flex;
+}
+
+.sidebar .scrollContainer{
+  width: 100%;
+  height: 10%;
+}
+
+.sidebar .sidebarTitle{
+  user-select: none;
+  height: fit-content;
+  
+  padding: 5%;
+  font-size: 0%;
+  text-align: left;
+  outline: solid 0px rgba(0, 0, 0, 1);
+  font-weight: bold;
+
+  background-color: rgba(0, 0, 0, 0.1);
+
+  transition: all 0.5s ease-in-out;
+}
+
+.sidebar.active .sidebarTitle{
+  font-size: 150%;
+  outline: solid 1px rgba(0, 0, 0, 1);
+  transition: all 0.5s ease-in-out;
+}
+
+.sidebar.active{
+  width: 15%;
+  outline: solid 2px rgba(0, 0, 0, 1);
+  transition: all 0.5s ease-in-out;
+}
+
+.openSidebarIcon{
+  left: 0%;
+  top: 0%;
+  margin-left: 0.5rem;
+  padding: 0rem;
+  font-size: 200%;
+  opacity: 0%;
+
+  pointer-events: none;
+
+  z-index: 500;
+
+  transition: all 0.25s ease-in-out;
+}
+.openSidebarIcon.active{
+  pointer-events: auto;
+  opacity: 100%;
+  transition: all 0.25s ease-in-out;
+}
+
+.openSidebarIcon:hover{
+  opacity: 50%;
+  transition: all 0.25s ease-in-out;
 }
 
 .landing {
@@ -33,7 +123,7 @@ body {
   pointer-events: none;
   height: 100%;
   width: 100%;
-  top: 0%;
+  top: -1%;
   left: 0%;
   margin: 0%;
   opacity: 0%;
@@ -47,7 +137,7 @@ body {
 }
 
 .landing h1 {
-  position: absolute;
+  position: inherit;
   top: 0%;
   left: 0%;
   text-align: justify;
@@ -108,9 +198,10 @@ label {
 .chartCard {
   position: absolute;
   pointer-events: none;
-  width: 100vw;
-  height: 80vh;
-  top: 5%;
+  width: 100%;
+  height: 90%;
+  top: 7.5%;
+  object-fit: cover;
   /* right: 0%; */
 
   display: grid;
@@ -825,6 +916,14 @@ h2 {
   background-color: bla;
 }
 
+.sidebar .batchGrid {
+  outline: solid 0px rgba(0, 0, 0, 1);
+}
+
+.sidebar.active .batchGrid {
+  outline: solid 1px rgba(0, 0, 0, 1);
+}
+
 .batchGrid {
   height: 100%;
   width: 100%;
@@ -837,6 +936,7 @@ h2 {
   align-content: flex-start;
   justify-content: flex-start;
 }
+
 .batchGrid div {
   display: inline-block;
   width: 100%;
@@ -848,8 +948,19 @@ h2 {
   cursor: pointer;
   outline: solid 1px rgba(0, 0, 0, 1);
 
+  color: black;
+
   pointer-events: none;
   opacity: 50%;
+}
+
+.sidebar .batchGrid div {
+  padding: 2%;
+}
+
+.sidebar.active .batchGrid div.active {
+  pointer-events: auto;
+  opacity: 100%;
 }
 
 .controlSidebar.active .batchGrid div.active {
@@ -1032,10 +1143,18 @@ h2 {
   overflow: auto;
 }
 .extraInfo div {
-  font-size: 75%;
+  font-size: 100%;
   font-weight: bold;
   align-self: flex-start;
   margin: 2%;
+}
+
+.sidebar .extraInfo {
+  outline: solid 1px rgba(0, 0, 0, 0);
+}
+
+.sidebar.active .extraInfo {
+  outline: solid 1px rgba(0, 0, 0, 1);
 }
 
 .userInputContainer{
@@ -1051,6 +1170,16 @@ h2 {
   height: 20%;
   outline: solid 1px rgba(0, 0, 0, 1);
   background-color: rgb(235, 235, 235);
+}
+.sidebar input{
+  opacity: 0%;
+  outline: solid 0px rgba(0, 0, 0, 1);
+}
+.sidebar.active input{
+  height: 2.5%;
+  outline: solid 1px rgba(0, 0, 0, 1);
+  background-color: rgb(235, 235, 235);
+  opacity: 100%;
 }
 
 .userInputContainer .batchGrid div{
