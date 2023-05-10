@@ -103,6 +103,7 @@ let snapShotIcon_2 = document.getElementById("snapshot_2");
 let snapShotIcon_3 = document.getElementById("snapshot_3");
 let snapShotIcon_4 = document.getElementById("snapshot_4");
 let snapShotIcon_5 = document.getElementById("snapshot_5");
+let snapShotIcon_6 = document.getElementById("snapshot_6");
 
 let sidebar = document.getElementById("sidebar");
 let sidebar_live = document.getElementById("sidebar_live");
@@ -136,6 +137,9 @@ let ndvi_labels_visible = true;
 
 let nirv_visibility_icon = document.getElementById("visibility_nirv");
 let nirv_labels_visible = true;
+
+let reflectance_visibility_icon = document.getElementById("visibility_reflectance");
+let reflectance_labels_visible = true;
 
 let sr_visibility_icon = document.getElementById("visibility_sr");
 let sr_labels_visible = true;
@@ -770,6 +774,24 @@ var data_NIRv = {
   ],
 };
 
+//** DATA SETUP FOR Reflectance CHART */
+var data_Reflectance = {
+  datasets: [
+    //** Reflectance */
+    {
+      data: [],
+      showLine: true,
+      label: "Reflectance",
+      fill: false,
+      hidden: false,
+      backgroundColor: nirvGradient,
+      borderColor: nirvGradient,
+      lineTension: 0.25,
+      pointBackgroundColor: nirvGradient,
+    },
+  ],
+};
+
 //** DATA SETUP FOR SIMPLE RATIO CHART */
 var data_SR = {
   datasets: [
@@ -1235,7 +1257,7 @@ const config_NIRv = {
 //** CONFIG SETUP FOR NIRv CHART */
 const config_reflectance = {
   type: "scatter",
-  data: data_NIRv,
+  data: data_Reflectance,
   options: {
     radius: 3,
     hitRadius: 10,
@@ -1250,7 +1272,7 @@ const config_reflectance = {
       },
       title: {
         display: true,
-        text: "NIRv",
+        text: "Reflectance",
       },
       legend: {
         display: false,
@@ -1258,7 +1280,7 @@ const config_reflectance = {
       //** STYLING FOR DATA LABELS */
       datalabels: {
         formatter: (value) => {
-          if (nirv_labels_visible) {
+          if (reflectance_labels_visible) {
             return Math.round((value.y + Number.EPSILON) * 100) / 100;
           } else {
             return "";
@@ -1268,7 +1290,7 @@ const config_reflectance = {
         anchor: "end",
         align: "top",
         backgroundColor: function (context) {
-          if (nirv_labels_visible) {
+          if (reflectance_labels_visible) {
             return "rgba(0, 0, 0, 0.75)";
           } else {
             return "rgba(0, 0, 0, 0)";
@@ -1756,6 +1778,20 @@ upload_file.addEventListener("input", function () {
         dataIsAverage = false;
       }
 
+      var graphLabels = document.getElementById('graphs').getElementsByTagName("div");
+      for(var i=0; i<graphLabels.length; i++) {
+        if(!graphLabels[i].classList.contains('selected') && graphLabels[i].classList.contains('active'))
+        {
+          graphLabels[i].classList.toggle('active');
+        }
+      }
+
+      // batchGrid.forEach((item) => {
+      //   if (item.classList.contains("active")) {
+      //     item.classList.toggle("active");
+      //   }
+      // });
+
       newDataArray = csvToArray(reader.result);
       let currentBatchNmb = newDataArray[0].batch_number;
       dataArrayBatches = [[]];
@@ -1770,8 +1806,8 @@ upload_file.addEventListener("input", function () {
         newDataArray[0] = tempArray;
       }
 
-      console.log(standardDeviation_array);
-      console.log(newDataArray);
+      // console.log(standardDeviation_array);
+      // console.log(newDataArray);
 
       let batchIndex = 0;
       for (let i = 0; i < newDataArray.length; i++) {
@@ -1934,7 +1970,6 @@ function updateChart(backward, index) {
     ];
 
     //** USED FOR GRAPHING STANDARD DEVIATION */
-    console.log(standardDeviation_array);
     if (dataIsAverage) {
       mainChart.data.datasets[14].data = [
         {
@@ -2193,7 +2228,6 @@ function updateChart(backward, index) {
     }
 
     //** ADD ALL NORMALIZED VALUES TO CURVE, START AT ONE TO AVOID LABELS*/
-
     //** NORMALIZED VISIBLE */
     for (let i = 0; i < (calibrationArray_Visible.length - cut) / step; i++) {
       mainChart.data.datasets[6].data[i] = {
@@ -2301,6 +2335,20 @@ function updateChart(backward, index) {
 
     //** UPDATE REFLECTANCE */
     if (reflectance_element.classList.contains("selected")) {
+      console.log("V450: " + currentBatchArray[dataTimeIndex].V450_reflectance);
+      console.log("B500: " + currentBatchArray[dataTimeIndex].B500_reflectance);
+      console.log("G550: " + currentBatchArray[dataTimeIndex].G550_reflectance);
+      console.log("Y570: " + currentBatchArray[dataTimeIndex].Y570_reflectance);
+      console.log("O600: " + currentBatchArray[dataTimeIndex].O600_reflectance);
+      console.log("R650: " + currentBatchArray[dataTimeIndex].R650_reflectance);
+      console.log("nir610: " + currentBatchArray[dataTimeIndex].nir610_reflectance);
+      console.log("nir680: " + currentBatchArray[dataTimeIndex].nir680_reflectance);
+      console.log("nir730: " + currentBatchArray[dataTimeIndex].nir730_reflectance);
+      console.log("nir760: " + currentBatchArray[dataTimeIndex].nir760_reflectance);
+      console.log("nir810: " + currentBatchArray[dataTimeIndex].nir810_reflectance);
+      console.log("nir860: " + currentBatchArray[dataTimeIndex].nir860_reflectance);
+      console.log("DATA TIME INDEX: " + dataTimeIndex);
+      
       reflectance_chart.data.datasets[0].data = [
         {
           x: 450,
@@ -2351,8 +2399,7 @@ function updateChart(backward, index) {
           y: currentBatchArray[dataTimeIndex].nir860_reflectance,
         },
       ];
-
-      console.log(currentBatchArray[dataTimeIndex]);
+      //console.log(currentBatchArray[dataTimeIndex]);
     }
 
     //** UPDATE NIRv */
@@ -2363,7 +2410,7 @@ function updateChart(backward, index) {
           NIRv_chart.options.scales.x.max = currentBatchArray[
             i
           ].timestamp.replace(/\s/g, "");
-          console.log(currentBatchArray[i].timestamp.replace(/\s/g, ""));
+          //console.log(currentBatchArray[i].timestamp.replace(/\s/g, ""));
         }
         //** GRAB FIRST VALUE OF ARRAY TO SET THE MIN TIMESTAMP OF CHART */
         else if (i == 0) {
@@ -2378,7 +2425,7 @@ function updateChart(backward, index) {
           y: currentBatchArray[i].NIRv,
         };
       }
-      console.log("GRAPHED NIRv");
+      //console.log("GRAPHED NIRv");
     }
 
     //** UPDATE SR or SIMPLE RATIO **//
@@ -3159,8 +3206,8 @@ function addBatches(dataArray) {
       "/" +
       dataArray[i][0].timestamp.replace(/\s/g, "").substr(6, 2);
 
-    console.log(dataArray);
-    console.log("Date: " + date);
+    //console.log(dataArray);
+    //console.log("Date: " + date);
     div.innerHTML = dataArray[i][0].batch_number;
     div.index = i;
     div.title = date;
@@ -3233,20 +3280,16 @@ function addBatches(dataArray) {
     document.getElementById("batchGrid").appendChild(div);
   }
 
-  console.log(batchesContainer.childElementCount);
-
   //** ADJUST SIZING DEPENDING ON SIZE OF BATCHES */
   if(batchesContainer.childElementCount > 7)
   {
     document.getElementById("batches").style.height = "20%";
     document.getElementById("batches_calibration").style.height = "10%";
-    console.log("20%");
   }
   else
   {
     document.getElementById("batches").style.height = "fit-content";
     document.getElementById("batches_calibration").style.height = "10%";
-    console.log("fit-content");
   }
   if(batchesContainer.childElementCount < 3)
   {
@@ -3560,6 +3603,19 @@ function convertToReflectance() {
       currentBatchArray[i].nir810_radiance / radiance_810nm_calibration;
     currentBatchArray[i].nir860_reflectance =
       currentBatchArray[i].nir860_radiance / radiance_860nm_calibration;
+
+    // console.log("V450: " + currentBatchArray[i].V450_reflectance);
+    // console.log("B500: " + currentBatchArray[i].B500_reflectance);
+    // console.log("G550: " + currentBatchArray[i].G550_reflectance);
+    // console.log("Y570: " + currentBatchArray[i].Y570_reflectance);
+    // console.log("O600: " + currentBatchArray[i].O600_reflectance);
+    // console.log("R650: " + currentBatchArray[i].R650_reflectance);
+    // console.log("nir610: " + currentBatchArray[i].nir610_reflectance);
+    // console.log("nir680: " + currentBatchArray[i].nir680_reflectance);
+    // console.log("nir730: " + currentBatchArray[i].nir730_reflectance);
+    // console.log("nir760: " + currentBatchArray[i].nir760_reflectance);
+    // console.log("nir810: " + currentBatchArray[i].nir810_reflectance);
+    // console.log("nir860: " + currentBatchArray[i].nir860_reflectance);
   }
   calculateNIRV();
 }
@@ -3577,7 +3633,7 @@ function calculateNIRV() {
     currentBatchArray[i].NIRv = NIRv;
   }
 
-  console.log(currentBatchArray);
+  //console.log(currentBatchArray);
 
   updateChart();
 }
@@ -3595,6 +3651,9 @@ menuElement.addEventListener("click", function (ev) {
   helpButton.classList.toggle("active");
   sidebarButton.classList.toggle("active");
   viewMode = 0;
+
+  document.getElementById("chartCard").style.gridTemplateColumns = "minmax(200px, 1fr)";
+  document.getElementById("chartCard").style.gridTemplateRows = "auto";
   
   if(sidebar.classList.contains("active"))
   {
@@ -3627,6 +3686,9 @@ menuElement.addEventListener("click", function (ev) {
   }
   if (document.getElementById("NIRv_Graph").classList.contains("active")) {
     document.getElementById("NIRv_Graph").classList.toggle("active");
+  }
+  if (document.getElementById("reflectance_Graph").classList.contains("active")) {
+    document.getElementById("reflectance_Graph").classList.toggle("active");
   }
 
   if (ndvi_element.classList.contains("selected")) {
@@ -3709,10 +3771,16 @@ function updateGraphGrid(currentlyGraphed) {
       nirv_element.classList.toggle("selected");
     } else if (lastGraphed == "calcGraph") {
       ndvi_element.classList.toggle("selected");
+    } else if (lastGraphed == "reflectance_Graph") {
+      reflectance_element.classList.toggle("selected");
     }
 
     console.log("GREATER THAN 4 GRAPHS: " + lastGraphed);
   }
+
+  console.log("counter: " + counter);
+  console.log(myElement.style.gridTemplateColumns);
+  console.log(myElement.style.gridTemplateRows);
 
   //** UPDATE LAST GRAPHED VARIABLE */
   if (currentlyGraphed) {
@@ -3846,6 +3914,18 @@ nirv_visibility_icon.addEventListener("click", function () {
     document.getElementById("visibleIcon_nirv").innerHTML = "visibility_off";
   }
   NIRv_chart.update();
+});
+reflectance_visibility_icon.addEventListener("click", function () {
+  if (reflectance_visibility_icon.classList.contains("selected")) {
+    reflectance_visibility_icon.classList.toggle("selected");
+    reflectance_labels_visible = true;
+    document.getElementById("visibleIcon_reflectance").innerHTML = "visibility";
+  } else {
+    reflectance_visibility_icon.classList.toggle("selected");
+    reflectance_labels_visible = false;
+    document.getElementById("visibleIcon_reflectance").innerHTML = "visibility_off";
+  }
+  reflectance_chart.update();
 });
 sr_visibility_icon.addEventListener("click", function () {
   if (sr_visibility_icon.classList.contains("selected")) {
@@ -4283,6 +4363,18 @@ snapShotIcon_4.addEventListener("click", function () {
 snapShotIcon_5.addEventListener("click", function () {
   var image = document
     .getElementById("graph_DSWI")
+    .toDataURL("image/png")
+    .replace("image/png", "image/octet-stream"); // here is the most important part because if you dont replace you will get a DOM 18 exception.
+
+  var link = document.getElementById("link");
+  link.setAttribute("download", "stella_graph.png");
+  link.setAttribute("href", image);
+  link.click();
+});
+
+snapShotIcon_6.addEventListener("click", function () {
+  var image = document
+    .getElementById("graph_reflectance")
     .toDataURL("image/png")
     .replace("image/png", "image/octet-stream"); // here is the most important part because if you dont replace you will get a DOM 18 exception.
 
