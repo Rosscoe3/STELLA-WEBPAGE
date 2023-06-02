@@ -1133,6 +1133,7 @@ const config2 = {
         min: "20211017T143405Z",
         max: "20221117T143405Z",
         parsing: false,
+        offset: true,
       },
     },
   },
@@ -1248,6 +1249,7 @@ const config_NIRv = {
         min: "20211017T143405Z",
         max: "20221117T143405Z",
         parsing: false,
+        offset: true,
       },
     },
   },
@@ -1479,6 +1481,7 @@ const config_SR = {
         min: "20211017T143405Z",
         max: "20221117T143405Z",
         parsing: false,
+        offset: true,
       },
     },
   },
@@ -1588,6 +1591,7 @@ const config_DSWI = {
         min: "20211017T143405Z",
         max: "20221117T143405Z",
         parsing: false,
+        offset: true,
       },
     },
   },
@@ -2589,13 +2593,45 @@ function updateChart(backward, index) {
       "air_temp: " +
       currentBatchArray[dataTimeIndex].air_temperature_C +
       "&#8451";
+    
+      
+    //** CHECK FOR SURFACE TEMP NAME DIFFERENCES IN THE CSV */
+    var currentSurfaceTemp;
+    if(currentBatchArray[dataTimeIndex].surface_temperature)
+    {
+      currentSurfaceTemp = currentBatchArray[dataTimeIndex].surface_temperature;
+    }
+    else if(currentBatchArray[dataTimeIndex].surface_temperature_C)
+    {
+      currentSurfaceTemp = currentBatchArray[dataTimeIndex].surface_temperature_C
+    }
+    else
+    {
+      currentSurfaceTemp = 0;
+    }
     surfaceTemp_label.innerHTML =
       "surface_temp: " +
-      currentBatchArray[dataTimeIndex].surface_temperature +
+      currentSurfaceTemp +
       "&#8451";
+    
+      //** CHECK FOR SURFACE TEMP NAME DIFFERENCES IN THE CSV */
+    var currentRelativeHumidity;
+    if(currentBatchArray[dataTimeIndex].relative_humidity)
+    {
+      currentRelativeHumidity = currentBatchArray[dataTimeIndex].relative_humidity;
+    }
+    else if(currentBatchArray[dataTimeIndex].relative_humidity_percent)
+    {
+      currentRelativeHumidity = currentBatchArray[dataTimeIndex].relative_humidity_percent
+    }
+    else
+    {
+      currentRelativeHumidity = 0;
+    }
+
     relativeHumidity_label.innerHTML =
       "relative_humidity: " +
-      currentBatchArray[dataTimeIndex].relative_humidity +
+      currentRelativeHumidity +
       "%";
     batteryVoltage_label.innerHTML =
       "battery_voltage: " +
