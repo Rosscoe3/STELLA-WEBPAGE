@@ -21,6 +21,13 @@
     <div class="container">
       <div class="sidebar" id="sidebar">
         <div class="sidebarTitle">
+          <b>#batch</b>
+        </div>
+        <div class="scrollContainer" id="batches" style="height: 20%;">
+          <div class="batchGrid" id="batchGrid">
+          </div>
+        </div>
+        <div class="sidebarTitle">
           <b>Graphs</b>
         </div>
         <div class="scrollContainer">
@@ -54,13 +61,6 @@
           </div>
         </div>
         <div class="sidebarTitle">
-          <b>#batch</b>
-        </div>
-        <div class="scrollContainer" id="batches" style="height: 20%;">
-          <div class="batchGrid" id="batchGrid">
-          </div>
-        </div>
-        <div class="sidebarTitle">
           <b>distance (cm)</b>
         </div>
         <input type="number" id="distanceInput" value="1" step="0.1" min="0" />
@@ -73,7 +73,7 @@
         <div class="sidebarTitle" id="dateHeader">
           <b></b>
         </div>
-        <div class="extraInfo">
+        <div class="extraInfo" id="extraInfo">
           <div id="Time">time: 10:20:30:40</div>
           <div id="air_temp">air_temp: 23.7 C</div>
           <div id="surface_temp">surface_temp: 20.8 C</div>
@@ -354,7 +354,7 @@
             <canvas id="graph">
               <div id="canvasBG"></div>
             </canvas>
-            <div class="boxContainer">
+            <div class="boxContainer" id="slider_container">
               <div class="timelineContainer active" id="timelineContainer">
                 <input
                   type="range"
@@ -764,6 +764,20 @@
           <i class="material-icons w3-large"> star_border </i>
         </div> -->
 
+      </div>
+    </div>
+
+    <div class="tutorial-wrap" id="tutorial-wrap">
+      <div class="tutorial-instructions" id="tut_text">
+        The <b>#batch</b> section of the sidebar allows you to select which batch you are currently viewing
+      </div>
+      <div class="tut-button-wrapper">
+        <div class="tutorial-button disabled" id="tut-prev">
+          <b>&lt;</b>
+        </div>
+        <div class="tutorial-button" id="tut-next">
+          <b>&gt;</b>
+        </div>
       </div>
     </div>
 

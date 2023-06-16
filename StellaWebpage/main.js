@@ -167,8 +167,20 @@ let batteryVoltage_label = document.getElementById("battery_voltage");
 
 let visible_filter_range = document.getElementById("visibleFilter_range");
 let duplicateScreen = document.getElementById("duplicateScreen");
-
 let distanceInput = document.getElementById("distanceInput");
+
+//** TUTORIAL HTML ELEMENTS */
+let tut_btn_prev = document.getElementById("tut-prev");
+let tut_btn_next = document.getElementById("tut-next");
+let tut_text = document.getElementById("tut_text");
+let tut_wrap = document.getElementById("tutorial-wrap");
+let tutorialTextList = ['The <b>#batch</b> section of the sidebar allows you to select which batch you are currently viewing.', 
+'The <b>timeline</b> below allows you to scrub through data you have captured over time.',
+'To add additional graphs, select a <b>calibration #batch</b> to base your calculations off of.', 
+'Once you select a calibration batch, multiple <b>graphs</b> will become accessible. Click on each to view multiple on screen at once.', 
+'While scrubbing through the timeline you can view the <b>‘Extra Info’</b> tab to see data that isn’t represented on the graph.'];
+let tutorialIndex = 0; 
+let tutorial = true;
 
 //** PLAY PAUSE HTML ELEMENTS */
 const box = document.querySelector(".box");
@@ -1789,6 +1801,22 @@ upload_file.addEventListener("input", function () {
           graphLabels[i].classList.toggle('active');
         }
       }
+      
+      // this is the first time
+      if (! localStorage.noFirstVisit) {
+        // check this flag for escaping this if block next time
+        localStorage.noFirstVisit = "1";
+      }
+
+      if(tutorial)
+      {
+        setTimeout(() => {
+          tut_wrap.classList.toggle('active');
+          var distance = document.getElementById('batches').offsetTop;
+          tut_wrap.style.top = distance + 'px';
+          tut_wrap.style.left = '17.5%';
+        }, 1000);
+      }
 
       // batchGrid.forEach((item) => {
       //   if (item.classList.contains("active")) {
@@ -2614,7 +2642,7 @@ function updateChart(backward, index) {
       currentSurfaceTemp +
       "&#8451";
     
-      //** CHECK FOR SURFACE TEMP NAME DIFFERENCES IN THE CSV */
+      //** CHECK FOR RELATIVE HUMIDITY NAME DIFFERENCES IN THE CSV */
     var currentRelativeHumidity;
     if(currentBatchArray[dataTimeIndex].relative_humidity)
     {
@@ -4475,6 +4503,116 @@ help_closeBtn.addEventListener("click", function () {
     helpScreen.classList.toggle("active");
   }
 });
+
+//** TUTORIAL BUTTONS */
+tut_btn_prev.addEventListener("click", function () {
+  console.log("PREVIOUS");
+  progressTutorial(false);
+});
+tut_btn_next.addEventListener("click", function () {
+  console.log("NEXT");
+
+  if(tutorialIndex == tutorialTextList.length - 1)
+  {
+    if(tut_wrap.classList.contains('active'))
+    {
+      tut_wrap.classList.toggle('active');
+    }
+    tutorial = false;
+  }
+  else
+  {
+    progressTutorial(true);
+  }
+});
+
+function progressTutorial(forward)
+{
+  //** FORWARD NAVIGATION */
+  if(forward)
+  {
+    tutorialIndex++;
+    tut_text.innerHTML = tutorialTextList[tutorialIndex];
+  }
+  //** BACKWARD NAVIGATION */
+  else
+  {
+    tutorialIndex--;
+    tut_text.innerHTML = tutorialTextList[tutorialIndex];
+  }
+
+  //** POSITIONING OF TUT_WRAP */
+  if(tutorialIndex == 0)
+  {
+    //** #BATCHES POSITIONING */
+    var distance = document.getElementById('batches').offsetTop;
+    tut_wrap.style.top = distance + 'px';
+    tut_wrap.style.left = '17.5%';
+    console.log(document.getElementById('batches').offsetTop);
+  }
+  else if(tutorialIndex == 1)
+  {
+    //** SLIDER POSITIONING */
+    var distanceTop = document.getElementById('slider_container').offsetTop;
+    var distanceLeft = document.getElementById('slider_container').offsetLeft;
+    tut_wrap.style.top = distanceTop + 50 + 'px';
+    tut_wrap.style.left = distanceLeft + 'px';
+
+    console.log(document.getElementById('myRange').offsetTop + ": range slider top");
+    console.log(document.getElementById('myRange').offsetLeft + ": range slider left");
+  }
+  else if(tutorialIndex == 2)
+  {
+    //** CALIBRATION BATCH POSITIONING */
+    var distance = document.getElementById('calibration_batch_grid').offsetTop;
+    tut_wrap.style.top = distance + 'px';
+    tut_wrap.style.left = '17.5%';
+    console.log(document.getElementById('calibration_batch_grid').offsetTop);
+  }
+  else if(tutorialIndex == 3)
+  {
+    //** GRAPHS POSITIONING */
+    var distance = document.getElementById('graphs').offsetTop;
+    tut_wrap.style.top = distance + 'px';
+    tut_wrap.style.left = '17.5%';
+    console.log(document.getElementById('graphs').offsetTop);
+  }
+  else if(tutorialIndex == 4)
+  {
+    //** EXTRA INFO POSITIONING */
+    var distance = document.getElementById('extraInfo').offsetTop;
+    tut_wrap.style.top = distance + 'px';
+    tut_wrap.style.left = '17.5%';
+    console.log(document.getElementById('extraInfo').offsetTop);
+  }
+
+  //** FOR ENABELING AND DISABELING PREV BUTTON */
+  if(tutorialIndex == 0)
+  {
+    if(!tut_btn_prev.classList.contains('disabled'))
+    {
+      tut_btn_prev.classList.toggle('disabled');
+    }
+  }
+  else
+  {
+    if(tut_btn_prev.classList.contains('disabled'))
+    {
+      tut_btn_prev.classList.toggle('disabled');
+    }
+  }
+  //** FOR ENABELING AND DISABELING NEXT BUTTON */
+  if(tutorialIndex == tutorialTextList.length - 1)
+  {
+    tut_btn_next.innerHTML = "<b>DONE</b>";
+  }
+  else
+  {
+    tut_btn_next.innerHTML = "<b>&gt;</b>";
+  }
+
+  console.log("tutorial index: " + tutorialIndex);
+}
 
 //** DRAG FUNCTION FOR CONTROL SIDEBAR"S */
 let wrapper = controlSidebar;
