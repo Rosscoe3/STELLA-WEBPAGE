@@ -60,6 +60,7 @@ let dataArrayBatches = [[]];
 let currentBatchArray = [[]];
 let dataTimeIndex = 0;
 let animationTime = 1500;
+let currentDataBatchIndex = 0;
 
 //** HTML ELEMENTS */
 let menuContainer = document.getElementById("menuContainer");
@@ -172,6 +173,7 @@ let distanceInput = document.getElementById("distanceInput");
 //** TUTORIAL HTML ELEMENTS */
 let tut_btn_prev = document.getElementById("tut-prev");
 let tut_btn_next = document.getElementById("tut-next");
+let tut_btn_skip = document.getElementById("tut-skip");
 let tut_text = document.getElementById("tut_text");
 let tut_wrap = document.getElementById("tutorial-wrap");
 let tutorialTextList = ['The <b>#batch</b> section of the sidebar allows you to select which batch you are currently viewing.', 
@@ -1895,7 +1897,7 @@ upload_file.addEventListener("input", function () {
 });
 
 //** USED TO UPDATE THE CHART WITH THE CONTROLS */
-function updateChart(backward, index) {
+function updateChart(backward, index, exactIndex) {
   if (RESOURCE_LOADED) {
     speedSlider.max = currentBatchArray.length;
     speedSlider.min = 1;
@@ -1938,7 +1940,15 @@ function updateChart(backward, index) {
 
       speedSlider.value = dataTimeIndex + 1;
     } else {
-      dataTimeIndex = parseInt(index) - 1;
+      
+      if(exactIndex)
+      {
+      }
+      else
+      {
+        dataTimeIndex = parseInt(index) - 1;
+      }
+      console.log("UPDATE WITH AN INDEX: " + index);
     }
 
     var progress = (dataTimeIndex / (currentBatchArray.length - 1)) * 100;
@@ -3295,6 +3305,7 @@ function addBatches(dataArray) {
 
         this.classList.toggle("selected");
         let calibrationArray = dataArrayBatches[this.index];
+        currentDataBatchIndex = this.index;
 
         if (!ndvi_element.classList.contains("active")) {
           ndvi_element.classList.toggle("active");
@@ -3679,7 +3690,7 @@ function convertToReflectance() {
     // console.log("nir730: " + currentBatchArray[i].nir730_reflectance);
     // console.log("nir760: " + currentBatchArray[i].nir760_reflectance);
     // console.log("nir810: " + currentBatchArray[i].nir810_reflectance);
-    // console.log("nir860: " + currentBatchArray[i].nir860_reflectance);
+    console.log("nir860: " + currentBatchArray[i].nir860_reflectance);
   }
   calculateNIRV();
 }
@@ -3699,7 +3710,7 @@ function calculateNIRV() {
 
   //console.log(currentBatchArray);
 
-  updateChart();
+  updateChart(false, currentDataBatchIndex, true);
 }
 
 function getTanFromDegrees(degrees) {
@@ -3878,8 +3889,6 @@ arrowRight.addEventListener("click", (e) => {
 
 //** CLICK EVENT FOR LEFT ARROW BUTTON */
 arrowLeft.addEventListener("click", (e) => {
-  console.log("Left Button");
-
   if (animPlay) {
     animPlay = false;
     box.classList.toggle("pause");
@@ -4524,6 +4533,20 @@ tut_btn_next.addEventListener("click", function () {
   {
     progressTutorial(true);
   }
+});
+tut_btn_skip.addEventListener("click", function () {
+  if(tut_wrap.classList.contains('active'))
+  {
+    tut_wrap.classList.toggle('active');
+  }
+  tutorial = false;
+});
+
+//** DETECT DISTANCE DISTANCE INPUT CHANGE */
+distanceInput.addEventListener("change", function(){
+  console.log("CHANGED INPUT: " + distanceInput.value);
+
+  averageCalibrationArray(dataArrayBatches[currentDataBatchIndex]);
 });
 
 function progressTutorial(forward)
