@@ -22,6 +22,12 @@
       <div class="sidebar" id="sidebar">
         <div class="sidebarTitle">
           <b>#batch</b>
+          <div 
+          id="upload_additional"
+          class="symbol"
+          title="An indicator of density and health in vegetation">
+          +
+        </div>
         </div>
         <div class="scrollContainer" id="batches" style="height: 20%;">
           <div class="batchGrid" id="batchGrid">
@@ -114,6 +120,7 @@
                 id="upload_file"
                 accept=".txt, .csv"
                 onclick="this.value=null;"
+                multiple
               />
               upload_file
             </label>

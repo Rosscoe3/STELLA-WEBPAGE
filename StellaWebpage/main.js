@@ -68,6 +68,7 @@ let menuElement = document.getElementById("menu");
 let helpButton = document.getElementById("help");
 
 let upload_file = document.getElementById("upload_file");
+let upload_additional = document.getElementById("upload_additional");
 let landing = document.getElementById("landing");
 
 let speedSlider = document.getElementById("myRange");
@@ -340,6 +341,9 @@ let standardDeviation_array = [[]];
 let delayed;
 var calibrationData, calibrationData_Infrared;
 var calibrationArray_Visible, calibrationArray_Infrared;
+
+let batchIndex = 0;
+let numFiles = 0;
 
 //** VARIABLES FOR RECORDING */
 var recording;
@@ -1765,38 +1769,192 @@ function readTextFile(file, visible) {
 }
 
 upload_file.addEventListener("input", function () {
+  // if (!RESOURCE_LOADED) {
+  //   var reader = new FileReader();
+  //   document.getElementById("mainGraph").classList.toggle("active");
+  //   //controlSidebar.classList.toggle("active");
+  //   rawData_element.classList.toggle("active");
+  //   visible_filter_element.classList.toggle("active");
+  //   infrared_filter_element.classList.toggle("active");
+  //   recordContainer.classList.toggle("active");
+  //   menuElement.classList.toggle("active");
+  //   menuContainer.classList.toggle("disable");
+  //   helpButton.classList.toggle("active");
+  //   sidebar.classList.toggle("active");
+  //   sidebarButton.classList.toggle("active");
+    
+  //   if(sidebar.classList.contains("active"))
+  //   {
+  //     sidebarButton.innerHTML = "<";
+  //   }
+
+  //   landing.classList.toggle("active");
+
+  //   graphGradients();
+
+  //   //** WHEN THE DATA FILE IS LOADED */
+  //   reader.onload = function (event) {
+  //     if (reader.result.includes("average")) {
+  //       console.log(reader.result.replace("average", ""));
+  //       console.log("INCLUDES AVERAGE");
+  //       dataIsAverage = true;
+  //     } else {
+  //       dataIsAverage = false;
+  //     }
+
+  //     var graphLabels = document.getElementById('graphs').getElementsByTagName("div");
+  //     for(var i=0; i<graphLabels.length; i++) {
+  //       if(!graphLabels[i].classList.contains('selected') && graphLabels[i].classList.contains('active'))
+  //       {
+  //         graphLabels[i].classList.toggle('active');
+  //       }
+  //     }
+      
+  //     // this is the first time
+  //     if (! localStorage.noFirstVisit) {
+  //       // check this flag for escaping this if block next time
+  //       localStorage.noFirstVisit = "1";
+  //     }
+
+  //     //** IF THIS IS THE TUTORIAL */
+  //     if(tutorial)
+  //     {
+  //       setTimeout(() => {
+  //         tut_wrap.classList.toggle('active');
+  //         var distance = document.getElementById('batches').offsetTop;
+  //         tut_wrap.style.top = distance + 'px';
+  //         tut_wrap.style.left = '17.5%';
+  //       }, 1000);
+  //     }
+
+  //     newDataArray = csvToArray(reader.result);
+  //     let currentBatchNmb = newDataArray[0].batch_number;
+  //     //dataArrayBatches = [[]];
+
+  //     console.log(dataArrayBatches);
+
+  //     //** IF YOU UPLAOD AN AVERAGE FILE */
+  //     if (dataIsAverage) {
+  //       newDataArray[newDataArray.length - 2].timestamp =
+  //         newDataArray[0].timestamp;
+  //       standardDeviation_array[0] = newDataArray[newDataArray.length - 1];
+  //       standardDeviation_array[0].timestamp = newDataArray[0].timestamp;
+  //       var tempArray = newDataArray[newDataArray.length - 2];
+  //       newDataArray = [[]];
+  //       newDataArray[0] = tempArray;
+  //     }
+
+  //     let batchIndex = 0;
+  //     for (let i = 0; i < newDataArray.length; i++) {
+  //       //** MAKE SURE NONE OF THE DATA IS EMPTY */
+  //       if (
+  //         newDataArray[i].batch_number != "" &&
+  //         typeof newDataArray[i].batch_number !== "undefined"
+  //       ) {
+  //         //** SORT THE DATA INTO DISTINCT BATCHES */
+  //         if (currentBatchNmb != newDataArray[i].batch_number) {
+  //           batchIndex++;
+  //           currentBatchNmb = newDataArray[i].batch_number;
+  //           dataArrayBatches.push(new Array());
+  //         } else {
+  //         }
+
+  //         dataArrayBatches[batchIndex].push(newDataArray[i]);
+  //       }
+  //     }
+
+  //     batchesContainer.innerHTML = "";
+  //     document.getElementById("calibration_batch_grid").innerHTML = "";
+  //     addBatches(dataArrayBatches);
+
+  //     //** CLEAR THE ARRAY IF IT IS FULL */
+  //     if (dataArray) {
+  //       dataArray = [];
+  //     }
+
+  //     //console.log(event.target);
+  //     const lineSplit = reader.result.split(/\r?\n/);
+  //     //console.log(lineSplit);
+
+  //     for (var i = 0; i < lineSplit.length; i++) {
+  //       dataArray.push(lineSplit[i].split(","));
+  //     }
+  //     if (!raw_element.classList.contains("selected")) {
+  //       raw_element.classList.toggle("selected");
+  //     }
+  //     if (ndvi_element.classList.contains("selected")) {
+  //       ndvi_element.classList.toggle("selected");
+  //     }
+
+  //     RESOURCE_LOADED = true;
+  //     viewMode = 1;
+  //     updateChart();
+  //     updateChartLabels();
+  //     batchChangeUpdate();
+  //   };
+
+  //   //console.log(this.files);
+
+  //   reader.readAsText(this.files[0]);
+  // }
+
+  // uploadFile(upload_file.files[0]);
+
+  processFiles(upload_file.files);
+});
+
+upload_additional.addEventListener("click", function () {
+  
+  console.log("ADDITIONAL");
+  
+  uploadFile(upload_file.files[0]);
+});
+
+
+function uploadFile(file)
+{
+  //** IF A FILE HAS ALREADY BEEN UPLOADED */
   if (!RESOURCE_LOADED) {
     var reader = new FileReader();
-    document.getElementById("mainGraph").classList.toggle("active");
-    //controlSidebar.classList.toggle("active");
-    rawData_element.classList.toggle("active");
-    visible_filter_element.classList.toggle("active");
-    infrared_filter_element.classList.toggle("active");
-    recordContainer.classList.toggle("active");
-    menuElement.classList.toggle("active");
-    menuContainer.classList.toggle("disable");
-    helpButton.classList.toggle("active");
-    sidebar.classList.toggle("active");
-    sidebarButton.classList.toggle("active");
+    
+    //** TOGGLES FOR LANDING UI ELEMENTS */
     if(sidebar.classList.contains("active"))
     {
       sidebarButton.innerHTML = "<";
     }
-    landing.classList.toggle("active");
-
+    if(landing.classList.contains("active"))
+    {
+      document.getElementById("mainGraph").classList.toggle("active");
+      //controlSidebar.classList.toggle("active");
+      rawData_element.classList.toggle("active");
+      visible_filter_element.classList.toggle("active");
+      infrared_filter_element.classList.toggle("active");
+      recordContainer.classList.toggle("active");
+      menuElement.classList.toggle("active");
+      menuContainer.classList.toggle("disable");
+      helpButton.classList.toggle("active");
+      sidebar.classList.toggle("active");
+      sidebarButton.classList.toggle("active");
+      landing.classList.toggle("active");
+    }
     graphGradients();
 
     //** WHEN THE DATA FILE IS LOADED */
-    reader.onload = function (event) {
-      if (reader.result.includes("average")) {
+    reader.onload = function (event) 
+    {
+      if (reader.result.includes("average")) 
+      {
         console.log(reader.result.replace("average", ""));
         console.log("INCLUDES AVERAGE");
         dataIsAverage = true;
-      } else {
+      } 
+      else 
+      {
         dataIsAverage = false;
       }
 
       var graphLabels = document.getElementById('graphs').getElementsByTagName("div");
+      
       for(var i=0; i<graphLabels.length; i++) {
         if(!graphLabels[i].classList.contains('selected') && graphLabels[i].classList.contains('active'))
         {
@@ -1805,11 +1963,13 @@ upload_file.addEventListener("input", function () {
       }
       
       // this is the first time
-      if (! localStorage.noFirstVisit) {
+      if (! localStorage.noFirstVisit) 
+      {
         // check this flag for escaping this if block next time
         localStorage.noFirstVisit = "1";
       }
 
+      //** IF THIS IS THE TUTORIAL */
       if(tutorial)
       {
         setTimeout(() => {
@@ -1820,19 +1980,22 @@ upload_file.addEventListener("input", function () {
         }, 1000);
       }
 
-      // batchGrid.forEach((item) => {
-      //   if (item.classList.contains("active")) {
-      //     item.classList.toggle("active");
-      //   }
-      // });
 
+      //** TAKE RESULT AND GRAPH */
       newDataArray = csvToArray(reader.result);
+      // for(var y = 0; y < newDataArray.length; y++)
+      // {
+      //   newDataArray[y].batch_number == newDataArray[y].batch_number + "(1)"
+      // }
+      
       let currentBatchNmb = newDataArray[0].batch_number;
-      dataArrayBatches = [[]];
+      //dataArrayBatches = [[]];
 
-      if (dataIsAverage) {
+      //** IF YOU UPLAOD AN AVERAGE FILE */
+      if (dataIsAverage)
+      {
         newDataArray[newDataArray.length - 2].timestamp =
-          newDataArray[0].timestamp;
+        newDataArray[0].timestamp;
         standardDeviation_array[0] = newDataArray[newDataArray.length - 1];
         standardDeviation_array[0].timestamp = newDataArray[0].timestamp;
         var tempArray = newDataArray[newDataArray.length - 2];
@@ -1840,22 +2003,20 @@ upload_file.addEventListener("input", function () {
         newDataArray[0] = tempArray;
       }
 
-      // console.log(standardDeviation_array);
-      // console.log(newDataArray);
+      console.log(newDataArray);
 
-      let batchIndex = 0;
       for (let i = 0; i < newDataArray.length; i++) {
         //** MAKE SURE NONE OF THE DATA IS EMPTY */
-        if (
-          newDataArray[i].batch_number != "" &&
-          typeof newDataArray[i].batch_number !== "undefined"
-        ) {
+        if (newDataArray[i].batch_number != "" &&
+          typeof newDataArray[i].batch_number !== "undefined") 
+        {
           //** SORT THE DATA INTO DISTINCT BATCHES */
-          if (currentBatchNmb != newDataArray[i].batch_number) {
+          console.log(currentBatchNmb);
+          if (currentBatchNmb != newDataArray[i].batch_number) 
+          {
             batchIndex++;
             currentBatchNmb = newDataArray[i].batch_number;
             dataArrayBatches.push(new Array());
-          } else {
           }
 
           dataArrayBatches[batchIndex].push(newDataArray[i]);
@@ -1864,6 +2025,8 @@ upload_file.addEventListener("input", function () {
 
       batchesContainer.innerHTML = "";
       document.getElementById("calibration_batch_grid").innerHTML = "";
+
+      console.log(dataArrayBatches);
       addBatches(dataArrayBatches);
 
       //** CLEAR THE ARRAY IF IT IS FULL */
@@ -1881,7 +2044,8 @@ upload_file.addEventListener("input", function () {
       if (!raw_element.classList.contains("selected")) {
         raw_element.classList.toggle("selected");
       }
-      if (ndvi_element.classList.contains("selected")) {
+      if (ndvi_element.classList.contains("selected")) 
+      {
         ndvi_element.classList.toggle("selected");
       }
 
@@ -1892,9 +2056,31 @@ upload_file.addEventListener("input", function () {
       batchChangeUpdate();
     };
 
-    reader.readAsText(this.files[0]);
+    //** THIS RUNS BEFORE CODE ABOVE, READS TEXT */
+    reader.readAsText(file);
   }
-});
+}
+
+function processFiles(files)
+{
+    batchIndex = 0;
+    numFiles = files.length;  
+    for(var i=0; i<files.length; i++)
+    {
+        writefiles(files[i]);
+        //uploadFile(files[i]);
+    }
+}
+
+function writefiles(file)
+{
+    var reader = new FileReader();
+    reader.onload = function()
+    {
+      uploadFile(file);
+    }
+    reader.readAsText(file, "UTF-8");
+}
 
 //** USED TO UPDATE THE CHART WITH THE CONTROLS */
 function updateChart(backward, index, exactIndex) {
@@ -2846,7 +3032,7 @@ function updateChartLabels() {
     mainChart.getDatasetMeta(14).hidden = false;
   }
 
-  console.log(excludeLabelList);
+  //console.log(excludeLabelList);
   mainChart.update();
 }
 
@@ -3237,122 +3423,129 @@ function startTimer() {
 }
 
 function addBatches(dataArray) {
-  for (var i = 0; i < dataArray.length; i++) {
-    const div = document.createElement("div");
-    var div2 = document.createElement("div");
-    div.id = "batchNmb";
-    div.classList.add("active");
+  for (var i = 0; i < dataArray.length; i++) 
+  {
+    if(dataArray[i].length != 0)
+    {
+      const div = document.createElement("div");
+      var div2 = document.createElement("div");
+      div.id = "batchNmb";
+      div.classList.add("active");
 
-    //** BATCH NUMBER CLICK FUNCTION */
-    div.onclick = function () {
-      if (!this.classList.contains("selected")) {
-        const batchGrid = document
-          .getElementById("batchGrid")
-          .querySelectorAll("[id=batchNmb]");
+      //** BATCH NUMBER CLICK FUNCTION */
+      div.onclick = function () {
+        if (!this.classList.contains("selected")) {
+          const batchGrid = document
+            .getElementById("batchGrid")
+            .querySelectorAll("[id=batchNmb]");
 
-        lastSliderValue = 0;
+          lastSliderValue = 0;
 
-        batchGrid.forEach((item) => {
-          if (item.classList.contains("selected")) {
-            item.classList.toggle("selected");
+          batchGrid.forEach((item) => {
+            if (item.classList.contains("selected")) {
+              item.classList.toggle("selected");
+            }
+          });
+
+          this.classList.toggle("selected");
+          currentBatchArray = dataArray[this.index];
+          currentBatchArray.index = this.index;
+          resetTrim();
+
+          //** UPDATE CHART WITH UID */
+          mainChart.options.plugins.title.text =
+            "  UID: " + currentBatchArray[0].UID;
+          mainChart.update();
+
+          clearTimeout(animWaitFunc);
+          batchChangeUpdate();
+        }
+      };
+
+      //console.log(dataArray[i]);
+      //console.log(dataArray[i][0].batch_number);
+
+      var date =
+        dataArray[i][0].timestamp.replace(/\s/g, "").substr(0, 4) +
+        "/" +
+        dataArray[i][0].timestamp.replace(/\s/g, "").substr(4, 2) +
+        "/" +
+        dataArray[i][0].timestamp.replace(/\s/g, "").substr(6, 2);
+
+      //console.log(dataArray);
+      //console.log("Date: " + date);
+      div.innerHTML = dataArray[i][0].batch_number;
+      div.index = i;
+      div.title = date;
+
+      var div2 = div.cloneNode(true);
+      div2.index = i;
+
+      //** CLICK FUNCTIONALITY FOR CALIBRATION BATCH SELECTION*/
+      div2.onclick = function () {
+        if (!this.classList.contains("selected")) {
+          console.log(this.parentNode.id);
+          const batchGrid = document
+            .getElementById("calibration_batch_grid")
+            .querySelectorAll("[id=batchNmb]");
+
+          batchGrid.forEach((item) => {
+            if (item.classList.contains("selected")) {
+              item.classList.toggle("selected");
+            }
+          });
+
+          this.classList.toggle("selected");
+          let calibrationArray = dataArrayBatches[this.index];
+          currentDataBatchIndex = this.index;
+
+          if (!ndvi_element.classList.contains("active")) {
+            ndvi_element.classList.toggle("active");
           }
-        });
-
-        this.classList.toggle("selected");
-        currentBatchArray = dataArray[this.index];
-        currentBatchArray.index = this.index;
-        resetTrim();
-
-        //** UPDATE CHART WITH UID */
-        mainChart.options.plugins.title.text =
-          "  UID: " + currentBatchArray[0].UID;
-        mainChart.update();
-
-        clearTimeout(animWaitFunc);
-        batchChangeUpdate();
-      }
-    };
-
-    var date =
-      dataArray[i][0].timestamp.replace(/\s/g, "").substr(0, 4) +
-      "/" +
-      dataArray[i][0].timestamp.replace(/\s/g, "").substr(4, 2) +
-      "/" +
-      dataArray[i][0].timestamp.replace(/\s/g, "").substr(6, 2);
-
-    //console.log(dataArray);
-    //console.log("Date: " + date);
-    div.innerHTML = dataArray[i][0].batch_number;
-    div.index = i;
-    div.title = date;
-
-    var div2 = div.cloneNode(true);
-    div2.index = i;
-
-    //** CLICK FUNCTIONALITY FOR CALIBRATION BATCH SELECTION*/
-    div2.onclick = function () {
-      if (!this.classList.contains("selected")) {
-        console.log(this.parentNode.id);
-        const batchGrid = document
-          .getElementById("calibration_batch_grid")
-          .querySelectorAll("[id=batchNmb]");
-
-        batchGrid.forEach((item) => {
-          if (item.classList.contains("selected")) {
-            item.classList.toggle("selected");
+          if (!reflectance_element.classList.contains("active")) {
+            reflectance_element.classList.toggle("active");
           }
-        });
+          if (!sr_element.classList.contains("active")) {
+            sr_element.classList.toggle("active");
+          }
+          if (!dswi_element.classList.contains("active")) {
+            dswi_element.classList.toggle("active");
+          }
+          if (!nirv_element.classList.contains("active")) {
+            nirv_element.classList.toggle("active");
+          }
 
-        this.classList.toggle("selected");
-        let calibrationArray = dataArrayBatches[this.index];
-        currentDataBatchIndex = this.index;
+          console.log(calibrationArray);
+          calibrationBatchSelected = true;
 
-        if (!ndvi_element.classList.contains("active")) {
-          ndvi_element.classList.toggle("active");
+          clearTimeout(animWaitFunc);
+          averageCalibrationArray(calibrationArray);
         }
-        if (!reflectance_element.classList.contains("active")) {
-          reflectance_element.classList.toggle("active");
-        }
-        if (!sr_element.classList.contains("active")) {
-          sr_element.classList.toggle("active");
-        }
-        if (!dswi_element.classList.contains("active")) {
-          dswi_element.classList.toggle("active");
-        }
-        if (!nirv_element.classList.contains("active")) {
-          nirv_element.classList.toggle("active");
-        }
+      };
 
-        console.log(calibrationArray);
-        calibrationBatchSelected = true;
+      //** SELECT THE FIRST BATCH IN THE LIST ON INITIALIZATION*/
+      if (i == 0) {
+        div.classList.toggle("selected");
+        currentBatchArray = dataArray[0];
+        currentBatchArray.index = 0;
 
-        clearTimeout(animWaitFunc);
-        averageCalibrationArray(calibrationArray);
+        //** INIT EDITING DATA */
+        var children = editRange_start.parentNode.childNodes[1].childNodes;
+        children[1].style.width = "0%";
+        children[5].style.left = "0%";
+        children[7].style.left = "0%";
+        children[3].style.width = "100%";
+        children[5].style.right = "0%";
+        children[9].style.left = "100%";
+        editRange_start.max = currentBatchArray.length;
+        editRange_end.max = currentBatchArray.length;
+        editRange_start.value = 1;
+        editRange_end.value = currentBatchArray.length;
       }
-    };
 
-    //** SELECT THE FIRST BATCH IN THE LIST ON INITIALIZATION*/
-    if (i == 0) {
-      div.classList.toggle("selected");
-      currentBatchArray = dataArray[0];
-      currentBatchArray.index = 0;
-
-      //** INIT EDITING DATA */
-      var children = editRange_start.parentNode.childNodes[1].childNodes;
-      children[1].style.width = "0%";
-      children[5].style.left = "0%";
-      children[7].style.left = "0%";
-      children[3].style.width = "100%";
-      children[5].style.right = "0%";
-      children[9].style.left = "100%";
-      editRange_start.max = currentBatchArray.length;
-      editRange_end.max = currentBatchArray.length;
-      editRange_start.value = 1;
-      editRange_end.value = currentBatchArray.length;
+      document.getElementById("calibration_batch_grid").appendChild(div2);
+      document.getElementById("batchGrid").appendChild(div);
     }
-
-    document.getElementById("calibration_batch_grid").appendChild(div2);
-    document.getElementById("batchGrid").appendChild(div);
   }
 
   //** ADJUST SIZING DEPENDING ON SIZE OF BATCHES */
@@ -3373,6 +3566,7 @@ function addBatches(dataArray) {
 
   //** UDPATE UID ON CHART TITLE AT BATCH INIT */
   mainChart.options.plugins.title.text = "  UID: " + currentBatchArray[0].UID;
+    
 }
 
 function batchChangeUpdate() {

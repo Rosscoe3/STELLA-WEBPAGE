@@ -87,6 +87,18 @@ body {
   transition: all 0.5s ease-in-out;
 }
 
+.sidebarTitle .symbol{
+  float: right;
+  opacity: 100%;
+  transition: opacity 0.25s ease-in-out;
+}
+
+.symbol:hover{
+  opacity: 50%;
+  cursor: pointer;
+  transition: opacity 0.25s ease-in-out;
+}
+
 .sidebar.active{
   width: 15%;
   outline: solid 2px rgba(0, 0, 0, 1);
@@ -96,15 +108,16 @@ body {
 .openSidebarIcon{
   left: 0%;
   top: 0%;
+  width: fit-content;
   margin-left: 0.5rem;
   padding: 0rem;
   font-size: 200%;
   opacity: 0%;
 
   pointer-events: none;
+  cursor: pointer;
 
   z-index: 500;
-
   transition: all 0.25s ease-in-out;
 }
 .openSidebarIcon.active{
