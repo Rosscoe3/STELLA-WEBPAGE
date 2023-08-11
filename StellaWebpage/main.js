@@ -9,7 +9,9 @@ const ctx6 = document.getElementById("graph_DSWI").getContext("2d");
 const ctx7 = document.getElementById("graph_reflectance").getContext("2d");
 
 setTimeout(() => {
-  alert("Thank you for using the STELLA Dataviewer.\nSome functionality is not compatible with certain browsers.\n\n*Please use Google Chrome for the most optimized experience.*");
+  alert(
+    "Thank you for using the STELLA Dataviewer.\nSome functionality is not compatible with certain browsers.\n\n*Please use Google Chrome for the most optimized experience.*"
+  );
 }, 1000);
 
 //** GRADIENT FILL */
@@ -140,7 +142,9 @@ let ndvi_labels_visible = true;
 let nirv_visibility_icon = document.getElementById("visibility_nirv");
 let nirv_labels_visible = true;
 
-let reflectance_visibility_icon = document.getElementById("visibility_reflectance");
+let reflectance_visibility_icon = document.getElementById(
+  "visibility_reflectance"
+);
 let reflectance_labels_visible = true;
 
 let sr_visibility_icon = document.getElementById("visibility_sr");
@@ -177,12 +181,14 @@ let tut_btn_next = document.getElementById("tut-next");
 let tut_btn_skip = document.getElementById("tut-skip");
 let tut_text = document.getElementById("tut_text");
 let tut_wrap = document.getElementById("tutorial-wrap");
-let tutorialTextList = ['The <b>#batch</b> section of the sidebar allows you to select which batch you are currently viewing.', 
-'The <b>timeline</b> below allows you to scrub through data you have captured over time.',
-'To add additional graphs, select a <b>calibration #batch</b> to base your calculations off of.', 
-'Once you select a calibration batch, multiple <b>graphs</b> will become accessible. Click on each to view multiple on screen at once.', 
-'While scrubbing through the timeline you can view the <b>‘Extra Info’</b> tab to see data that isn’t represented on the graph.'];
-let tutorialIndex = 0; 
+let tutorialTextList = [
+  "The <b>#batch</b> section of the sidebar allows you to select which batch you are currently viewing.",
+  "The <b>timeline</b> below allows you to scrub through data you have captured over time.",
+  "To add additional graphs, select a <b>calibration #batch</b> to base your calculations off of.",
+  "Once you select a calibration batch, multiple <b>graphs</b> will become accessible. Click on each to view multiple on screen at once.",
+  "While scrubbing through the timeline you can view the <b>‘Extra Info’</b> tab to see data that isn’t represented on the graph.",
+];
+let tutorialIndex = 0;
 let tutorial = true;
 
 //** PLAY PAUSE HTML ELEMENTS */
@@ -244,8 +250,7 @@ class SerialScaleController {
         helpButton.classList.toggle("active");
         sidebar_live.classList.toggle("active");
         sidebarButton.classList.toggle("active");
-        if(sidebar_live.classList.contains("active"))
-        {
+        if (sidebar_live.classList.contains("active")) {
           sidebarButton.innerHTML = "<";
         }
 
@@ -272,8 +277,7 @@ class SerialScaleController {
           helpButton.classList.toggle("active");
           sidebar.classList.toggle("active");
           sidebarButton.classList.toggle("active");
-          if(sidebar.classList.contains("active"))
-          {
+          if (sidebar.classList.contains("active")) {
             sidebarButton.innerHTML = "<";
           }
 
@@ -1961,7 +1965,7 @@ function uploadFile(file)
           graphLabels[i].classList.toggle('active');
         }
       }
-      
+
       // this is the first time
       if (! localStorage.noFirstVisit) 
       {
@@ -1973,10 +1977,10 @@ function uploadFile(file)
       if(tutorial)
       {
         setTimeout(() => {
-          tut_wrap.classList.toggle('active');
-          var distance = document.getElementById('batches').offsetTop;
-          tut_wrap.style.top = distance + 'px';
-          tut_wrap.style.left = '17.5%';
+          tut_wrap.classList.toggle("active");
+          var distance = document.getElementById("batches").offsetTop;
+          tut_wrap.style.top = distance + "px";
+          tut_wrap.style.left = "17.5%";
         }, 1000);
       }
 
@@ -2126,12 +2130,8 @@ function updateChart(backward, index, exactIndex) {
 
       speedSlider.value = dataTimeIndex + 1;
     } else {
-      
-      if(exactIndex)
-      {
-      }
-      else
-      {
+      if (exactIndex) {
+      } else {
         dataTimeIndex = parseInt(index) - 1;
       }
       console.log("UPDATE WITH AN INDEX: " + index);
@@ -2569,14 +2569,26 @@ function updateChart(backward, index, exactIndex) {
       console.log("Y570: " + currentBatchArray[dataTimeIndex].Y570_reflectance);
       console.log("O600: " + currentBatchArray[dataTimeIndex].O600_reflectance);
       console.log("R650: " + currentBatchArray[dataTimeIndex].R650_reflectance);
-      console.log("nir610: " + currentBatchArray[dataTimeIndex].nir610_reflectance);
-      console.log("nir680: " + currentBatchArray[dataTimeIndex].nir680_reflectance);
-      console.log("nir730: " + currentBatchArray[dataTimeIndex].nir730_reflectance);
-      console.log("nir760: " + currentBatchArray[dataTimeIndex].nir760_reflectance);
-      console.log("nir810: " + currentBatchArray[dataTimeIndex].nir810_reflectance);
-      console.log("nir860: " + currentBatchArray[dataTimeIndex].nir860_reflectance);
+      console.log(
+        "nir610: " + currentBatchArray[dataTimeIndex].nir610_reflectance
+      );
+      console.log(
+        "nir680: " + currentBatchArray[dataTimeIndex].nir680_reflectance
+      );
+      console.log(
+        "nir730: " + currentBatchArray[dataTimeIndex].nir730_reflectance
+      );
+      console.log(
+        "nir760: " + currentBatchArray[dataTimeIndex].nir760_reflectance
+      );
+      console.log(
+        "nir810: " + currentBatchArray[dataTimeIndex].nir810_reflectance
+      );
+      console.log(
+        "nir860: " + currentBatchArray[dataTimeIndex].nir860_reflectance
+      );
       console.log("DATA TIME INDEX: " + dataTimeIndex);
-      
+
       reflectance_chart.data.datasets[0].data = [
         {
           x: 450,
@@ -2817,46 +2829,34 @@ function updateChart(backward, index, exactIndex) {
       "air_temp: " +
       currentBatchArray[dataTimeIndex].air_temperature_C +
       "&#8451";
-    
-      
+
     //** CHECK FOR SURFACE TEMP NAME DIFFERENCES IN THE CSV */
     var currentSurfaceTemp;
-    if(currentBatchArray[dataTimeIndex].surface_temperature)
-    {
+    if (currentBatchArray[dataTimeIndex].surface_temperature) {
       currentSurfaceTemp = currentBatchArray[dataTimeIndex].surface_temperature;
-    }
-    else if(currentBatchArray[dataTimeIndex].surface_temperature_C)
-    {
-      currentSurfaceTemp = currentBatchArray[dataTimeIndex].surface_temperature_C
-    }
-    else
-    {
+    } else if (currentBatchArray[dataTimeIndex].surface_temperature_C) {
+      currentSurfaceTemp =
+        currentBatchArray[dataTimeIndex].surface_temperature_C;
+    } else {
       currentSurfaceTemp = 0;
     }
     surfaceTemp_label.innerHTML =
-      "surface_temp: " +
-      currentSurfaceTemp +
-      "&#8451";
-    
-      //** CHECK FOR RELATIVE HUMIDITY NAME DIFFERENCES IN THE CSV */
+      "surface_temp: " + currentSurfaceTemp + "&#8451";
+
+    //** CHECK FOR RELATIVE HUMIDITY NAME DIFFERENCES IN THE CSV */
     var currentRelativeHumidity;
-    if(currentBatchArray[dataTimeIndex].relative_humidity)
-    {
-      currentRelativeHumidity = currentBatchArray[dataTimeIndex].relative_humidity;
-    }
-    else if(currentBatchArray[dataTimeIndex].relative_humidity_percent)
-    {
-      currentRelativeHumidity = currentBatchArray[dataTimeIndex].relative_humidity_percent
-    }
-    else
-    {
+    if (currentBatchArray[dataTimeIndex].relative_humidity) {
+      currentRelativeHumidity =
+        currentBatchArray[dataTimeIndex].relative_humidity;
+    } else if (currentBatchArray[dataTimeIndex].relative_humidity_percent) {
+      currentRelativeHumidity =
+        currentBatchArray[dataTimeIndex].relative_humidity_percent;
+    } else {
       currentRelativeHumidity = 0;
     }
 
     relativeHumidity_label.innerHTML =
-      "relative_humidity: " +
-      currentRelativeHumidity +
-      "%";
+      "relative_humidity: " + currentRelativeHumidity + "%";
     batteryVoltage_label.innerHTML =
       "battery_voltage: " +
       currentBatchArray[dataTimeIndex].battery_voltage +
@@ -2878,9 +2878,7 @@ function updateChart(backward, index, exactIndex) {
           updateChart();
         }
       }, animationTime);
-    }
-    else
-    {
+    } else {
       clearTimeout(animWaitFunc);
     }
   }
@@ -3549,18 +3547,14 @@ function addBatches(dataArray) {
   }
 
   //** ADJUST SIZING DEPENDING ON SIZE OF BATCHES */
-  if(batchesContainer.childElementCount > 7)
-  {
+  if (batchesContainer.childElementCount > 7) {
     document.getElementById("batches").style.height = "20%";
     document.getElementById("batches_calibration").style.height = "10%";
-  }
-  else
-  {
+  } else {
     document.getElementById("batches").style.height = "fit-content";
     document.getElementById("batches_calibration").style.height = "10%";
   }
-  if(batchesContainer.childElementCount < 3)
-  {
+  if (batchesContainer.childElementCount < 3) {
     document.getElementById("batches_calibration").style.height = "fit-content";
   }
 
@@ -3921,16 +3915,14 @@ menuElement.addEventListener("click", function (ev) {
   sidebarButton.classList.toggle("active");
   viewMode = 0;
 
-  document.getElementById("chartCard").style.gridTemplateColumns = "minmax(200px, 1fr)";
+  document.getElementById("chartCard").style.gridTemplateColumns =
+    "minmax(200px, 1fr)";
   document.getElementById("chartCard").style.gridTemplateRows = "auto";
-  
-  if(sidebar.classList.contains("active"))
-  {
+
+  if (sidebar.classList.contains("active")) {
     sidebarButton.innerHTML = "<";
     sidebar.classList.toggle("active");
-  }
-  else if(sidebar_live.classList.contains("active"))
-  {
+  } else if (sidebar_live.classList.contains("active")) {
     sidebarButton.innerHTML = "<";
     sidebar_live.classList.toggle("active");
   }
@@ -3956,7 +3948,9 @@ menuElement.addEventListener("click", function (ev) {
   if (document.getElementById("NIRv_Graph").classList.contains("active")) {
     document.getElementById("NIRv_Graph").classList.toggle("active");
   }
-  if (document.getElementById("reflectance_Graph").classList.contains("active")) {
+  if (
+    document.getElementById("reflectance_Graph").classList.contains("active")
+  ) {
     document.getElementById("reflectance_Graph").classList.toggle("active");
   }
 
@@ -4002,10 +3996,10 @@ function updateGraphGrid(currentlyGraphed) {
   //** CHOOSE MY ELEMENT, WHETHER IN CONNECT_DEVICE OR UPLOAD_FILE MODE */
   if (sidebar.classList.contains("active")) {
     myElement = document.getElementById("chartCard");
-  } 
+  }
   // else if (controlSidebar_live.classList.contains("active")) {
   //   myElement = document.getElementById("chartCardLive");
-  // } 
+  // }
   else {
     myElement = document.getElementById("chartCardLive");
   }
@@ -4190,7 +4184,8 @@ reflectance_visibility_icon.addEventListener("click", function () {
   } else {
     reflectance_visibility_icon.classList.toggle("selected");
     reflectance_labels_visible = false;
-    document.getElementById("visibleIcon_reflectance").innerHTML = "visibility_off";
+    document.getElementById("visibleIcon_reflectance").innerHTML =
+      "visibility_off";
   }
   reflectance_chart.update();
 });
@@ -4665,15 +4660,19 @@ navigator.serial.addEventListener("disconnect", (e) => {
 
   if (viewMode == 2) {
     document.getElementById("liveGraph").classList.toggle("active");
-    duplicateScreen.classList.toggle("active");
+    //duplicateScreen.classList.toggle("active");
     menuElement.classList.toggle("active");
     menuContainer.classList.toggle("disable");
     helpButton.classList.toggle("active");
     sidebarButton.classList.toggle("active");
-    if(sidebar_live.classList.contains("active"))
-    {
+
+    if (sidebar_live.classList.contains("active")) {
       sidebar_live.classList.toggle("active");
     }
+    if (duplicateScreen.classList.contains("active")) {
+      duplicateScreen.classList.toggle("active");
+    }
+
     landing.classList.toggle("active");
     //controlSidebar_live.classList.toggle("active");
   }
@@ -4715,116 +4714,95 @@ tut_btn_prev.addEventListener("click", function () {
 tut_btn_next.addEventListener("click", function () {
   console.log("NEXT");
 
-  if(tutorialIndex == tutorialTextList.length - 1)
-  {
-    if(tut_wrap.classList.contains('active'))
-    {
-      tut_wrap.classList.toggle('active');
+  if (tutorialIndex == tutorialTextList.length - 1) {
+    if (tut_wrap.classList.contains("active")) {
+      tut_wrap.classList.toggle("active");
     }
     tutorial = false;
-  }
-  else
-  {
+  } else {
     progressTutorial(true);
   }
 });
 tut_btn_skip.addEventListener("click", function () {
-  if(tut_wrap.classList.contains('active'))
-  {
-    tut_wrap.classList.toggle('active');
+  if (tut_wrap.classList.contains("active")) {
+    tut_wrap.classList.toggle("active");
   }
   tutorial = false;
 });
 
 //** DETECT DISTANCE DISTANCE INPUT CHANGE */
-distanceInput.addEventListener("change", function(){
+distanceInput.addEventListener("change", function () {
   console.log("CHANGED INPUT: " + distanceInput.value);
 
   averageCalibrationArray(dataArrayBatches[currentDataBatchIndex]);
 });
 
-function progressTutorial(forward)
-{
+function progressTutorial(forward) {
   //** FORWARD NAVIGATION */
-  if(forward)
-  {
+  if (forward) {
     tutorialIndex++;
     tut_text.innerHTML = tutorialTextList[tutorialIndex];
   }
   //** BACKWARD NAVIGATION */
-  else
-  {
+  else {
     tutorialIndex--;
     tut_text.innerHTML = tutorialTextList[tutorialIndex];
   }
 
   //** POSITIONING OF TUT_WRAP */
-  if(tutorialIndex == 0)
-  {
+  if (tutorialIndex == 0) {
     //** #BATCHES POSITIONING */
-    var distance = document.getElementById('batches').offsetTop;
-    tut_wrap.style.top = distance + 'px';
-    tut_wrap.style.left = '17.5%';
-    console.log(document.getElementById('batches').offsetTop);
-  }
-  else if(tutorialIndex == 1)
-  {
+    var distance = document.getElementById("batches").offsetTop;
+    tut_wrap.style.top = distance + "px";
+    tut_wrap.style.left = "17.5%";
+    console.log(document.getElementById("batches").offsetTop);
+  } else if (tutorialIndex == 1) {
     //** SLIDER POSITIONING */
-    var distanceTop = document.getElementById('slider_container').offsetTop;
-    var distanceLeft = document.getElementById('slider_container').offsetLeft;
-    tut_wrap.style.top = distanceTop + 50 + 'px';
-    tut_wrap.style.left = distanceLeft + 'px';
+    var distanceTop = document.getElementById("slider_container").offsetTop;
+    var distanceLeft = document.getElementById("slider_container").offsetLeft;
+    tut_wrap.style.top = distanceTop + 50 + "px";
+    tut_wrap.style.left = distanceLeft + "px";
 
-    console.log(document.getElementById('myRange').offsetTop + ": range slider top");
-    console.log(document.getElementById('myRange').offsetLeft + ": range slider left");
-  }
-  else if(tutorialIndex == 2)
-  {
+    console.log(
+      document.getElementById("myRange").offsetTop + ": range slider top"
+    );
+    console.log(
+      document.getElementById("myRange").offsetLeft + ": range slider left"
+    );
+  } else if (tutorialIndex == 2) {
     //** CALIBRATION BATCH POSITIONING */
-    var distance = document.getElementById('calibration_batch_grid').offsetTop;
-    tut_wrap.style.top = distance + 'px';
-    tut_wrap.style.left = '17.5%';
-    console.log(document.getElementById('calibration_batch_grid').offsetTop);
-  }
-  else if(tutorialIndex == 3)
-  {
+    var distance = document.getElementById("calibration_batch_grid").offsetTop;
+    tut_wrap.style.top = distance + "px";
+    tut_wrap.style.left = "17.5%";
+    console.log(document.getElementById("calibration_batch_grid").offsetTop);
+  } else if (tutorialIndex == 3) {
     //** GRAPHS POSITIONING */
-    var distance = document.getElementById('graphs').offsetTop;
-    tut_wrap.style.top = distance + 'px';
-    tut_wrap.style.left = '17.5%';
-    console.log(document.getElementById('graphs').offsetTop);
-  }
-  else if(tutorialIndex == 4)
-  {
+    var distance = document.getElementById("graphs").offsetTop;
+    tut_wrap.style.top = distance + "px";
+    tut_wrap.style.left = "17.5%";
+    console.log(document.getElementById("graphs").offsetTop);
+  } else if (tutorialIndex == 4) {
     //** EXTRA INFO POSITIONING */
-    var distance = document.getElementById('extraInfo').offsetTop;
-    tut_wrap.style.top = distance + 'px';
-    tut_wrap.style.left = '17.5%';
-    console.log(document.getElementById('extraInfo').offsetTop);
+    var distance = document.getElementById("extraInfo").offsetTop;
+    tut_wrap.style.top = distance + "px";
+    tut_wrap.style.left = "17.5%";
+    console.log(document.getElementById("extraInfo").offsetTop);
   }
 
   //** FOR ENABELING AND DISABELING PREV BUTTON */
-  if(tutorialIndex == 0)
-  {
-    if(!tut_btn_prev.classList.contains('disabled'))
-    {
-      tut_btn_prev.classList.toggle('disabled');
+  if (tutorialIndex == 0) {
+    if (!tut_btn_prev.classList.contains("disabled")) {
+      tut_btn_prev.classList.toggle("disabled");
     }
-  }
-  else
-  {
-    if(tut_btn_prev.classList.contains('disabled'))
-    {
-      tut_btn_prev.classList.toggle('disabled');
+  } else {
+    if (tut_btn_prev.classList.contains("disabled")) {
+      tut_btn_prev.classList.toggle("disabled");
     }
   }
   //** FOR ENABELING AND DISABELING NEXT BUTTON */
-  if(tutorialIndex == tutorialTextList.length - 1)
-  {
+  if (tutorialIndex == tutorialTextList.length - 1) {
     tut_btn_next.innerHTML = "<b>DONE</b>";
-  }
-  else
-  {
+  } else {
     tut_btn_next.innerHTML = "<b>&gt;</b>";
   }
 
@@ -4880,21 +4858,18 @@ document.addEventListener("mouseup", () => {
 
 //** SIDEBAR FUNCTIONALITY */
 sidebarButton.addEventListener("click", function () {
-  if(viewMode == 2)
-  {
+  if (viewMode == 2) {
     sidebar_live.classList.toggle("active");
-  }
-  else if(viewMode == 1)
-  {
+  } else if (viewMode == 1) {
     sidebar.classList.toggle("active");
   }
 
-  if(sidebar.classList.contains("active") || sidebar_live.classList.contains("active"))
-  {
+  if (
+    sidebar.classList.contains("active") ||
+    sidebar_live.classList.contains("active")
+  ) {
     sidebarButton.innerHTML = "<";
-  }
-  else
-  {
+  } else {
     sidebarButton.innerHTML = ">";
   }
 });
