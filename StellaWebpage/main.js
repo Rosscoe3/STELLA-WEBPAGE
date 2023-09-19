@@ -171,6 +171,42 @@ let surfaceTemp_label = document.getElementById("surface_temp");
 let relativeHumidity_label = document.getElementById("relative_humidity");
 let batteryVoltage_label = document.getElementById("battery_voltage");
 
+let air_temp_Gauge = document.getElementById("air_temp_Gauge");
+let surfaceTemp_Gauge = document.getElementById("surface_temp_Gauge");
+let relative_humidity_Gauge = document.getElementById("relative_humidity_Gauge");
+let battery_voltage_Gauge = document.getElementById("battery_voltage_Gauge");
+
+var surface_temp_Gradient = [
+  { pct: 0.0, color: { r: 57, g: 71, b: 116 } },
+  { pct: 0.166, color: { r: 57, g: 132, b: 174 } },
+  { pct: 0.332, color: { r: 18, g: 149, b: 169 } },
+  { pct: 0.498, color: { r: 55, g: 175, b: 174 } },
+  { pct: 0.664, color: { r: 55, g: 161, b: 60 } },
+  { pct: 0.83, color: { r: 199, g: 64, b: 17 } },
+  { pct: 1.0, color: { r: 241, g: 1, b: 0 } }, ];
+
+var battery_voltage_Gradient = [
+  { pct: 0.0, color: { r: 252, g: 248, b: 3 } },
+  { pct: 0.5, color: { r: 255, g: 179, b: 75 } },
+  { pct: 1.0, color: { r: 252, g: 77, b: 39 } }, ];
+
+  // rgb(241,1,0)
+  // rgb(199,64,17)  
+  // rgb(55,161,60)
+  // rgb(55,175,174)
+  // rgb(18,149,169)  
+  // rgb(57,132,174)  
+  // rgb(57,71,116)
+
+var relative_humidity_Gradient = [
+{ pct: 0.0, color: { r: 255, g: 255, b: 205 } },
+{ pct: 0.166, color: { r: 199, g: 233, b: 181 } },
+{ pct: 0.332, color: { r: 127, g: 205, b: 187 } },
+{ pct: 0.498, color: { r: 63, g: 184, b: 197 } },
+{ pct: 0.664, color: { r: 23, g: 146, b: 192 } },
+{ pct: 0.83, color: { r: 28, g: 94, b: 170 } },
+{ pct: 1.0, color: { r: 4, g: 40, b: 134 } }, ];
+
 let visible_filter_range = document.getElementById("visibleFilter_range");
 let duplicateScreen = document.getElementById("duplicateScreen");
 let distanceInput = document.getElementById("distanceInput");
@@ -2816,19 +2852,17 @@ function updateChart(backward, index, exactIndex) {
         .replace(/\s/g, "")
         .substring(0, 4);
 
-    uid_label.innerHTML = "UID: " + currentBatchArray[dataTimeIndex].UID;
+    // uid_label.innerHTML = "UID: " + currentBatchArray[dataTimeIndex].UID;
 
     var string = currentBatchArray[dataTimeIndex].timestamp.replace(/\s/g, ""),
       date = new Date(
         string.replace(/(....)(..)(.....)(..)(.*)/, "$1-$2-$3:$4:$5")
       );
     var dateTime_time = date.toLocaleTimeString("en-US");
-
     time_label.innerHTML = "time: " + dateTime_time;
-    airTemp_label.innerHTML =
-      "air_temp: " +
-      currentBatchArray[dataTimeIndex].air_temperature_C +
-      "&#8451";
+    
+    airTemp_label.innerHTML = currentBatchArray[dataTimeIndex].air_temperature_C;
+    updateGauge(air_temp_Gauge, surface_temp_Gradient, currentBatchArray[dataTimeIndex].air_temperature_C, -20, 60);
 
     //** CHECK FOR SURFACE TEMP NAME DIFFERENCES IN THE CSV */
     var currentSurfaceTemp;
@@ -2840,8 +2874,8 @@ function updateChart(backward, index, exactIndex) {
     } else {
       currentSurfaceTemp = 0;
     }
-    surfaceTemp_label.innerHTML =
-      "surface_temp: " + currentSurfaceTemp + "&#8451";
+    surfaceTemp_label.innerHTML = currentSurfaceTemp;
+      updateGauge(surfaceTemp_Gauge, surface_temp_Gradient, currentSurfaceTemp, -20, 60);
 
     //** CHECK FOR RELATIVE HUMIDITY NAME DIFFERENCES IN THE CSV */
     var currentRelativeHumidity;
@@ -2855,12 +2889,11 @@ function updateChart(backward, index, exactIndex) {
       currentRelativeHumidity = 0;
     }
 
-    relativeHumidity_label.innerHTML =
-      "relative_humidity: " + currentRelativeHumidity + "%";
-    batteryVoltage_label.innerHTML =
-      "battery_voltage: " +
-      currentBatchArray[dataTimeIndex].battery_voltage +
-      "V";
+    relativeHumidity_label.innerHTML = currentRelativeHumidity;
+    updateGauge(relative_humidity_Gauge, relative_humidity_Gradient, currentRelativeHumidity, 0, 100);
+
+    batteryVoltage_label.innerHTML = currentBatchArray[dataTimeIndex].battery_voltage;
+    updateGauge(battery_voltage_Gauge, battery_voltage_Gradient, currentBatchArray[dataTimeIndex].battery_voltage, 0, 16);
 
     mainChart.update();
     reflectance_chart.update();
@@ -3205,13 +3238,13 @@ function decipherSerialMessage(message) {
           parseFloat(batchNmb);
       }
     }
-    if (messageSplit.includes("UID,")) {
-      let uid = messageSplit[messageSplit.indexOf("UID,") + 1];
-      if (!isNaN(parseFloat(uid))) {
-        document.getElementById("UID_label").innerHTML =
-          "UID: " + parseFloat(uid);
-      }
-    }
+    // if (messageSplit.includes("UID,")) {
+    //   let uid = messageSplit[messageSplit.indexOf("UID,") + 1];
+    //   if (!isNaN(parseFloat(uid))) {
+    //     document.getElementById("UID_label").innerHTML =
+    //       "UID: " + parseFloat(uid);
+    //   }
+    // }
 
     var v450_value,
       b500_value,
@@ -3904,6 +3937,47 @@ function calculateNIRV() {
 function getTanFromDegrees(degrees) {
   return Math.tan((degrees * Math.PI) / 180);
 }
+
+//** UPDATES SELECTED GAUGE */
+function updateGauge(gauge, gradient, val, min, max)
+{
+  var percent = mapRange(val, min, max, 0, 1);
+  val = mapRange(val, min, max, 45, 225)
+
+  gauge.style.transform = "rotate("+ val +"deg)";
+  var finalColor = getColorForPercentage(percent, gradient);
+  gauge.style.borderBottomColor = finalColor;
+  gauge.style.borderRightColor = finalColor;
+}
+
+//** CREATES A VALUE FROM THE COMPAIRSON OF TWO RANGES */
+function mapRange (value, in_min, in_max, out_min, out_max) {
+	let val = (value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+	if (val < out_min) val = out_min;
+	else if (val > out_max) val = out_max;
+	return val;
+}
+
+var getColorForPercentage = function(pct, temp_Gradient) {
+  for (var i = 1; i < temp_Gradient.length - 1; i++) {
+      if (pct < temp_Gradient[i].pct) {
+          break;
+      }
+  }
+  var lower = temp_Gradient[i - 1];
+  var upper = temp_Gradient[i];
+  var range = upper.pct - lower.pct;
+  var rangePct = (pct - lower.pct) / range;
+  var pctLower = 1 - rangePct;
+  var pctUpper = rangePct;
+  var color = {
+      r: Math.floor(lower.color.r * pctLower + upper.color.r * pctUpper),
+      g: Math.floor(lower.color.g * pctLower + upper.color.g * pctUpper),
+      b: Math.floor(lower.color.b * pctLower + upper.color.b * pctUpper)
+  };
+  return 'rgb(' + [color.r, color.g, color.b].join(',') + ')';
+  // or output as hex if preferred
+};
 
 //** CLICK EVENT FOR UPLOAD NEW BUTTON */
 menuElement.addEventListener("click", function (ev) {

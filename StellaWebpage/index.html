@@ -22,12 +22,6 @@
       <div class="sidebar" id="sidebar">
         <div class="sidebarTitle">
           <b>#batch</b>
-          <div 
-          id="upload_additional"
-          class="symbol"
-          title="An indicator of density and health in vegetation">
-          +
-        </div>
         </div>
         <div class="scrollContainer" id="batches" style="height: 20%;">
           <div class="batchGrid" id="batchGrid">
@@ -68,6 +62,9 @@
         </div>
         <div class="sidebarTitle">
           <b>distance (cm)</b>
+          <div id="upload_additional" class="symbol" title="An indicator of density and health in vegetation">
+            +
+          </div>
         </div>
         <input type="number" id="distanceInput" value="1" step="0.1" min="0" />
         <div class="sidebarTitle">
@@ -80,12 +77,38 @@
           <b></b>
         </div>
         <div class="extraInfo" id="extraInfo">
-          <div id="Time">time: 10:20:30:40</div>
-          <div id="air_temp">air_temp: 23.7 C</div>
-          <div id="surface_temp">surface_temp: 20.8 C</div>
-          <div id="relative_humidity">relative_humidity: 3%</div>
-          <div id="battery_voltage">battery_voltage: 3.81 V</div>
-          <div id="UID">UID: 3875</div>
+          <div class="text" id="Time">time: 10:20:30:40</div>
+          <!-- <div class="text" id="UID">UID: 3875</div> -->
+          <div class="gaugeContainer">
+            <div class="progressCircle" id="air_temp_Container">
+              <div class="barOverflow">
+                <div class="bar" id = "air_temp_Gauge" style="transform: rotate(225deg)"></div>
+              </div>
+              <span id="air_temp">22.6</span>℃
+              <div>air_temp</div>
+            </div>
+            <div class="progressCircle" id="surface_temp_Container">
+              <div class="barOverflow">
+                <div class="bar" id = "surface_temp_Gauge" style="transform: rotate(225deg)"></div>
+              </div>
+              <span id="surface_temp">22.6</span>℃
+              <div>surface_temp</div>
+            </div>
+            <div class="progressCircle" id="relative_humidity_Container">
+              <div class="barOverflow">
+                <div class="bar" id = "relative_humidity_Gauge" style="transform: rotate(225deg)"></div>
+              </div>
+              <span id="relative_humidity">22.6</span>%
+              <div>relative_humidity</div>
+            </div>
+            <div class="progressCircle" id="battery_voltage_Container">
+              <div class="barOverflow">
+                <div class="bar" id = "battery_voltage_Gauge" style="transform: rotate(225deg)"></div>
+              </div>
+              <span id="battery_voltage">22.6</span>V
+              <div>battery_voltage</div>
+            </div>
+          </div>
         </div>
       </div>
       <div class="sidebar" id="sidebar_live">
