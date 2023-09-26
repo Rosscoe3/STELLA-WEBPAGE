@@ -1946,8 +1946,10 @@ upload_file.addEventListener("input", function () {
 upload_additional.addEventListener("click", function () {
   
   console.log("ADDITIONAL");
+
+  console.log(upload_file.files[0]);
   
-  uploadFile(upload_file.files[0]);
+  //uploadFile(upload_file.files[0]);
 });
 
 
