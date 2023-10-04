@@ -35,6 +35,9 @@
             <div id="graphs_raw" class="active selected" title="RAW data from the device">
               RAW
             </div>
+            <div id="graphs_temps" class="active" title="Air and Surface Temperature overtime">
+              AIR/SURFACE TEMP
+            </div>
             <div
               id="graphs_ndvi"
               class=""
@@ -66,17 +69,14 @@
         <input type="number" id="distanceInput" value="1" step="0.1" min="0" />
         <div class="sidebarTitle">
           <b>calibration #batch</b>
-          <div id="upload_additional" class="symbol" title="Add additional batches for calibration">
-            <label class="additional_upload">
-              <input
-                type="file"
-                id="upload_additional"
-                accept=".txt, .csv"
-                onclick="this.value=null;"
-              />
-              +
-            </label>
-          </div>
+          <label for="upload_additional">+</label>
+          <input
+              type="file"
+              id="upload_additional"
+              accept=".txt, .csv"
+              onclick="this.value=null;"
+              hidden="true"
+            />
         </div>
         <div class="scrollContainer" id="batches_calibration">
           <div class="batchGrid" id="calibration_batch_grid"></div>
@@ -660,6 +660,48 @@
             <!-- BOTTOM LEFT SIDEBAR FOR RECORDING GRAPH-->
             <div class="editContainer leftSided">
               <div class="editIcon active" id="snapshot_6" title="Take a screenshot of the current graph">
+                <i class="material-icons w3-xlarge"> camera_alt </i>
+              </div>
+            </div>
+          </div>
+          <div class="chartBox" id="NIRv_Graph">
+            <canvas id="graph_NIRv"> </canvas>
+            <div class="editContainer">
+              <div
+                class="editIcon active"
+                id="visibility_nirv"
+                title="Toggle data labels"
+              >
+                <i class="material-icons w3-large" id="visibleIcon_nirv">
+                  visibility
+                </i>
+              </div>
+            </div>
+    
+            <!-- BOTTOM LEFT SIDEBAR FOR RECORDING GRAPH-->
+            <div class="editContainer leftSided">
+              <div class="editIcon active" id="snapshot_3" title="Take a screenshot of the current graph">
+                <i class="material-icons w3-xlarge"> camera_alt </i>
+              </div>
+            </div>
+          </div>
+          <div class="chartBox" id="temp_Graph">
+            <canvas id="graph_temp"> </canvas>
+            <div class="editContainer">
+              <div
+                class="editIcon active"
+                id="visibility_temp"
+                title="Toggle data labels"
+              >
+                <i class="material-icons w3-large" id="visibleIcon_temp">
+                  visibility
+                </i>
+              </div>
+            </div>
+    
+            <!-- BOTTOM LEFT SIDEBAR FOR RECORDING GRAPH-->
+            <div class="editContainer leftSided">
+              <div class="editIcon active" id="snapshot_7" title="Take a screenshot of the current graph">
                 <i class="material-icons w3-xlarge"> camera_alt </i>
               </div>
             </div>

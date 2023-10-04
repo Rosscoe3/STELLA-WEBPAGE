@@ -7,6 +7,7 @@ const ctx4 = document.getElementById("graph_NIRv").getContext("2d");
 const ctx5 = document.getElementById("graph_SR").getContext("2d");
 const ctx6 = document.getElementById("graph_DSWI").getContext("2d");
 const ctx7 = document.getElementById("graph_reflectance").getContext("2d");
+const ctxTemp = document.getElementById("graph_temp").getContext("2d");
 
 setTimeout(() => {
   alert(
@@ -81,6 +82,7 @@ let infrared_filter_element = document.getElementById("infrared_filter");
 let ndvi_element = document.getElementById("graphs_ndvi");
 let reflectance_element = document.getElementById("graphs_reflectance");
 let raw_element = document.getElementById("graphs_raw");
+let airSurface_element = document.getElementById("graphs_temps");
 let nirv_element = document.getElementById("graphs_nirv");
 let sr_element = document.getElementById("graphs_SR");
 let dswi_element = document.getElementById("graphs_DSWI");
@@ -108,6 +110,7 @@ let snapShotIcon_3 = document.getElementById("snapshot_3");
 let snapShotIcon_4 = document.getElementById("snapshot_4");
 let snapShotIcon_5 = document.getElementById("snapshot_5");
 let snapShotIcon_6 = document.getElementById("snapshot_6");
+let snapShotIcon_7 = document.getElementById("snapshot_7");
 
 let sidebar = document.getElementById("sidebar");
 let sidebar_live = document.getElementById("sidebar_live");
@@ -152,6 +155,9 @@ let sr_labels_visible = true;
 
 let dswi_visibility_icon = document.getElementById("visibility_dswi");
 let dswi_labels_visible = true;
+
+let airSurface_visibility_icon = document.getElementById("visibility_temp");
+let temp_labels_visible = true;
 
 //** EDIT RANGE */
 let trim_icon = document.getElementById("trimIcon");
@@ -878,6 +884,34 @@ var data_DSWI = {
       hidden: false,
       backgroundColor: dswiGradient,
       borderColor: dswiGradient,
+      lineTension: 0.25,
+      pointBackgroundColor: "rgb(189, 195, 199)",
+    },
+  ],
+};
+
+//** DATA SETUP FOR DSWI CHART */
+var data_Temp = {
+  datasets: [
+    {
+      data: [],
+      showLine: true,
+      label: "Air Temp",
+      fill: false,
+      hidden: false,
+      backgroundColor: dswiGradient,
+      borderColor: dswiGradient,
+      lineTension: 0.25,
+      pointBackgroundColor: "rgb(189, 195, 199)",
+    },
+    {
+      data: [],
+      showLine: true,
+      label: "Surface Temp",
+      fill: false,
+      hidden: false,
+      backgroundColor: ndviGradient,
+      borderColor: ndviGradient,
       lineTension: 0.25,
       pointBackgroundColor: "rgb(189, 195, 199)",
     },
@@ -1656,6 +1690,118 @@ const config_DSWI = {
   plugins: [ChartDataLabels, plugin],
 };
 
+//** CONFIG SETUP FOR TEMP CHART */
+const configTemp = {
+  type: "scatter",
+  data: data_Temp,
+  options: {
+    radius: 3,
+    hitRadius: 10,
+    hoverRadius: 8,
+    spanGaps: false,
+    responsive: false,
+    maintainAspectRatio: false,
+    tension: 0,
+    plugins: {
+      customCanvasBackgroundColor: {
+        color: "white",
+      },
+      title: {
+        display: true,
+        text: "Air / Surface Temperature",
+      },
+      legend: {
+        display: true,
+      },
+      //** STYLING FOR DATA LABELS */
+      datalabels: {
+        formatter: (value) => {
+          if (temp_labels_visible) {
+            return Math.round((value.y + Number.EPSILON) * 100) / 100;
+            //return value.y;
+          } else {
+            return "";
+          }
+        },
+        color: "white",
+        anchor: "end",
+        align: "top",
+        backgroundColor: function (context) {
+          if (temp_labels_visible) {
+            return "rgba(0, 0, 0, 0.75)";
+          } else {
+            return "rgba(0, 0, 0, 0)";
+          }
+        },
+        borderWidth: 0.5,
+        borderRadius: 5,
+        font: {
+          weight: "bold",
+        },
+      },
+    },
+    //** ADDS NM to the Y axis lables */
+    animation: {
+      onComplete: () => {
+        delayed = true;
+      },
+      delay: (context) => {
+        let delay = 0;
+        if (context.type === "data" && context.mode === "default" && !delayed) {
+          delay = context.dataIndex * 75 + context.datasetIndex * 25;
+        }
+        return delay;
+      },
+    },
+    scales: {
+      y: {
+        title: {
+          display: true,
+          text: "Celsius°",
+          font: {
+            size: 15,
+          },
+        },
+      },
+      x: {
+        offset: true,
+        position: "bottom",
+        ticks: {
+          maxTicksLimit: 5,
+          offset: true,
+        },
+        title: {
+          display: false,
+          text: "Time",
+          align: "center",
+          font: {
+            size: 15,
+          },
+        },
+        time: {
+          displayFormats: {
+            millisecond: "HH:mm:ss",
+            second: "HH:mm:ss",
+            minute: "HH:mm:ss",
+            hour: "HH:mm:ss",
+            day: "HH:mm:ss",
+            week: "HH:mm:ss",
+            month: "HH:mm:ss",
+            quarter: "HH:mm:ss",
+            year: "HH:mm:ss",
+          },
+        },
+        type: "time",
+        min: "20211017T143405Z",
+        max: "20221117T143405Z",
+        parsing: false,
+        offset: true,
+      },
+    },
+  },
+  plugins: [ChartDataLabels, plugin],
+};
+
 //** CONFIG SETUP FOR LIVE CHART */
 const config3 = {
   type: "scatter",
@@ -1772,6 +1918,7 @@ const reflectance_chart = new Chart(ctx7, config_reflectance);
 const SR_chart = new Chart(ctx5, config_SR);
 const DSWI_chart = new Chart(ctx6, config_DSWI);
 const liveChart = new Chart(ctx3, config3);
+const tempChart = new Chart (ctxTemp, configTemp);
 
 init();
 function init() {
@@ -1943,14 +2090,14 @@ upload_file.addEventListener("input", function () {
   processFiles(upload_file.files);
 });
 
-upload_additional.addEventListener("click", function () {
+// upload_additional.addEventListener("click", function () {
   
-  console.log("ADDITIONAL");
+//   console.log("ADDITIONAL");
 
-  console.log(upload_file.files[0]);
+//   console.log(upload_file.files[0]);
   
-  //uploadFile(upload_file.files[0]);
-});
+//   //uploadFile(upload_file.files[0]);
+// });
 
 
 function uploadFile(file)
@@ -1969,6 +2116,7 @@ function uploadFile(file)
       document.getElementById("mainGraph").classList.toggle("active");
       //controlSidebar.classList.toggle("active");
       rawData_element.classList.toggle("active");
+      //airSurface_element.classList.toggle("active");
       visible_filter_element.classList.toggle("active");
       infrared_filter_element.classList.toggle("active");
       recordContainer.classList.toggle("active");
@@ -1995,12 +2143,23 @@ function uploadFile(file)
         dataIsAverage = false;
       }
 
+      //** UNACTIVATE GRAPH LABELS IF THEY ARE SELECTED OR ACTIVE */
       var graphLabels = document.getElementById('graphs').getElementsByTagName("div");
       
       for(var i=0; i<graphLabels.length; i++) {
         if(!graphLabels[i].classList.contains('selected') && graphLabels[i].classList.contains('active'))
         {
-          graphLabels[i].classList.toggle('active');
+          if(graphLabels[i].id == "graphs_temps")
+          {
+            if(!graphLabels[i].classList.contains('active'))
+            {
+              graphLabels[i].classList.toggle('active');
+            }
+          }
+          else
+          {
+            graphLabels[i].classList.toggle('active');
+          }
         }
       }
 
@@ -2573,6 +2732,37 @@ function updateChart(backward, index, exactIndex) {
       };
     }
 
+    //** UPDATE AIR / SURFACE TEMP */
+    for (let i = 0; i < currentBatchArray.length; i++) {
+      //** GRAB LAST VALUE OF ARRAY TO SET THE MAX TIMESTAMP OF CHART */
+      if (i == currentBatchArray.length - 1) {
+        tempChart.options.scales.x.max = currentBatchArray[i].timestamp.replace(
+          /\s/g,
+          ""
+        );
+      }
+      //** GRAB FIRST VALUE OF ARRAY TO SET THE MIN TIMESTAMP OF CHART */
+      else if (i == 0) {
+        tempChart.options.scales.x.min = currentBatchArray[i].timestamp.replace(
+          /\s/g,
+          ""
+        );
+      }
+
+      console.log(currentBatchArray[i].surface_temperature_C);
+
+      tempChart.data.datasets[0].data[i] = {
+        x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
+        // x: parseFloat(currentBatchArray[i].decimal_hour),
+        y: parseFloat(currentBatchArray[i].air_temperature_C),
+      };
+      tempChart.data.datasets[1].data[i] = {
+        x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
+        // x: parseFloat(currentBatchArray[i].decimal_hour),
+        y: parseFloat(currentBatchArray[i].surface_temperature_C),
+      };
+    }
+
     //** UPDATE NDVI */
     if (ndvi_element.classList.contains("selected")) {
       for (let i = 0; i < currentBatchArray.length; i++) {
@@ -2904,6 +3094,7 @@ function updateChart(backward, index, exactIndex) {
     NIRv_chart.update();
     SR_chart.update();
     DSWI_chart.update();
+    tempChart.update();
 
     //** CALLS AN UPDATE FUNCTION */
     if (animPlay) {
@@ -2977,6 +3168,7 @@ function graphGradients() {
     NIRv_chart.update();
     SR_chart.update();
     DSWI_chart.update();
+    tempChart.update();
   }, 500);
 }
 
@@ -3616,6 +3808,11 @@ function batchChangeUpdate() {
 
   DSWI_chart.data.labels = Object.keys(data);
   DSWI_chart.data.datasets.forEach((dataset) => {
+    dataset.data = Object.values(data);
+  });
+
+  tempChart.data.labels = Object.keys(data);
+  tempChart.data.datasets.forEach((dataset) => {
     dataset.data = Object.values(data);
   });
 
@@ -4289,6 +4486,18 @@ dswi_visibility_icon.addEventListener("click", function () {
   }
   DSWI_chart.update();
 });
+airSurface_visibility_icon.addEventListener("click", function () {
+  if (airSurface_visibility_icon.classList.contains("selected")) {
+    airSurface_visibility_icon.classList.toggle("selected");
+    temp_labels_visible = true;
+    document.getElementById("visibleIcon_temp").innerHTML = "visibility";
+  } else {
+    airSurface_visibility_icon.classList.toggle("selected");
+    temp_labels_visible = false;
+    document.getElementById("visibleIcon_temp").innerHTML = "visibility_off";
+  }
+  tempChart.update();
+});
 
 raw_visibility_live_icon.addEventListener("click", function () {
   if (raw_visibility_live_icon.classList.contains("selected")) {
@@ -4477,6 +4686,7 @@ ndvi_element.addEventListener("click", function () {
   chart2.resize();
   SR_chart.resize();
   DSWI_chart.resize();
+  tempChart.resize();
 });
 
 reflectance_element.addEventListener("click", function () {
@@ -4500,6 +4710,7 @@ reflectance_element.addEventListener("click", function () {
   chart2.resize();
   SR_chart.resize();
   DSWI_chart.resize();
+  tempChart.resize();
 });
 
 nirv_element.addEventListener("click", function () {
@@ -4522,6 +4733,7 @@ nirv_element.addEventListener("click", function () {
   chart2.resize();
   SR_chart.resize();
   DSWI_chart.resize();
+  tempChart.resize();
 });
 
 sr_element.addEventListener("click", function () {
@@ -4545,6 +4757,7 @@ sr_element.addEventListener("click", function () {
   chart2.resize();
   SR_chart.resize();
   DSWI_chart.resize();
+  tempChart.resize();
 });
 
 dswi_element.addEventListener("click", function () {
@@ -4568,6 +4781,7 @@ dswi_element.addEventListener("click", function () {
   chart2.resize();
   SR_chart.resize();
   DSWI_chart.resize();
+  tempChart.resize();
 });
 
 raw_element.addEventListener("click", function () {
@@ -4589,6 +4803,29 @@ raw_element.addEventListener("click", function () {
   chart2.resize();
   SR_chart.resize();
   DSWI_chart.resize();
+  tempChart.resize();
+});
+
+airSurface_element.addEventListener("click", function () {
+  airSurface_element.classList.toggle("selected");
+  if (!airSurface_element.classList.contains("selected")) {
+    tempChart.update();
+  }
+
+  document.getElementById("temp_Graph").classList.toggle("active");
+  updateGraphGrid();
+  updateChartLabels();
+  graphGradients();
+
+  clearTimeout(animWaitFunc);
+
+  NIRv_chart.resize();
+  reflectance_chart.resize();
+  mainChart.resize();
+  chart2.resize();
+  SR_chart.resize();
+  DSWI_chart.resize();
+  tempChart.resize();
 });
 
 //** GRAPH TOGGLE's IN LIVE CONTROL SIDEBAR */
@@ -4713,6 +4950,18 @@ snapShotIcon_5.addEventListener("click", function () {
 snapShotIcon_6.addEventListener("click", function () {
   var image = document
     .getElementById("graph_reflectance")
+    .toDataURL("image/png")
+    .replace("image/png", "image/octet-stream"); // here is the most important part because if you dont replace you will get a DOM 18 exception.
+
+  var link = document.getElementById("link");
+  link.setAttribute("download", "stella_graph.png");
+  link.setAttribute("href", image);
+  link.click();
+});
+
+snapShotIcon_7.addEventListener("click", function () {
+  var image = document
+    .getElementById("graph_temp")
     .toDataURL("image/png")
     .replace("image/png", "image/octet-stream"); // here is the most important part because if you dont replace you will get a DOM 18 exception.
 
@@ -4959,6 +5208,7 @@ function update() {
   reflectance_chart.resize();
   SR_chart.resize();
   DSWI_chart.resize();
+  tempChart.resize();
 
   setTimeout(() => {
     update();
