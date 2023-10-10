@@ -8,6 +8,7 @@ const ctx5 = document.getElementById("graph_SR").getContext("2d");
 const ctx6 = document.getElementById("graph_DSWI").getContext("2d");
 const ctx7 = document.getElementById("graph_reflectance").getContext("2d");
 const ctxTemp = document.getElementById("graph_temp").getContext("2d");
+const ctxRawOverTime = document.getElementById("graph_rawOverTime").getContext("2d");
 
 setTimeout(() => {
   alert(
@@ -83,6 +84,7 @@ let ndvi_element = document.getElementById("graphs_ndvi");
 let reflectance_element = document.getElementById("graphs_reflectance");
 let raw_element = document.getElementById("graphs_raw");
 let airSurface_element = document.getElementById("graphs_temps");
+let rawOverTime_element = document.getElementById("graphs_rawOverTime");
 let nirv_element = document.getElementById("graphs_nirv");
 let sr_element = document.getElementById("graphs_SR");
 let dswi_element = document.getElementById("graphs_DSWI");
@@ -111,6 +113,7 @@ let snapShotIcon_4 = document.getElementById("snapshot_4");
 let snapShotIcon_5 = document.getElementById("snapshot_5");
 let snapShotIcon_6 = document.getElementById("snapshot_6");
 let snapShotIcon_7 = document.getElementById("snapshot_7");
+let snapShotIcon_8 = document.getElementById("snapshot_8");
 
 let sidebar = document.getElementById("sidebar");
 let sidebar_live = document.getElementById("sidebar_live");
@@ -157,7 +160,9 @@ let dswi_visibility_icon = document.getElementById("visibility_dswi");
 let dswi_labels_visible = true;
 
 let airSurface_visibility_icon = document.getElementById("visibility_temp");
+let rawOverTime_visibility_icon = document.getElementById("visibility_rawOverTime");
 let temp_labels_visible = true;
+let rawOverTime_labels_visible = false;
 
 //** EDIT RANGE */
 let trim_icon = document.getElementById("trimIcon");
@@ -890,7 +895,7 @@ var data_DSWI = {
   ],
 };
 
-//** DATA SETUP FOR DSWI CHART */
+//** DATA SETUP FOR AIR / SURFACE TEMP CHART */
 var data_Temp = {
   datasets: [
     {
@@ -912,6 +917,133 @@ var data_Temp = {
       hidden: false,
       backgroundColor: ndviGradient,
       borderColor: ndviGradient,
+      lineTension: 0.25,
+      pointBackgroundColor: "rgb(189, 195, 199)",
+    },
+  ],
+};
+
+//** DATA SETUP FOR RAW - OVER TIME CHART */
+var data_rawOverTime = {
+  datasets: [
+    {
+      data: [],
+      showLine: true,
+      label: "450nm",
+      fill: false,
+      hidden: false,
+      backgroundColor: "rgb(198, 99, 255)",
+      borderColor: "rgb(198, 99, 255)",
+      lineTension: 0.25,
+      pointBackgroundColor: "rgb(189, 195, 199)",
+    },
+    {
+      data: [],
+      showLine: true,
+      label: "500nm",
+      fill: false,
+      hidden: false,
+      backgroundColor: "rgb(79, 144, 255)",
+      borderColor: "rgb(79, 144, 255)",
+      lineTension: 0.25,
+      pointBackgroundColor: "rgb(189, 195, 199)",
+    },
+    {
+      data: [],
+      showLine: true,
+      label: "550nm",
+      fill: false,
+      hidden: false,
+      backgroundColor: "rgb(89, 222, 115)",
+      borderColor: "rgb(89, 222, 115)",
+      lineTension: 0.25,
+      pointBackgroundColor: "rgb(189, 195, 199)",
+    },
+    {
+      data: [],
+      showLine: true,
+      label: "570nm",
+      fill: false,
+      hidden: false,
+      backgroundColor: "rgb(252, 247, 96)",
+      borderColor: "rgb(252, 247, 96)",
+      lineTension: 0.25,
+      pointBackgroundColor: "rgb(189, 195, 199)",
+    },
+    {
+      data: [],
+      showLine: true,
+      label: "600nm",
+      fill: false,
+      hidden: false,
+      backgroundColor: "rgb(252, 184, 96)",
+      borderColor: "rgb(252, 184, 96)",
+      lineTension: 0.25,
+      pointBackgroundColor: "rgb(189, 195, 199)",
+    },
+    {
+      data: [],
+      showLine: true,
+      label: "610nm",
+      fill: false,
+      hidden: false,
+      backgroundColor: "rgb(255, 71, 71)",
+      borderColor: "rgb(255, 71, 71)",
+      lineTension: 0.25,
+      pointBackgroundColor: "rgb(189, 195, 199)",
+    },
+    {
+      data: [],
+      showLine: true,
+      label: "680nm",
+      fill: false,
+      hidden: false,
+      backgroundColor: "rgb(255, 90, 90)",
+      borderColor: "rgb(255, 90, 90)",
+      lineTension: 0.25,
+      pointBackgroundColor: "rgb(189, 195, 199)",
+    },
+    {
+      data: [],
+      showLine: true,
+      label: "730nm",
+      fill: false,
+      hidden: false,
+      backgroundColor: "rgb(245, 110, 110)",
+      borderColor: "rgb(245, 110, 110)",
+      lineTension: 0.25,
+      pointBackgroundColor: "rgb(189, 195, 199)",
+    },
+    {
+      data: [],
+      showLine: true,
+      label: "760nm",
+      fill: false,
+      hidden: false,
+      backgroundColor: "rgb(240, 130, 130)",
+      borderColor: "rgb(240, 130, 130)",
+      lineTension: 0.25,
+      pointBackgroundColor: "rgb(189, 195, 199)",
+    },
+    {
+      data: [],
+      showLine: true,
+      label: "810nm",
+      fill: false,
+      hidden: false,
+      backgroundColor: "rgb(235, 150, 150)",
+      borderColor: "rgb(235, 150, 150)",
+      lineTension: 0.25,
+      pointBackgroundColor: "rgb(189, 195, 199)",
+    },
+    {
+      data: [],
+      showLine: true,
+      label: "860nm",
+      fill: false,
+      hidden: false,
+      backgroundColor: "rgb(230, 170, 170)",
+      borderColor: "rgb(230, 170, 170)",
       lineTension: 0.25,
       pointBackgroundColor: "rgb(189, 195, 199)",
     },
@@ -1115,6 +1247,7 @@ const config = {
             size: 15,
           },
         },
+        grace: '10%',
       },
     },
   },
@@ -1194,6 +1327,7 @@ const config2 = {
             size: 15,
           },
         },
+        grace: '10%',
       },
       x: {
         position: "bottom",
@@ -1310,6 +1444,7 @@ const config_NIRv = {
             size: 15,
           },
         },
+        grace: '10%',
       },
       x: {
         position: "bottom",
@@ -1426,6 +1561,7 @@ const config_reflectance = {
             size: 15,
           },
         },
+        grace: '10%',
       },
       x: {
         position: "bottom",
@@ -1542,6 +1678,7 @@ const config_SR = {
             size: 15,
           },
         },
+        grace: '10%',
       },
       x: {
         position: "bottom",
@@ -1652,6 +1789,7 @@ const config_DSWI = {
             size: 15,
           },
         },
+        grace: '10%',
       },
       x: {
         position: "bottom",
@@ -1762,6 +1900,7 @@ const configTemp = {
             size: 15,
           },
         },
+        grace: '10%',
       },
       x: {
         offset: true,
@@ -1797,6 +1936,128 @@ const configTemp = {
         parsing: false,
         offset: true,
       },
+    },
+  },
+  plugins: [ChartDataLabels, plugin],
+};
+
+//** CONFIG SETUP FOR TEMP CHART */
+const configRawOverTime = {
+  type: "scatter",
+  data: data_rawOverTime,
+  options: {
+    radius: 3,
+    hitRadius: 10,
+    hoverRadius: 8,
+    spanGaps: false,
+    responsive: false,
+    maintainAspectRatio: false,
+    tension: 0,
+    plugins: {
+      customCanvasBackgroundColor: {
+        color: "white",
+      },
+      title: {
+        display: true,
+        text: "RAW - Over Time",
+      },
+      legend: {
+        display: true,
+      },
+      //** STYLING FOR DATA LABELS */
+      datalabels: {
+        formatter: (value) => {
+          if (rawOverTime_labels_visible) {
+            return Math.round((value.y + Number.EPSILON) * 100) / 100;
+            //return value.y;
+          } else {
+            return "";
+          }
+        },
+        color: "white",
+        anchor: "end",
+        align: "top",
+        backgroundColor: function (context) {
+          if (rawOverTime_labels_visible) {
+            return "rgba(0, 0, 0, 0.75)";
+          } else {
+            return "rgba(0, 0, 0, 0)";
+          }
+        },
+        borderWidth: 0.5,
+        borderRadius: 5,
+        font: {
+          size: 10,
+          weight: "bold",
+        },
+      },
+    },
+    //** ADDS NM to the Y axis lables */
+    animation: {
+      onComplete: () => {
+        delayed = true;
+      },
+      delay: (context) => {
+        let delay = 0;
+        if (context.type === "data" && context.mode === "default" && !delayed) {
+          delay = context.dataIndex * 75 + context.datasetIndex * 25;
+        }
+        return delay;
+      },
+    },
+    scales: {
+      y: {
+        // ticks: {
+        //   callback: function (value){
+        //     return value + "μW/cm²";
+        //   }
+        // },
+        title: {
+          display: true,
+          text: "μW/cm²",
+          font: {
+            size: 15,
+          },
+        },
+        grace: '10%',
+      },
+      x: {
+        offset: true,
+        position: "bottom",
+        ticks: {
+          maxTicksLimit: 5,
+          offset: true,
+        },
+        title: {
+          display: false,
+          text: "Time",
+          align: "center",
+          font: {
+            size: 15,
+          },
+        },
+        time: {
+          displayFormats: {
+            millisecond: "HH:mm:ss",
+            second: "HH:mm:ss",
+            minute: "HH:mm:ss",
+            hour: "HH:mm:ss",
+            day: "HH:mm:ss",
+            week: "HH:mm:ss",
+            month: "HH:mm:ss",
+            quarter: "HH:mm:ss",
+            year: "HH:mm:ss",
+          },
+        },
+        type: "time",
+        // min: "20211017T143405Z",
+        // max: "20221117T143405Z",
+        parsing: false,
+        offset: true,
+      },
+    },
+    layout: {
+      padding: 20
     },
   },
   plugins: [ChartDataLabels, plugin],
@@ -1887,6 +2148,7 @@ const config3 = {
             size: 15,
           },
         },
+        grace: '10%',
       },
       x: {
         type: "linear",
@@ -1919,6 +2181,7 @@ const SR_chart = new Chart(ctx5, config_SR);
 const DSWI_chart = new Chart(ctx6, config_DSWI);
 const liveChart = new Chart(ctx3, config3);
 const tempChart = new Chart (ctxTemp, configTemp);
+const rawOverTime_Chart = new Chart (ctxRawOverTime, configRawOverTime);
 
 init();
 function init() {
@@ -2087,17 +2350,15 @@ upload_file.addEventListener("input", function () {
 
   // uploadFile(upload_file.files[0]);
 
-  processFiles(upload_file.files);
+  processFiles(upload_file.files, false);
 });
 
-// upload_additional.addEventListener("click", function () {
+upload_additional.addEventListener("input", function () {
   
-//   console.log("ADDITIONAL");
+  console.log("ADDITIONAL");
 
-//   console.log(upload_file.files[0]);
-  
-//   //uploadFile(upload_file.files[0]);
-// });
+  processFiles(upload_additional.files, true);
+});
 
 
 function uploadFile(file)
@@ -2132,7 +2393,7 @@ function uploadFile(file)
     //** WHEN THE DATA FILE IS LOADED */
     reader.onload = function (event) 
     {
-      if (reader.result.includes("average")) 
+      if (reader.result.includes("average") || reader.result.includes("standard_deviation")) 
       {
         console.log(reader.result.replace("average", ""));
         console.log("INCLUDES AVERAGE");
@@ -2149,7 +2410,7 @@ function uploadFile(file)
       for(var i=0; i<graphLabels.length; i++) {
         if(!graphLabels[i].classList.contains('selected') && graphLabels[i].classList.contains('active'))
         {
-          if(graphLabels[i].id == "graphs_temps")
+          if(graphLabels[i].id == "graphs_temps" || graphLabels[i].id == "graphs_rawOverTime")
           {
             if(!graphLabels[i].classList.contains('active'))
             {
@@ -2195,8 +2456,8 @@ function uploadFile(file)
       //** IF YOU UPLAOD AN AVERAGE FILE */
       if (dataIsAverage)
       {
-        newDataArray[newDataArray.length - 2].timestamp =
-        newDataArray[0].timestamp;
+        console.log(newDataArray);
+        newDataArray[newDataArray.length - 2].timestamp = newDataArray[0].timestamp;
         standardDeviation_array[0] = newDataArray[newDataArray.length - 1];
         standardDeviation_array[0].timestamp = newDataArray[0].timestamp;
         var tempArray = newDataArray[newDataArray.length - 2];
@@ -2262,25 +2523,57 @@ function uploadFile(file)
   }
 }
 
-function processFiles(files)
+function processFiles(files, calibration)
 {
     batchIndex = 0;
     numFiles = files.length;  
     for(var i=0; i<files.length; i++)
     {
-        writefiles(files[i]);
+        writefiles(files[i], calibration);
         //uploadFile(files[i]);
     }
 }
 
-function writefiles(file)
+function writefiles(file, calibration)
 {
     var reader = new FileReader();
     reader.onload = function()
     {
-      uploadFile(file);
+      if(!calibration)
+      {
+        uploadFile(file);
+      }
+      else
+      {
+        uploadCalibration(file);
+      }
     }
     reader.readAsText(file, "UTF-8");
+}
+
+function uploadCalibration(file)
+{
+  var reader = new FileReader();
+  reader.onload = function (event)
+  {
+    //console.log(reader.result);
+    var dataArray = csvToArray(reader.result);
+    console.log(dataArray);
+    averageCalibrationArray(dataArray)
+
+    //** CREATE CALLIBRATION BATCH DIV ELEMENT */
+    const div = document.createElement("div");
+    div.id = "batchNmb";
+    div.innerHTML = dataArray[0].UID + "_" + dataArray[0].batchNumber;
+    div.classList.add("active");
+
+    document.getElementById("calibration_batch_grid").appendChild(div);
+
+  }
+
+
+
+  reader.readAsText(file);
 }
 
 //** USED TO UPDATE THE CHART WITH THE CONTROLS */
@@ -2749,7 +3042,7 @@ function updateChart(backward, index, exactIndex) {
         );
       }
 
-      console.log(currentBatchArray[i].surface_temperature_C);
+      //console.log(currentBatchArray[i].surface_temperature_C);
 
       tempChart.data.datasets[0].data[i] = {
         x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
@@ -2760,6 +3053,91 @@ function updateChart(backward, index, exactIndex) {
         x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
         // x: parseFloat(currentBatchArray[i].decimal_hour),
         y: parseFloat(currentBatchArray[i].surface_temperature_C),
+      };
+    }
+
+    //** UPDATE RAW - OVER TIME */
+    for (let i = 0; i < currentBatchArray.length; i++) {
+      //** GRAB LAST VALUE OF ARRAY TO SET THE MAX TIMESTAMP OF CHART */
+      if (i == currentBatchArray.length - 1) {
+        rawOverTime_Chart.options.scales.x.max = currentBatchArray[i].timestamp.replace(
+          /\s/g,
+          ""
+        );
+      }
+      //** GRAB FIRST VALUE OF ARRAY TO SET THE MIN TIMESTAMP OF CHART */
+      else if (i == 0) {
+        rawOverTime_Chart.options.scales.x.min = currentBatchArray[i].timestamp.replace(
+          /\s/g,
+          ""
+        );
+      }
+
+      //** 450 NM */
+      rawOverTime_Chart.data.datasets[0].data[i] = {
+        x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
+        // x: parseFloat(currentBatchArray[i].decimal_hour),
+        y: parseFloat(currentBatchArray[i].V450_irradiance_uW_per_cm_squared),
+      };
+      //** 500 NM */
+      rawOverTime_Chart.data.datasets[1].data[i] = {
+        x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
+        // x: parseFloat(currentBatchArray[i].decimal_hour),
+        y: parseFloat(currentBatchArray[i].B500_irradiance_uW_per_cm_squared),
+      };
+      //** 550 NM */
+      rawOverTime_Chart.data.datasets[2].data[i] = {
+        x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
+        // x: parseFloat(currentBatchArray[i].decimal_hour),
+        y: parseFloat(currentBatchArray[i].G550_irradiance_uW_per_cm_squared),
+      };
+      //** 570 NM */
+      rawOverTime_Chart.data.datasets[3].data[i] = {
+        x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
+        // x: parseFloat(currentBatchArray[i].decimal_hour),
+        y: parseFloat(currentBatchArray[i].Y570_irradiance_uW_per_cm_squared),
+      };
+      //** 600 NM */
+      rawOverTime_Chart.data.datasets[4].data[i] = {
+        x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
+        // x: parseFloat(currentBatchArray[i].decimal_hour),
+        y: parseFloat(currentBatchArray[i].O600_irradiance_uW_per_cm_squared),
+      };
+      //** 610 NM */
+      rawOverTime_Chart.data.datasets[5].data[i] = {
+        x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
+        // x: parseFloat(currentBatchArray[i].decimal_hour),
+        y: parseFloat(currentBatchArray[i].nir610_irradiance_uW_per_cm_squared),
+      };
+      //** 680 NM */
+      rawOverTime_Chart.data.datasets[6].data[i] = {
+        x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
+        // x: parseFloat(currentBatchArray[i].decimal_hour),
+        y: parseFloat(currentBatchArray[i].nir680_irradiance_uW_per_cm_squared),
+      };
+      //** 730 NM */
+      rawOverTime_Chart.data.datasets[7].data[i] = {
+        x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
+        // x: parseFloat(currentBatchArray[i].decimal_hour),
+        y: parseFloat(currentBatchArray[i].nir730_irradiance_uW_per_cm_squared),
+      };
+      //** 760 NM */
+      rawOverTime_Chart.data.datasets[8].data[i] = {
+        x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
+        // x: parseFloat(currentBatchArray[i].decimal_hour),
+        y: parseFloat(currentBatchArray[i].nir760_irradiance_uW_per_cm_squared),
+      };
+      //** 810 NM */
+      rawOverTime_Chart.data.datasets[9].data[i] = {
+        x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
+        // x: parseFloat(currentBatchArray[i].decimal_hour),
+        y: parseFloat(currentBatchArray[i].nir810_irradiance_uW_per_cm_squared),
+      };
+      //** 860 NM */
+      rawOverTime_Chart.data.datasets[10].data[i] = {
+        x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
+        // x: parseFloat(currentBatchArray[i].decimal_hour),
+        y: parseFloat(currentBatchArray[i].nir860_irradiance_uW_per_cm_squared),
       };
     }
 
@@ -3095,6 +3473,7 @@ function updateChart(backward, index, exactIndex) {
     SR_chart.update();
     DSWI_chart.update();
     tempChart.update();
+    rawOverTime_Chart.update();
 
     //** CALLS AN UPDATE FUNCTION */
     if (animPlay) {
@@ -3169,6 +3548,7 @@ function graphGradients() {
     SR_chart.update();
     DSWI_chart.update();
     tempChart.update();
+    rawOverTime_Chart.update();
   }, 500);
 }
 
@@ -3687,18 +4067,23 @@ function addBatches(dataArray) {
         }
       };
 
-      //console.log(dataArray[i]);
+      console.log(dataArray[i]);
       //console.log(dataArray[i][0].batch_number);
 
-      var date =
-        dataArray[i][0].timestamp.replace(/\s/g, "").substr(0, 4) +
-        "/" +
-        dataArray[i][0].timestamp.replace(/\s/g, "").substr(4, 2) +
-        "/" +
-        dataArray[i][0].timestamp.replace(/\s/g, "").substr(6, 2);
+      // if(dataArray[i][0].sample_number.includes('average'))
+      // {
+      //   console.log("ITS AN AVERAGE")
+      // }
 
-      //console.log(dataArray);
-      //console.log("Date: " + date);
+      var date =
+      dataArray[i][0].timestamp.replace(/\s/g, "").substr(0, 4) +
+      "/" +
+      dataArray[i][0].timestamp.replace(/\s/g, "").substr(4, 2) +
+      "/" +
+      dataArray[i][0].timestamp.replace(/\s/g, "").substr(6, 2);
+
+      console.log(dataArray[i][0].timestamp);
+
       div.innerHTML = dataArray[i][0].batch_number;
       div.index = i;
       div.title = date;
@@ -3813,6 +4198,11 @@ function batchChangeUpdate() {
 
   tempChart.data.labels = Object.keys(data);
   tempChart.data.datasets.forEach((dataset) => {
+    dataset.data = Object.values(data);
+  });
+
+  rawOverTime_Chart.data.labels = Object.keys(data);
+  rawOverTime_Chart.data.datasets.forEach((dataset) => {
     dataset.data = Object.values(data);
   });
 
@@ -4499,6 +4889,20 @@ airSurface_visibility_icon.addEventListener("click", function () {
   tempChart.update();
 });
 
+rawOverTime_visibility_icon.addEventListener("click", function () {
+  if (rawOverTime_visibility_icon.classList.contains("selected")) {
+    rawOverTime_visibility_icon.classList.toggle("selected");
+    rawOverTime_labels_visible = true;
+    document.getElementById("visibleIcon_rawOverTime").innerHTML = "visibility";
+  } else {
+    rawOverTime_visibility_icon.classList.toggle("selected");
+    rawOverTime_labels_visible = false;
+    document.getElementById("visibleIcon_rawOverTime").innerHTML = "visibility_off";
+  }
+  rawOverTime_Chart.update();
+});
+
+
 raw_visibility_live_icon.addEventListener("click", function () {
   if (raw_visibility_live_icon.classList.contains("selected")) {
     raw_visibility_live_icon.classList.toggle("selected");
@@ -4687,6 +5091,7 @@ ndvi_element.addEventListener("click", function () {
   SR_chart.resize();
   DSWI_chart.resize();
   tempChart.resize();
+  rawOverTime_Chart.resize();
 });
 
 reflectance_element.addEventListener("click", function () {
@@ -4711,6 +5116,7 @@ reflectance_element.addEventListener("click", function () {
   SR_chart.resize();
   DSWI_chart.resize();
   tempChart.resize();
+  rawOverTime_Chart.resize();
 });
 
 nirv_element.addEventListener("click", function () {
@@ -4734,6 +5140,7 @@ nirv_element.addEventListener("click", function () {
   SR_chart.resize();
   DSWI_chart.resize();
   tempChart.resize();
+  rawOverTime_Chart.resize();
 });
 
 sr_element.addEventListener("click", function () {
@@ -4758,6 +5165,7 @@ sr_element.addEventListener("click", function () {
   SR_chart.resize();
   DSWI_chart.resize();
   tempChart.resize();
+  rawOverTime_Chart.resize();
 });
 
 dswi_element.addEventListener("click", function () {
@@ -4782,6 +5190,7 @@ dswi_element.addEventListener("click", function () {
   SR_chart.resize();
   DSWI_chart.resize();
   tempChart.resize();
+  rawOverTime_Chart.resize();
 });
 
 raw_element.addEventListener("click", function () {
@@ -4804,6 +5213,7 @@ raw_element.addEventListener("click", function () {
   SR_chart.resize();
   DSWI_chart.resize();
   tempChart.resize();
+  rawOverTime_Chart.resize();
 });
 
 airSurface_element.addEventListener("click", function () {
@@ -4826,6 +5236,29 @@ airSurface_element.addEventListener("click", function () {
   SR_chart.resize();
   DSWI_chart.resize();
   tempChart.resize();
+});
+
+rawOverTime_element.addEventListener("click", function () {
+  rawOverTime_element.classList.toggle("selected");
+  if (!rawOverTime_element.classList.contains("selected")) {
+    rawOverTime_Chart.update();
+  }
+
+  document.getElementById("rawOverTime_Graph").classList.toggle("active");
+  updateGraphGrid();
+  updateChartLabels();
+  graphGradients();
+
+  clearTimeout(animWaitFunc);
+
+  NIRv_chart.resize();
+  reflectance_chart.resize();
+  mainChart.resize();
+  chart2.resize();
+  SR_chart.resize();
+  DSWI_chart.resize();
+  tempChart.resize();
+  rawOverTime_Chart.resize();
 });
 
 //** GRAPH TOGGLE's IN LIVE CONTROL SIDEBAR */
@@ -4962,6 +5395,18 @@ snapShotIcon_6.addEventListener("click", function () {
 snapShotIcon_7.addEventListener("click", function () {
   var image = document
     .getElementById("graph_temp")
+    .toDataURL("image/png")
+    .replace("image/png", "image/octet-stream"); // here is the most important part because if you dont replace you will get a DOM 18 exception.
+
+  var link = document.getElementById("link");
+  link.setAttribute("download", "stella_graph.png");
+  link.setAttribute("href", image);
+  link.click();
+});
+
+snapShotIcon_8.addEventListener("click", function () {
+  var image = document
+    .getElementById("graph_rawOverTime")
     .toDataURL("image/png")
     .replace("image/png", "image/octet-stream"); // here is the most important part because if you dont replace you will get a DOM 18 exception.
 
@@ -5209,6 +5654,7 @@ function update() {
   SR_chart.resize();
   DSWI_chart.resize();
   tempChart.resize();
+  rawOverTime_Chart.resize();
 
   setTimeout(() => {
     update();

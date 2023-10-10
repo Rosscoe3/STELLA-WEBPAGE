@@ -35,6 +35,9 @@
             <div id="graphs_raw" class="active selected" title="RAW data from the device">
               RAW
             </div>
+            <div id="graphs_rawOverTime" class="active" title="RAW (OVER TIME)">
+              RAW (OVER TIME)
+            </div>
             <div id="graphs_temps" class="active" title="Air and Surface Temperature overtime">
               AIR/SURFACE TEMP
             </div>
@@ -702,6 +705,27 @@
             <!-- BOTTOM LEFT SIDEBAR FOR RECORDING GRAPH-->
             <div class="editContainer leftSided">
               <div class="editIcon active" id="snapshot_7" title="Take a screenshot of the current graph">
+                <i class="material-icons w3-xlarge"> camera_alt </i>
+              </div>
+            </div>
+          </div>
+          <div class="chartBox" id="rawOverTime_Graph">
+            <canvas id="graph_rawOverTime"> </canvas>
+            <div class="editContainer">
+              <div
+                class="editIcon active selected"
+                id="visibility_rawOverTime"
+                title="Toggle data labels"
+              >
+                <i class="material-icons w3-large" id="visibleIcon_rawOverTime">
+                  visibility_off
+                </i>
+              </div>
+            </div>
+    
+            <!-- BOTTOM LEFT SIDEBAR FOR RECORDING GRAPH-->
+            <div class="editContainer leftSided">
+              <div class="editIcon active" id="snapshot_8" title="Take a screenshot of the current graph">
                 <i class="material-icons w3-xlarge"> camera_alt </i>
               </div>
             </div>
