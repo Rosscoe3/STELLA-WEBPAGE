@@ -3027,22 +3027,34 @@ function updateChart(backward, index, exactIndex) {
 
     //** UPDATE AIR / SURFACE TEMP */
     for (let i = 0; i < currentBatchArray.length; i++) {
-      //** GRAB LAST VALUE OF ARRAY TO SET THE MAX TIMESTAMP OF CHART */
-      if (i == currentBatchArray.length - 1) {
-        tempChart.options.scales.x.max = currentBatchArray[i].timestamp.replace(
-          /\s/g,
-          ""
-        );
+      
+      if(!currentBatchArray.length >= 1)
+      {
+        //** GRAB LAST VALUE OF ARRAY TO SET THE MAX TIMESTAMP OF CHART */
+        if (i == currentBatchArray.length - 1) {
+          tempChart.options.scales.x.max = currentBatchArray[i].timestamp.replace(
+            /\s/g,
+            ""
+          );
+        }
+        //** GRAB FIRST VALUE OF ARRAY TO SET THE MIN TIMESTAMP OF CHART */
+        else if (i == 0) {
+          tempChart.options.scales.x.min = currentBatchArray[i].timestamp.replace(
+            /\s/g,
+            ""
+          );
+        }
       }
-      //** GRAB FIRST VALUE OF ARRAY TO SET THE MIN TIMESTAMP OF CHART */
-      else if (i == 0) {
-        tempChart.options.scales.x.min = currentBatchArray[i].timestamp.replace(
-          /\s/g,
-          ""
-        );
+      else
+      {
+        tempChart.options.scales.x.min = currentBatchArray[0].timestamp;
+        tempChart.options.scales.x.max = currentBatchArray[0].timestamp;
       }
+      
 
       //console.log(currentBatchArray[i].surface_temperature_C);
+
+      console.log(currentBatchArray[i].timestamp.replace(/\s/g, ""));
 
       tempChart.data.datasets[0].data[i] = {
         x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
@@ -4124,6 +4136,12 @@ function addBatches(dataArray) {
           if (!nirv_element.classList.contains("active")) {
             nirv_element.classList.toggle("active");
           }
+          if(!airSurface_element.classList.contains("active")) {
+            airSurface_element.classList.toggle("active");
+          }
+          if(!rawOverTime_element.classList.contains("active")) {
+            rawOverTime_element.classList.toggle("active");
+          }
 
           console.log(calibrationArray);
           calibrationBatchSelected = true;
@@ -4596,6 +4614,12 @@ menuElement.addEventListener("click", function (ev) {
   // if (controlSidebar_live.classList.contains("active")) {
   //   controlSidebar_live.classList.toggle("active");
   // }
+  if (document.getElementById("temp_Graph").classList.contains("active")) {
+    document.getElementById("temp_Graph").classList.toggle("active");
+  }
+  if (document.getElementById("rawOverTime_Graph").classList.contains("active")) {
+    document.getElementById("rawOverTime_Graph").classList.toggle("active");
+  }
   if (document.getElementById("calcGraph").classList.contains("active")) {
     document.getElementById("calcGraph").classList.toggle("active");
   }
@@ -4611,10 +4635,17 @@ menuElement.addEventListener("click", function (ev) {
   if (document.getElementById("NIRv_Graph").classList.contains("active")) {
     document.getElementById("NIRv_Graph").classList.toggle("active");
   }
-  if (
-    document.getElementById("reflectance_Graph").classList.contains("active")
-  ) {
+  if (document.getElementById("reflectance_Graph").classList.contains("active")) 
+  {
     document.getElementById("reflectance_Graph").classList.toggle("active");
+  }
+  if (document.getElementById("temp_Graph").classList.contains("active")) 
+  {
+    document.getElementById("temp_Graph").classList.toggle("active");
+  }
+  if (document.getElementById("rawOverTime_Graph").classList.contains("active")) 
+  {
+    document.getElementById("rawOverTime_Graph").classList.toggle("active");
   }
 
   if (ndvi_element.classList.contains("selected")) {
@@ -4631,6 +4662,12 @@ menuElement.addEventListener("click", function (ev) {
   }
   if (dswi_element.classList.contains("selected")) {
     dswi_element.classList.toggle("selected");
+  }
+  if(airSurface_element.classList.contains("selected")) {
+    airSurface_element.classList.toggle("selected");
+  }
+  if(rawOverTime_element.classList.contains("selected")) {
+    rawOverTime_element.classList.toggle("selected");
   }
 
   if (duplicateScreen.classList.contains("active")) {
@@ -4699,6 +4736,10 @@ function updateGraphGrid(currentlyGraphed) {
       ndvi_element.classList.toggle("selected");
     } else if (lastGraphed == "reflectance_Graph") {
       reflectance_element.classList.toggle("selected");
+    } else if (lastGraphed == "temp_Graph") {
+      airSurface_element.classList.toggle("selected");
+    } else if (lastGraphed == "rawOverTime_Graph") {
+      rawOverTime_element.classList.toggle("selected");
     }
 
     console.log("GREATER THAN 4 GRAPHS: " + lastGraphed);
@@ -5150,7 +5191,7 @@ sr_element.addEventListener("click", function () {
   }
   //** TOGGLE ON GRAPH */
   document.getElementById("SR_Graph").classList.toggle("active");
-  updateGraphGrid();
+  updateGraphGrid("SR_Graph");
 
   updateChart();
   updateChartLabels();
@@ -5200,7 +5241,7 @@ raw_element.addEventListener("click", function () {
   }
 
   document.getElementById("mainGraph").classList.toggle("active");
-  updateGraphGrid();
+  updateGraphGrid("mainGraph");
   updateChartLabels();
   graphGradients();
 
@@ -5223,7 +5264,7 @@ airSurface_element.addEventListener("click", function () {
   }
 
   document.getElementById("temp_Graph").classList.toggle("active");
-  updateGraphGrid();
+  updateGraphGrid("temp_Graph");
   updateChartLabels();
   graphGradients();
 
@@ -5245,7 +5286,7 @@ rawOverTime_element.addEventListener("click", function () {
   }
 
   document.getElementById("rawOverTime_Graph").classList.toggle("active");
-  updateGraphGrid();
+  updateGraphGrid("rawOverTime_Graph");
   updateChartLabels();
   graphGradients();
 
