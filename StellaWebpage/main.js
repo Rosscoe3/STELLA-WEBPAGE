@@ -2353,12 +2353,12 @@ upload_file.addEventListener("input", function () {
   processFiles(upload_file.files, false);
 });
 
-upload_additional.addEventListener("input", function () {
+// upload_additional.addEventListener("input", function () {
   
-  console.log("ADDITIONAL");
+//   console.log("ADDITIONAL");
 
-  processFiles(upload_additional.files, true);
-});
+//   processFiles(upload_additional.files, true);
+// });
 
 
 function uploadFile(file)
@@ -2473,7 +2473,6 @@ function uploadFile(file)
           typeof newDataArray[i].batch_number !== "undefined") 
         {
           //** SORT THE DATA INTO DISTINCT BATCHES */
-          console.log(currentBatchNmb);
           if (currentBatchNmb != newDataArray[i].batch_number) 
           {
             batchIndex++;
@@ -2487,8 +2486,6 @@ function uploadFile(file)
 
       batchesContainer.innerHTML = "";
       document.getElementById("calibration_batch_grid").innerHTML = "";
-
-      console.log(dataArrayBatches);
       addBatches(dataArrayBatches);
 
       //** CLEAR THE ARRAY IF IT IS FULL */
@@ -3028,33 +3025,20 @@ function updateChart(backward, index, exactIndex) {
     //** UPDATE AIR / SURFACE TEMP */
     for (let i = 0; i < currentBatchArray.length; i++) {
       
-      if(!currentBatchArray.length >= 1)
-      {
-        //** GRAB LAST VALUE OF ARRAY TO SET THE MAX TIMESTAMP OF CHART */
-        if (i == currentBatchArray.length - 1) {
-          tempChart.options.scales.x.max = currentBatchArray[i].timestamp.replace(
-            /\s/g,
-            ""
-          );
-        }
-        //** GRAB FIRST VALUE OF ARRAY TO SET THE MIN TIMESTAMP OF CHART */
-        else if (i == 0) {
-          tempChart.options.scales.x.min = currentBatchArray[i].timestamp.replace(
-            /\s/g,
-            ""
-          );
-        }
+      //** GRAB LAST VALUE OF ARRAY TO SET THE MAX TIMESTAMP OF CHART */
+      if (i == currentBatchArray.length - 1) {
+        tempChart.options.scales.x.max = currentBatchArray[i].timestamp.replace(
+          /\s/g,
+          ""
+        );
       }
-      else
-      {
-        tempChart.options.scales.x.min = currentBatchArray[0].timestamp;
-        tempChart.options.scales.x.max = currentBatchArray[0].timestamp;
+      //** GRAB FIRST VALUE OF ARRAY TO SET THE MIN TIMESTAMP OF CHART */
+      else if (i == 0) {
+        tempChart.options.scales.x.min = currentBatchArray[i].timestamp.replace(
+          /\s/g,
+          ""
+        );
       }
-      
-
-      //console.log(currentBatchArray[i].surface_temperature_C);
-
-      console.log(currentBatchArray[i].timestamp.replace(/\s/g, ""));
 
       tempChart.data.datasets[0].data[i] = {
         x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
@@ -4079,22 +4063,12 @@ function addBatches(dataArray) {
         }
       };
 
-      console.log(dataArray[i]);
-      //console.log(dataArray[i][0].batch_number);
-
-      // if(dataArray[i][0].sample_number.includes('average'))
-      // {
-      //   console.log("ITS AN AVERAGE")
-      // }
-
       var date =
       dataArray[i][0].timestamp.replace(/\s/g, "").substr(0, 4) +
       "/" +
       dataArray[i][0].timestamp.replace(/\s/g, "").substr(4, 2) +
       "/" +
       dataArray[i][0].timestamp.replace(/\s/g, "").substr(6, 2);
-
-      console.log(dataArray[i][0].timestamp);
 
       div.innerHTML = dataArray[i][0].batch_number;
       div.index = i;
@@ -4741,13 +4715,7 @@ function updateGraphGrid(currentlyGraphed) {
     } else if (lastGraphed == "rawOverTime_Graph") {
       rawOverTime_element.classList.toggle("selected");
     }
-
-    console.log("GREATER THAN 4 GRAPHS: " + lastGraphed);
   }
-
-  console.log("counter: " + counter);
-  console.log(myElement.style.gridTemplateColumns);
-  console.log(myElement.style.gridTemplateRows);
 
   //** UPDATE LAST GRAPHED VARIABLE */
   if (currentlyGraphed) {
