@@ -2187,7 +2187,7 @@ init();
 function init() {
   calibrationData = readTextFile("/files/Calibration-visible.csv", true);
   calibrationData_Infrared = readTextFile(
-    "/files/calibration-infrared.csv",
+    "/files/Calibration-infrared.csv",
     false
   );
 
@@ -2353,12 +2353,12 @@ upload_file.addEventListener("input", function () {
   processFiles(upload_file.files, false);
 });
 
-// upload_additional.addEventListener("input", function () {
+upload_additional.addEventListener("input", function () {
   
-//   console.log("ADDITIONAL");
+  console.log("ADDITIONAL");
 
-//   processFiles(upload_additional.files, true);
-// });
+  processFiles(upload_additional.files, true);
+});
 
 
 function uploadFile(file)
@@ -2553,23 +2553,99 @@ function uploadCalibration(file)
   var reader = new FileReader();
   reader.onload = function (event)
   {
-    //console.log(reader.result);
-    var dataArray = csvToArray(reader.result);
-    console.log(dataArray);
-    averageCalibrationArray(dataArray)
-
     //** CREATE CALLIBRATION BATCH DIV ELEMENT */
-    const div = document.createElement("div");
-    div.id = "batchNmb";
-    div.innerHTML = dataArray[0].UID + "_" + dataArray[0].batchNumber;
-    div.classList.add("active");
+    var dataArray = csvToArray(reader.result);
 
-    document.getElementById("calibration_batch_grid").appendChild(div);
 
+    if(typeof dataArray[0].timestamp == 'undefined')
+    {
+      alert("The file you have tried to import is corrupt. Please try another .csv or edit the one you are trying to upload");
+      return;
+    }
+
+    //** CHECK IF IT IS AN AVERAGE FILE OR NOT */
+    var isAverage = false;
+    if(dataArray[0].sample_number)
+    {
+      isAverage = true;
+    }
+    else
+    {
+      isAverage = false;
+    }
+    
+    //** INCLUDES DIV CREATION AND CLICK EVENT */
+    if(isAverage)
+    {
+      console.log("INCLUDES AVERAGE IN CALIBRATION");
+      var divExtra = document.createElement("div");
+      divExtra.id = "batchNmb";
+      divExtra.innerHTML = dataArray[0].batch_number + "_(" + dataArray[0].UID + ")";
+      divExtra.classList.add("active");
+  
+      document.getElementById("calibration_batch_grid").prepend(divExtra);
+      dataArrayBatches.unshift(dataArray);
+  
+      var batchGrid = document
+        .getElementById("calibration_batch_grid")
+        .querySelectorAll("[id=batchNmb]");
+  
+      for(var i = 0; i < batchGrid.length; i++)
+      {
+        batchGrid[i].index = i;
+      }
+      divExtra.addEventListener('click', function() 
+      {  
+        var batchGrid2 = document
+        .getElementById("calibration_batch_grid")
+        .querySelectorAll("[id=batchNmb]");
+        
+        //** TOGGLE OFF ALL SELECTED ELEMENTS*/
+        batchGrid2.forEach((item) => {
+          if (item.classList.contains("selected")) {
+            item.classList.toggle("selected");
+          }
+        });
+  
+        //** SELECT THIS BATCH AS CALLIBRATION */
+        this.classList.toggle("selected");
+        let calibrationArray = dataArrayBatches[this.index];
+        currentDataBatchIndex = this.index;
+        console.log("index: " + currentDataBatchIndex);
+  
+        //** TOGGLE ON ALL OTHER GRAPHS IF NOT ALREADY ON */
+        if (!ndvi_element.classList.contains("active")) {
+          ndvi_element.classList.toggle("active");
+        }
+        if (!reflectance_element.classList.contains("active")) {
+          reflectance_element.classList.toggle("active");
+        }
+        if (!sr_element.classList.contains("active")) {
+          sr_element.classList.toggle("active");
+        }
+        if (!dswi_element.classList.contains("active")) {
+          dswi_element.classList.toggle("active");
+        }
+        if (!nirv_element.classList.contains("active")) {
+          nirv_element.classList.toggle("active");
+        }
+        if(!airSurface_element.classList.contains("active")) {
+          airSurface_element.classList.toggle("active");
+        }
+        if(!rawOverTime_element.classList.contains("active")) {
+          rawOverTime_element.classList.toggle("active");
+        }
+  
+        calibrationBatchSelected = true;
+        averageCalibrationArray(calibrationArray);
+      }, false);
+    }
+    else
+    {
+      console.log("DOESN'T INCLUDE AVERAGE IN CALIBRATIOn");
+      alert("this is not an average or sample file");
+    }
   }
-
-
-
   reader.readAsText(file);
 }
 
@@ -3440,8 +3516,9 @@ function updateChart(backward, index, exactIndex) {
     } else {
       currentSurfaceTemp = 0;
     }
+    
     surfaceTemp_label.innerHTML = currentSurfaceTemp;
-      updateGauge(surfaceTemp_Gauge, surface_temp_Gradient, currentSurfaceTemp, -20, 60);
+    updateGauge(surfaceTemp_Gauge, surface_temp_Gradient, currentSurfaceTemp, -20, 60);
 
     //** CHECK FOR RELATIVE HUMIDITY NAME DIFFERENCES IN THE CSV */
     var currentRelativeHumidity;
@@ -4492,7 +4569,7 @@ function convertToReflectance() {
     // console.log("nir730: " + currentBatchArray[i].nir730_reflectance);
     // console.log("nir760: " + currentBatchArray[i].nir760_reflectance);
     // console.log("nir810: " + currentBatchArray[i].nir810_reflectance);
-    console.log("nir860: " + currentBatchArray[i].nir860_reflectance);
+    //console.log("nir860: " + currentBatchArray[i].nir860_reflectance);
   }
   calculateNIRV();
 }
