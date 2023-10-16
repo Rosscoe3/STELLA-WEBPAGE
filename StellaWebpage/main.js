@@ -2185,9 +2185,9 @@ const rawOverTime_Chart = new Chart (ctxRawOverTime, configRawOverTime);
 
 init();
 function init() {
-  calibrationData = readTextFile("/public/files/Calibration-visible.csv", true);
+  calibrationData = readTextFile("/files/Calibration-visible.csv", true);
   calibrationData_Infrared = readTextFile(
-    "/public/files/Calibration-infrared.csv",
+    "/files/Calibration-infrared.csv",
     false
   );
 
