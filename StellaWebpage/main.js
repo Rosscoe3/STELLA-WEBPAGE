@@ -2560,7 +2560,7 @@ function uploadCalibration(file)
     if(typeof dataArray[0].timestamp == 'undefined')
     {
       alert("The file you have tried to import is corrupt. Please try another .csv or edit the one you are trying to upload");
-      return;
+      //return;
     }
 
     //** CHECK IF IT IS AN AVERAGE FILE OR NOT */
