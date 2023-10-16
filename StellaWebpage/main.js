@@ -2187,7 +2187,7 @@ init();
 function init() {
   calibrationData = readTextFile("/files/Calibration-visible.csv", true);
   calibrationData_Infrared = readTextFile(
-    "/files/Calibration-infrared.csv",
+    "/files/calibration-infrared.csv",
     false
   );
 
