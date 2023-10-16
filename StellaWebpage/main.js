@@ -2197,7 +2197,7 @@ function init() {
 //** GRABS THE DATA FROM THE DROP AND SENDS IT TO BE CONVERTED INTO A CSV */
 function readTextFile(file, visible) {
   var rawFile = new XMLHttpRequest();
-  rawFile.open("GET", file, false);
+  rawFile.open("GET", file, true);
   rawFile.onreadystatechange = function () {
     if (rawFile.readyState === 4) {
       if (rawFile.status === 200 || rawFile.status == 0) {
