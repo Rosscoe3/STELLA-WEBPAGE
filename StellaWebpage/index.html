@@ -134,6 +134,9 @@
             <div id="graphs_duplicate_live" class="active selected" title="Duplicate screen from the device" style="padding: 5%">
               SCREEN
             </div>
+            <div id="graphs_live_overTime" class="active" title="Updates with all data being read from the device" style="padding: 5%">
+              OVER-TIME
+            </div>
           </div>
         </div>
       </div>
@@ -793,6 +796,46 @@
                 </i>
               </div>
               <!-- <input type="number" id="edit_start_input" name="quantity" min="1" max="5" value = "1"> -->
+            </div>
+          </div>
+          <div class="chartBox" id="liveGraph_overTime">
+            <canvas id="graph4"> </canvas>
+            <div class="editContainer">
+              <div
+                class="editIcon active"
+                id="download_liveOverTime"
+                title="Download Data to a CSV"
+                style="z-index: 99"
+              >
+                <i class="material-icons w3-large" id="download_live_overTime">
+                  download
+                </i>
+              </div>
+              <div
+                class="editIcon active selected"
+                id="units_live_overTime_toggle"
+                title="Toggle unit labels"
+                style="z-index: 99"
+              >
+                <i class="material-icons w3-large"> equalizer </i>
+              </div>
+              <div
+                class="editIcon active selected"
+                id="visible_raw_live_overTime"
+                title="Toggle data labels"
+                style="z-index: 99"
+              >
+                <i class="material-icons w3-large" id="visibleIcon_raw_live_overTime">
+                  visibility
+                </i>
+              </div>
+              <!-- <input type="number" id="edit_start_input" name="quantity" min="1" max="5" value = "1"> -->
+            </div>
+            <!-- BOTTOM LEFT SIDEBAR FOR RECORDING GRAPH-->
+            <div class="editContainer leftSided">
+              <div class="editIcon active" id="reset_liveGraph" title="Clear data from the graph to start from a blank slate">
+                <i class="material-icons w3-xlarge">refresh</i>
+              </div>
             </div>
           </div>
           <div class="duplicateScreen" id="duplicateScreen">

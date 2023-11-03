@@ -3,6 +3,7 @@ import "./style.css";
 const ctx = document.getElementById("graph").getContext("2d");
 const ctx2 = document.getElementById("graph2").getContext("2d");
 const ctx3 = document.getElementById("graph3").getContext("2d");
+const ctx_overTime = document.getElementById("graph4").getContext("2d");
 const ctx4 = document.getElementById("graph_NIRv").getContext("2d");
 const ctx5 = document.getElementById("graph_SR").getContext("2d");
 const ctx6 = document.getElementById("graph_DSWI").getContext("2d");
@@ -98,6 +99,7 @@ let srGraph_numerator_value, srGraph_denominator_value;
 //** HELP BUTTONS FOR PICKING GRAPHS */
 let raw_element_live = document.getElementById("graphs_raw_live");
 let duplicate_element_live = document.getElementById("graphs_duplicate_live");
+let overTime_live = document.getElementById("graphs_live_overTime");
 
 let connectDevice = document.getElementById("plugInDevice");
 let recordButton = document.getElementById("recordButton");
@@ -118,6 +120,7 @@ let snapShotIcon_8 = document.getElementById("snapshot_8");
 let sidebar = document.getElementById("sidebar");
 let sidebar_live = document.getElementById("sidebar_live");
 let sidebarButton = document.getElementById("openSidebarIcon");
+let refresh_liveGraph = document.getElementById("reset_liveGraph");
 
 let readDeviceBtn = document.getElementById("read");
 let recording_live_label = document.getElementById("recording_label");
@@ -137,9 +140,11 @@ let live_chartCard = document.getElementById("chartCardLive");
 let download_label = document.getElementById("downloadBtn");
 let raw_visibility_icon = document.getElementById("visibility_raw");
 let raw_visibility_live_icon = document.getElementById("visible_raw_live");
+let rawOverTime_visibility_live_icon = document.getElementById("visible_raw_live_overTime");
 
 let toggleUnitLabels_icon = document.getElementById("unitsToggle");
 let toggleUnitLabels_live_icon = document.getElementById("units_live_toggle");
+let toggleUnitLabels_liveOverTime_icon = document.getElementById("units_live_overTime_toggle");
 
 let raw_labels_visible = true;
 let ndvi_visibility_icon = document.getElementById("visibility_ndvi");
@@ -302,13 +307,22 @@ class SerialScaleController {
         }
 
         landing.classList.toggle("active");
-        duplicateScreen.classList.toggle("active");
+        //duplicateScreen.classList.toggle("active");
         readDeviceBtn.classList.toggle("active");
 
-        if (
-          !document.getElementById("liveGraph").classList.contains("active")
-        ) {
+        if (!document.getElementById("liveGraph").classList.contains("active")) 
+        {
           document.getElementById("liveGraph").classList.toggle("active");
+          updateGraphGrid();
+        }
+        if (document.getElementById("liveGraph_overTime").classList.contains("active")) 
+        {
+          document.getElementById("liveGraph_overTime").classList.toggle("active");
+          updateGraphGrid();
+        }
+        if (!document.getElementById("duplicateScreen").classList.contains("active")) 
+        {
+          document.getElementById("duplicateScreen").classList.toggle("active");
           updateGraphGrid();
         }
       } catch (err) {
@@ -329,7 +343,7 @@ class SerialScaleController {
           }
 
           landing.classList.toggle("active");
-          duplicateScreen.classList.toggle("active");
+          //duplicateScreen.classList.toggle("active");
           readDeviceBtn.classList.toggle("active");
           if (
             !document.getElementById("liveGraph").classList.contains("active")
@@ -353,9 +367,18 @@ class SerialScaleController {
     while (deviceConnected) {
       try {
         const readerData = await this.reader.read();
-        //console.log(readerData);
         return this.decoder.decode(readerData.value);
-      } catch (err) {
+
+        // const {value, done} = await this.reader.read();
+        // if (done) {
+        //   // Allow the serial port to be closed later.
+        //   reader.releaseLock();
+        //   break;
+        // }
+        // console.log(done);
+      } 
+      catch (err) 
+      {
         const errorMessage = `error reading data: ${err}`;
         console.error(errorMessage);
         deviceConnected = false;
@@ -1121,6 +1144,158 @@ var data3 = {
       fill: true,
       backgroundColor: infraredGradient,
       borderColor: "rgb(255, 255, 255)",
+      pointBackgroundColor: "rgb(189, 195, 199)",
+    },
+  ],
+};
+
+var liveOverTime_450_array = [];
+var liveOverTime_500_array = [];
+var liveOverTime_550_array = [];
+var liveOverTime_570_array = [];
+var liveOverTime_600_array = [];
+var liveOverTime_610_array = [];
+var liveOverTime_650_array = [];
+var liveOverTime_680_array = [];
+var liveOverTime_730_array = [];
+var liveOverTime_760_array = [];
+var liveOverTime_810_array = [];
+var liveOverTime_860_array = [];
+var liveOverTime_reading = false;
+
+//** DATA SETUP FOR LIVE CHART */
+var data_liveOverTime = {
+  datasets: [
+    //** 450nm */
+    {
+      data: liveOverTime_450_array,
+      showLine: true,
+      label: "450nm",
+      fill: false,
+      backgroundColor: "rgb(198, 99, 255)",
+      borderColor: "rgb(198, 99, 255)",
+      lineTension: 0.25,
+      pointBackgroundColor: "rgb(189, 195, 199)",
+    },
+    //** 500nm */
+    {
+      data: liveOverTime_500_array,
+      showLine: true,
+      label: "500nm",
+      fill: false,
+      backgroundColor: "rgb(79, 144, 255)",
+      borderColor: "rgb(79, 144, 255)",
+      lineTension: 0.25,
+      pointBackgroundColor: "rgb(189, 195, 199)",
+    },
+    //** 550nm */
+    {
+      data: liveOverTime_550_array,
+      showLine: true,
+      label: "550nm",
+      fill: false,
+      backgroundColor: "rgb(89, 222, 115)",
+      borderColor: "rgb(89, 222, 115)",
+      lineTension: 0.25,
+      pointBackgroundColor: "rgb(189, 195, 199)",
+    },
+    //** 570nm */
+    {
+      data: liveOverTime_570_array,
+      showLine: true,
+      label: "570nm",
+      fill: false,
+      backgroundColor: "rgb(252, 247, 96)",
+      borderColor: "rgb(252, 247, 96)",
+      lineTension: 0.25,
+      pointBackgroundColor: "rgb(189, 195, 199)",
+    },
+    //** 600nm */
+    {
+      data: liveOverTime_600_array,
+      showLine: true,
+      label: "600nm",
+      fill: false,
+      backgroundColor: "rgb(252, 184, 96)",
+      borderColor: "rgb(252, 184, 96)",
+      lineTension: 0.25,
+      pointBackgroundColor: "rgb(189, 195, 199)",
+    },
+    //** 610nm */
+    {
+      data: liveOverTime_610_array,
+      showLine: true,
+      label: "610nm",
+      fill: false,
+      backgroundColor: "rgb(255, 71, 71)",
+      borderColor: "rgb(255, 71, 71)",
+      lineTension: 0.25,
+      pointBackgroundColor: "rgb(189, 195, 199)",
+    },
+    //** 650nm */
+    {
+      data: liveOverTime_650_array,
+      showLine: true,
+      label: "650nm",
+      fill: false,
+      backgroundColor: "rgb(255, 71, 71)",
+      borderColor: "rgb(255, 71, 71)",
+      lineTension: 0.25,
+      pointBackgroundColor: "rgb(189, 195, 199)",
+    },
+    //** 680nm */
+    {
+      data: liveOverTime_680_array,
+      showLine: true,
+      label: "680nm",
+      fill: false,
+      backgroundColor: "rgb(255, 90, 90)",
+      borderColor: "rgb(255, 90, 90)",
+      lineTension: 0.25,
+      pointBackgroundColor: "rgb(189, 195, 199)",
+    },
+    //** 730nm */
+    {
+      data: liveOverTime_730_array,
+      showLine: true,
+      label: "730nm",
+      fill: false,
+      backgroundColor: "rgb(245, 110, 110)",
+      borderColor: "rgb(245, 110, 110)",
+      lineTension: 0.25,
+      pointBackgroundColor: "rgb(189, 195, 199)",
+    },
+    //** 760nm */
+    {
+      data: liveOverTime_760_array,
+      showLine: true,
+      label: "760nm",
+      fill: false,
+      backgroundColor: "rgb(240, 130, 130)",
+      borderColor: "rgb(240, 130, 130)",
+      lineTension: 0.25,
+      pointBackgroundColor: "rgb(189, 195, 199)",
+    },
+    //** 810nm */
+    {
+      data: liveOverTime_810_array,
+      showLine: true,
+      label: "810nm",
+      fill: false,
+      backgroundColor: "rgb(235, 150, 150)",
+      borderColor: "rgb(235, 150, 150)",
+      lineTension: 0.25,
+      pointBackgroundColor: "rgb(189, 195, 199)",
+    },
+    //** 860nm */
+    {
+      data: liveOverTime_860_array,
+      showLine: true,
+      label: "860nm",
+      fill: false,
+      backgroundColor: "rgb(230, 170, 170)",
+      borderColor: "rgb(230, 170, 170)",
+      lineTension: 0.25,
       pointBackgroundColor: "rgb(189, 195, 199)",
     },
   ],
@@ -2148,6 +2323,7 @@ const config3 = {
             size: 15,
           },
         },
+        beginAtZero: true,
         grace: '10%',
       },
       x: {
@@ -2172,6 +2348,116 @@ const config3 = {
   plugins: [ChartDataLabels, plugin],
 };
 
+//** CONFIG SETUP FOR LIVE CHART */
+const config_live_overTime = {
+  type: "scatter",
+  data: data_liveOverTime,
+  options: {
+    radius: 3,
+    hitRadius: 10,
+    hoverRadius: 8,
+    spanGaps: true,
+    responsive: false,
+    maintainAspectRatio: false,
+    tension: 0,
+    plugins: {
+      customCanvasBackgroundColor: {
+        color: "white",
+      },
+      title: {
+        display: true,
+        text: "Live Graph",
+      },
+      legend: {
+        display: true,
+      },
+      //** DATA LABEL STYLING */
+      datalabels: {
+        //** USED TO FORMAT DATA */
+        formatter: (value, context) => {
+          var output;
+
+          if (!rawOverTime_visibility_live_icon.classList.contains("selected")) {
+            if (toggleUnitLabels_liveOverTime_icon.classList.contains("selected")) {
+              output = value.y;
+            } else {
+              output = value.y + "μW/cm²";
+            }
+
+            return output;
+          } else {
+            return "";
+          }
+        },
+        color: "white",
+        anchor: "end",
+        align: "top",
+        backgroundColor: function (context) {
+          if (!rawOverTime_visibility_live_icon.classList.contains("selected")) {
+            return "rgba(0, 0, 0, 0.75)";
+          } else {
+            return "rgba(0, 0, 0, 0)";
+          }
+        },
+        borderWidth: 0.5,
+        borderRadius: 5,
+        font: {
+          weight: "bold",
+        },
+      },
+    },
+    //** ADDS NM to the Y axis lables */
+    animation: {
+      onComplete: () => {
+        delayed = true;
+      },
+      delay: (context) => {
+        let delay = 0;
+        if (context.type === "data" && context.mode === "default" && !delayed) {
+          delay = context.dataIndex * 75 + context.datasetIndex * 25;
+        }
+        return delay;
+      },
+    },
+    scales: {
+      y: {
+        // ticks: {
+        //   callback: function (value){
+        //     return value + "μW/cm²";
+        //   }
+        // },
+        title: {
+          display: true,
+          text: "μW/cm²",
+          font: {
+            size: 15,
+          },
+        },
+        beginAtZero: false,
+        grace: '10%',
+      },
+      x: {
+        type: "linear",
+        position: "bottom",
+        // ticks: {
+        //   callback: function (value){
+        //     return value + " nm";
+        //   }
+        // },
+        title: {
+          display: true,
+          text: "Decimal Hour",
+          align: "center",
+          font: {
+            size: 15,
+          },
+        },
+      },
+    },
+  },
+  plugins: [ChartDataLabels, plugin],
+};
+
 //** CHART INSTANTIATION */
 const mainChart = new Chart(ctx, config);
 const chart2 = new Chart(ctx2, config2);
@@ -2180,6 +2466,7 @@ const reflectance_chart = new Chart(ctx7, config_reflectance);
 const SR_chart = new Chart(ctx5, config_SR);
 const DSWI_chart = new Chart(ctx6, config_DSWI);
 const liveChart = new Chart(ctx3, config3);
+const liveChart_overTime = new Chart(ctx_overTime, config_live_overTime);
 const tempChart = new Chart (ctxTemp, configTemp);
 const rawOverTime_Chart = new Chart (ctxRawOverTime, configRawOverTime);
 
@@ -3542,6 +3829,7 @@ function updateChart(backward, index, exactIndex) {
     reflectance_chart.update();
     chart2.update();
     liveChart.update();
+    liveChart_overTime.update();
     NIRv_chart.update();
     SR_chart.update();
     DSWI_chart.update();
@@ -3744,12 +4032,15 @@ async function getSerialMessage() {
       decipherSerialMessage(message);
       //console.log("update read");
     }
-  }, readTime);
+  }, 2000);
+
+  //readTime
+
 }
 
 function decipherSerialMessage(message) {
   let messageSplit = message.split(" ");
-  console.log(messageSplit);
+  //console.log(messageSplit);
   if (message.includes("paused")) {
     //console.log("PAUSED");
     paused = true;
@@ -3837,25 +4128,22 @@ function decipherSerialMessage(message) {
       }
     }
     //** DATESTAMP */
-    if (
-      messageSplit.includes("year,") &&
-      messageSplit.includes("month,") &&
-      messageSplit.includes("day,")
-    ) {
-      if (
-        messageSplit.indexOf("year,") + 1 &&
-        messageSplit.indexOf("month,") + 1 &&
-        messageSplit.indexOf("day,") + 1
-      ) {
-        let year = messageSplit[messageSplit.indexOf("year,") + 1];
-        let month = messageSplit[messageSplit.indexOf("month,") + 1];
-        let day = messageSplit[messageSplit.indexOf("day,") + 1];
+    let year;
+    let month;
+    let day;
+    let decimal_hour;
 
-        if (
-          !isNaN(parseInt(year)) &&
-          !isNaN(parseInt(year)) &&
-          !isNaN(parseInt(year))
-        ) {
+    //** UPDATE YEAR, MONTH, and DAY VALUE */
+    if (messageSplit.includes("year,") && messageSplit.includes("month,") && messageSplit.includes("day,")) 
+      {
+      if (messageSplit.indexOf("year,") + 1 && messageSplit.indexOf("month,") + 1 && messageSplit.indexOf("day,") + 1) 
+        {
+        year = messageSplit[messageSplit.indexOf("year,") + 1];
+        month = messageSplit[messageSplit.indexOf("month,") + 1];
+        day = messageSplit[messageSplit.indexOf("day,") + 1];
+
+        if (!isNaN(parseInt(year)) && !isNaN(parseInt(month)) && !isNaN(parseInt(day))) 
+        {
           if (parseInt(year) < 10) {
             year = "0" + year.substring(0, year.length - 1);
           } else {
@@ -3877,6 +4165,7 @@ function decipherSerialMessage(message) {
         }
       }
     }
+    //** UPDATE BATCH NUMBER FROM LIVE FEED */
     if (messageSplit.includes("batch,")) {
       let batchNmb = messageSplit[messageSplit.indexOf("batch,") + 1];
 
@@ -3885,13 +4174,21 @@ function decipherSerialMessage(message) {
           parseFloat(batchNmb);
       }
     }
-    // if (messageSplit.includes("UID,")) {
-    //   let uid = messageSplit[messageSplit.indexOf("UID,") + 1];
-    //   if (!isNaN(parseFloat(uid))) {
-    //     document.getElementById("UID_label").innerHTML =
-    //       "UID: " + parseFloat(uid);
-    //   }
-    // }
+    //** UPDATE DECIMAL HOUR FROM LIVE FEED */
+    if(messageSplit.includes("dec_hour,"))
+    {
+      let dec_hour = messageSplit[messageSplit.indexOf("dec_hour,") + 1];
+
+      if (!isNaN(parseFloat(dec_hour))) {
+
+        //** MAKE SURE ITS GREATER THAN PREVIOUS, WILL HAVE ISSUES IF USED AT MIDNIGHT */
+        if(decimal_hour => dec_hour)
+        {
+          decimal_hour = parseFloat(dec_hour);
+          //console.log(decimal_hour);
+        }
+      }
+    }
 
     var v450_value,
       b500_value,
@@ -3911,12 +4208,26 @@ function decipherSerialMessage(message) {
       let v450 = messageSplit[messageSplit.indexOf("v450,") + 1];
       v450_value = parseFloat(v450);
 
-      if (!isNaN(v450_value)) {
+      if (!isNaN(v450_value)) 
+      {
         document.getElementById("v450_label").innerHTML = "V450: " + v450_value;
         liveChart.data.datasets[0].data[0] = {
           x: 450,
           y: v450_value,
         };
+
+        //** CREATE ARRAY AND ADD IT TO THE LIVE ARRAY OF THAT TYPE */
+        if(liveOverTime_reading)
+        {
+          var arrayValue = {
+            x: decimal_hour,
+            y: v450_value
+          };
+
+          liveChart_overTime.data.datasets[0].data.push(arrayValue);
+          liveChart_overTime.update();
+        }
+
         liveChart.update();
       }
     }
@@ -3924,12 +4235,26 @@ function decipherSerialMessage(message) {
       let b500 = messageSplit[messageSplit.indexOf("b500,") + 1];
       b500_value = parseFloat(b500);
 
-      if (!isNaN(b500_value)) {
+      if (!isNaN(b500_value)) 
+      {
         document.getElementById("b500_label").innerHTML = "B500: " + b500_value;
         liveChart.data.datasets[0].data[1] = {
           x: 500,
           y: b500_value,
         };
+
+        //** CREATE ARRAY AND ADD IT TO THE LIVE ARRAY OF THAT TYPE */
+        if(liveOverTime_reading)
+        {
+          var arrayValue = {
+            x: decimal_hour,
+            y: b500_value
+          };
+
+          liveChart_overTime.data.datasets[1].data.push(arrayValue);
+          liveChart_overTime.update();
+        }
+
         liveChart.update();
       }
     }
@@ -3943,6 +4268,19 @@ function decipherSerialMessage(message) {
           x: 550,
           y: g550_value,
         };
+
+        //** CREATE ARRAY AND ADD IT TO THE LIVE ARRAY OF THAT TYPE */
+        if(liveOverTime_reading)
+        {
+          var arrayValue = {
+            x: decimal_hour,
+            y: g550_value
+          };
+
+          liveChart_overTime.data.datasets[2].data.push(arrayValue);
+          liveChart_overTime.update();
+        }
+
         liveChart.update();
       }
     }
@@ -3956,6 +4294,18 @@ function decipherSerialMessage(message) {
           x: 570,
           y: y570_value,
         };
+
+        //** CREATE ARRAY AND ADD IT TO THE LIVE ARRAY OF THAT TYPE */
+        if(liveOverTime_reading)
+        {
+          var arrayValue = {
+            x: decimal_hour,
+            y: y570_value
+          };
+
+          liveChart_overTime.data.datasets[3].data.push(arrayValue);
+          liveChart_overTime.update();
+        }
         liveChart.update();
       }
     }
@@ -3969,6 +4319,18 @@ function decipherSerialMessage(message) {
           x: 600,
           y: o600_value,
         };
+
+        //** CREATE ARRAY AND ADD IT TO THE LIVE ARRAY OF THAT TYPE */
+        if(liveOverTime_reading)
+        {
+          var arrayValue = {
+            x: decimal_hour,
+            y: o600_value
+          };
+
+          liveChart_overTime.data.datasets[4].data.push(arrayValue);
+          liveChart_overTime.update();
+        }
         liveChart.update();
       }
     }
@@ -3982,6 +4344,18 @@ function decipherSerialMessage(message) {
           x: 650,
           y: r650_value,
         };
+
+        //** CREATE ARRAY AND ADD IT TO THE LIVE ARRAY OF THAT TYPE */
+        if(liveOverTime_reading)
+        {
+          var arrayValue = {
+            x: decimal_hour,
+            y: r650_value
+          };
+
+          liveChart_overTime.data.datasets[5].data.push(arrayValue);
+          liveChart_overTime.update();
+        }
         liveChart.update();
       }
     }
@@ -3997,6 +4371,18 @@ function decipherSerialMessage(message) {
           x: 610,
           y: i610_value,
         };
+
+        //** CREATE ARRAY AND ADD IT TO THE LIVE ARRAY OF THAT TYPE */
+        if(liveOverTime_reading)
+        {
+          var arrayValue = {
+            x: decimal_hour,
+            y: i610_value
+          };
+
+          liveChart_overTime.data.datasets[6].data.push(arrayValue);
+          liveChart_overTime.update();
+        }
         liveChart.update();
       }
     }
@@ -4010,6 +4396,18 @@ function decipherSerialMessage(message) {
           x: 680,
           y: i680_value,
         };
+
+        //** CREATE ARRAY AND ADD IT TO THE LIVE ARRAY OF THAT TYPE */
+        if(liveOverTime_reading)
+        {
+          var arrayValue = {
+            x: decimal_hour,
+            y: i680_value
+          };
+
+          liveChart_overTime.data.datasets[7].data.push(arrayValue);
+          liveChart_overTime.update();
+        }
         liveChart.update();
       }
     }
@@ -4023,6 +4421,18 @@ function decipherSerialMessage(message) {
           x: 730,
           y: i730_value,
         };
+
+        //** CREATE ARRAY AND ADD IT TO THE LIVE ARRAY OF THAT TYPE */
+        if(liveOverTime_reading)
+        {
+          var arrayValue = {
+            x: decimal_hour,
+            y: i730_value
+          };
+
+          liveChart_overTime.data.datasets[8].data.push(arrayValue);
+          liveChart_overTime.update();
+        }
         liveChart.update();
       }
     }
@@ -4036,6 +4446,18 @@ function decipherSerialMessage(message) {
           x: 760,
           y: i760_value,
         };
+
+        //** CREATE ARRAY AND ADD IT TO THE LIVE ARRAY OF THAT TYPE */
+        if(liveOverTime_reading)
+        {
+          var arrayValue = {
+            x: decimal_hour,
+            y: i760_value
+          };
+
+          liveChart_overTime.data.datasets[9].data.push(arrayValue);
+          liveChart_overTime.update();
+        }
         liveChart.update();
       }
     }
@@ -4049,6 +4471,18 @@ function decipherSerialMessage(message) {
           x: 810,
           y: i810_value,
         };
+
+        //** CREATE ARRAY AND ADD IT TO THE LIVE ARRAY OF THAT TYPE */
+        if(liveOverTime_reading)
+        {
+          var arrayValue = {
+            x: decimal_hour,
+            y: i810_value
+          };
+
+          liveChart_overTime.data.datasets[10].data.push(arrayValue);
+          liveChart_overTime.update();
+        }
         liveChart.update();
       }
     }
@@ -4062,6 +4496,18 @@ function decipherSerialMessage(message) {
           x: 860,
           y: i860_value,
         };
+
+        //** CREATE ARRAY AND ADD IT TO THE LIVE ARRAY OF THAT TYPE */
+        if(liveOverTime_reading)
+        {
+          var arrayValue = {
+            x: decimal_hour,
+            y: i860_value
+          };
+
+          liveChart_overTime.data.datasets[11].data.push(arrayValue);
+          liveChart_overTime.update();
+        }
         liveChart.update();
       }
     }
@@ -4646,6 +5092,7 @@ menuElement.addEventListener("click", function (ev) {
   helpButton.classList.toggle("active");
   sidebarButton.classList.toggle("active");
   viewMode = 0;
+  liveOverTime_reading = false;
 
   document.getElementById("chartCard").style.gridTemplateColumns =
     "minmax(200px, 1fr)";
@@ -4676,6 +5123,9 @@ menuElement.addEventListener("click", function (ev) {
   }
   if (document.getElementById("liveGraph").classList.contains("active")) {
     document.getElementById("liveGraph").classList.toggle("active");
+  }
+  if (document.getElementById("liveGraph_overTime").classList.contains("active")) {
+    document.getElementById("liveGraph_overTime").classList.toggle("active");
   }
   if (document.getElementById("SR_Graph").classList.contains("active")) {
     document.getElementById("SR_Graph").classList.toggle("active");
@@ -4734,6 +5184,11 @@ menuElement.addEventListener("click", function (ev) {
     if (document.getElementById("mainGraph").classList.contains("active")) {
       document.getElementById("mainGraph").classList.toggle("active");
     }
+  }
+
+  if(graphs_live_overTime.classList.contains("selected"))
+  {
+    graphs_live_overTime.classList.toggle("selected");
   }
 
   updateGraphGrid();
@@ -4846,6 +5301,7 @@ window.onresize = function () {
   mainChart.resize();
   chart2.resize();
   liveChart.resize();
+  liveChart_overTime.resize();
   SR_chart.resize();
 };
 
@@ -4999,6 +5455,20 @@ raw_visibility_live_icon.addEventListener("click", function () {
       "visibility_off";
   }
   liveChart.update();
+  liveChart_overTime.update();
+});
+
+rawOverTime_visibility_live_icon.addEventListener("click", function () {
+  if (rawOverTime_visibility_live_icon.classList.contains("selected")) {
+    rawOverTime_visibility_live_icon.classList.toggle("selected");
+    document.getElementById("visibleIcon_raw_live").innerHTML = "visibility";
+  } else {
+    rawOverTime_visibility_live_icon.classList.toggle("selected");
+    document.getElementById("visibleIcon_raw_live").innerHTML =
+      "visibility_off";
+  }
+  liveChart.update();
+  liveChart_overTime.update();
 });
 
 //** TOGGLE UNIT LABELS */
@@ -5018,6 +5488,15 @@ toggleUnitLabels_live_icon.addEventListener("click", function () {
     toggleUnitLabels_live_icon.classList.toggle("selected");
   }
   liveChart.update();
+});
+
+toggleUnitLabels_liveOverTime_icon.addEventListener("click", function () {
+  if (toggleUnitLabels_liveOverTime_icon.classList.contains("selected")) {
+    toggleUnitLabels_liveOverTime_icon.classList.toggle("selected");
+  } else {
+    toggleUnitLabels_liveOverTime_icon.classList.toggle("selected");
+  }
+  liveChart_overTime.update();
 });
 
 //** TRIM BUTTON FOR EDITING DATA */
@@ -5352,6 +5831,7 @@ raw_element_live.addEventListener("click", function () {
   raw_element_live.classList.toggle("selected");
   if (!raw_element_live.classList.contains("selected")) {
     liveChart.update();
+    liveChart_overTime.update();
   }
 
   document.getElementById("liveGraph").classList.toggle("active");
@@ -5362,18 +5842,41 @@ raw_element_live.addEventListener("click", function () {
   clearTimeout(animWaitFunc);
 
   liveChart.resize();
+  liveChart_overTime.resize();
 });
 
+//** DUPLICATE SCREEN BUTTON */
 duplicate_element_live.addEventListener("click", function () {
   duplicate_element_live.classList.toggle("selected");
   if (!duplicate_element_live.classList.contains("selected")) {
     liveChart.update();
+    liveChart_overTime.update();
   }
 
   document.getElementById("duplicateScreen").classList.toggle("active");
   updateGraphGrid();
   updateChartLabels();
   liveChart.resize();
+  liveChart_overTime.resize();
+});
+
+overTime_live.addEventListener("click", function () {
+  overTime_live.classList.toggle("selected");
+  if (!overTime_live.classList.contains("selected")) {
+    liveChart_overTime.update();
+    liveOverTime_reading = false;
+  }
+  else
+  {
+    liveOverTime_reading = true;
+    resetLiveGraph();
+  }
+  
+
+  document.getElementById("liveGraph_overTime").classList.toggle("active");
+  updateGraphGrid();
+  updateChartLabels();
+  liveChart_overTime.resize();
 });
 
 //** HOMESCREEN BUTTON */
@@ -5385,6 +5888,8 @@ connectDevice.addEventListener("click", function () {
   if (!duplicate_element_live.classList.contains("selected")) {
     duplicate_element_live.classList.toggle("selected");
   }
+
+  liveOverTime_reading = false;
 });
 
 about_button.addEventListener("click", function () {
@@ -5502,6 +6007,26 @@ snapShotIcon_8.addEventListener("click", function () {
   link.click();
 });
 
+refresh_liveGraph.addEventListener("click", function()
+{
+  console.log(liveChart_overTime.data.datasets.length);
+  liveOverTime_reading = false;
+  resetLiveGraph();
+});
+
+function resetLiveGraph()
+{
+  liveOverTime_reading = false;
+
+  liveChart_overTime.data.datasets.forEach((dataset) => {
+    dataset.data = [];
+  });
+
+  liveOverTime_reading = true;
+
+  liveChart_overTime.update();
+}
+
 //** SERIAL PORT FUNCTIONALITY */
 navigator.serial.addEventListener("connect", (e) => {
   // Connect to `e.target` or add it to a list of available ports.
@@ -5516,6 +6041,8 @@ navigator.serial.addEventListener("disconnect", (e) => {
 
   if (viewMode == 2) {
     document.getElementById("liveGraph").classList.toggle("active");
+    document.getElementById("liveGraph_overTime").classList.toggle("active");
+    
     //duplicateScreen.classList.toggle("active");
     menuElement.classList.toggle("active");
     menuContainer.classList.toggle("disable");
@@ -5735,6 +6262,7 @@ function update() {
   mainChart.resize();
   chart2.resize();
   liveChart.resize();
+  liveChart_overTime.resize();
   NIRv_chart.resize();
   reflectance_chart.resize();
   SR_chart.resize();
