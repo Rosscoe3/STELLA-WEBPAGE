@@ -272,6 +272,8 @@ for (var i = 0; i < acc.length; i++) {
   });
 }
 
+const bufferSize = 4056;
+
 //** SERIAL PORTS */
 class SerialScaleController {
   constructor() {
@@ -286,7 +288,7 @@ class SerialScaleController {
           const port = await navigator.serial.requestPort({
             filters: [{ usbVendorId }],
           });
-          await port.open({ baudRate: 9600 });
+          await port.open({ baudRate: 9600, bufferSize });
           this.reader = port.readable.getReader();
           let signals = await port.getSignals();
         }
@@ -367,15 +369,8 @@ class SerialScaleController {
     while (deviceConnected) {
       try {
         const readerData = await this.reader.read();
+        
         return this.decoder.decode(readerData.value);
-
-        // const {value, done} = await this.reader.read();
-        // if (done) {
-        //   // Allow the serial port to be closed later.
-        //   reader.releaseLock();
-        //   break;
-        // }
-        // console.log(done);
       } 
       catch (err) 
       {
@@ -4030,19 +4025,16 @@ async function getSerialMessage() {
       console.log(message);
       getSerialMessage();
       decipherSerialMessage(message);
-      //console.log("update read");
     }
-  }, 2000);
-
-  //readTime
-
+  }, 800);
 }
+
+var liveGraph_overTime_array = [];
 
 function decipherSerialMessage(message) {
   let messageSplit = message.split(" ");
-  //console.log(messageSplit);
-  if (message.includes("paused")) {
-    //console.log("PAUSED");
+  if (message.includes("paused")) 
+  {
     paused = true;
     if (!recording_live_label.classList.contains("pause")) {
       recording_live_label.classList.toggle("pause");
@@ -4061,6 +4053,9 @@ function decipherSerialMessage(message) {
   }
   //** IF THE MESSAGE CONTAINS... */
   else {
+    
+    let surfaceTemp_value, airTemp_value, relHumidity_value;
+    
     //** SURFACE TEMP */
     if (messageSplit.includes("surface_temp,")) {
       let surface_temp =
@@ -4071,6 +4066,8 @@ function decipherSerialMessage(message) {
         let surface_temp_string = "Surface: " + surface_temp_float + "C";
         document.getElementById("surfaceTemp_label").innerHTML =
           surface_temp_string.replace(/ /g, "");
+
+        surfaceTemp_value = surface_temp_string;
       }
 
       if (recording_live_label.classList.contains("pause")) {
@@ -4081,9 +4078,19 @@ function decipherSerialMessage(message) {
     //** AIR TEMP */
     if (messageSplit.includes("air_temp,")) {
       let airTemp = messageSplit[messageSplit.indexOf("air_temp,") + 1];
-      if (!isNaN(parseFloat(airTemp))) {
+      if (!isNaN(parseFloat(airTemp))) 
+      {
         document.getElementById("airTemp_label").innerHTML =
           "Air: " + parseFloat(airTemp) + "C";
+        airTemp_value = airTemp;
+      }
+    }
+    //** RELATIVE HUMIDITY */
+    if (messageSplit.includes("rel_humidity,")) {
+      let relHumidity = messageSplit[messageSplit.indexOf("rel_humidity,") + 1];
+      if (!isNaN(parseFloat(relHumidity))) 
+      {
+        relHumidity_value = relHumidity;
       }
     }
     //** TIMESTAMP */
@@ -4132,6 +4139,8 @@ function decipherSerialMessage(message) {
     let month;
     let day;
     let decimal_hour;
+    let UID_value;
+    let batchNmb_value;
 
     //** UPDATE YEAR, MONTH, and DAY VALUE */
     if (messageSplit.includes("year,") && messageSplit.includes("month,") && messageSplit.includes("day,")) 
@@ -4170,8 +4179,8 @@ function decipherSerialMessage(message) {
       let batchNmb = messageSplit[messageSplit.indexOf("batch,") + 1];
 
       if (!isNaN(parseFloat(batchNmb))) {
-        document.getElementById("batchNmb_label").innerHTML =
-          parseFloat(batchNmb);
+        document.getElementById("batchNmb_label").innerHTML = parseFloat(batchNmb);
+        batchNmb_value = parseFloat(batchNmb);
       }
     }
     //** UPDATE DECIMAL HOUR FROM LIVE FEED */
@@ -4185,8 +4194,16 @@ function decipherSerialMessage(message) {
         if(decimal_hour => dec_hour)
         {
           decimal_hour = parseFloat(dec_hour);
-          //console.log(decimal_hour);
         }
+      }
+    }
+    //** UPDATE UID FROM LIVE FEED */
+    if(messageSplit.includes("UID,"))
+    {
+      let UID = messageSplit[messageSplit.indexOf("UID,") + 1];
+
+      if (!isNaN(parseFloat(UID))) {
+        UID_value = UID;
       }
     }
 
@@ -4512,9 +4529,32 @@ function decipherSerialMessage(message) {
       }
     }
 
-    //** UPDATE CONTROL SIDEBAR */
-    if (messageSplit.includes("batch,")) {
-    }
+    liveGraph_overTime_array.push({
+      UID: UID_value,
+      batch_number: batchNmb_value,
+      sample_number: 0,
+      V450_irradiance_uW_per_cm_squared: v450_value,
+      B500_irradiance_uW_per_cm_squared: b500_value,
+      G550_irradiance_uW_per_cm_squared: g550_value,
+      Y570_irradiance_uW_per_cm_squared: y570_value,
+      O600_irradiance_uW_per_cm_squared: o600_value,
+      R650_irradiance_uW_per_cm_squared: r650_value,
+      nir610_irradiance_uW_per_cm_squared: i610_value,
+      nir680_irradiance_uW_per_cm_squared: i680_value,
+      nir730_irradiance_uW_per_cm_squared: i730_value, 
+      nir760_irradiance_uW_per_cm_squared: i760_value,
+      nir810_irradiance_uW_per_cm_squared: i810_value,
+      nir860_irradiance_uW_per_cm_squared: i860_value,
+      VIS_sensor_temperature_C: 0,
+      NIR_sensor_temperature_C: 0,
+      surface_temperature_C: surfaceTemp_value,
+      air_temperature_C: airTemp_value,
+      relative_humidity_percent: relHumidity_value,
+      range_m: 0,
+      timestamp: 0,
+    });
+
+    console.log(liveGraph_overTime_array);
   }
 }
 
@@ -6040,8 +6080,15 @@ navigator.serial.addEventListener("disconnect", (e) => {
   alert("STELLA Disconnected");
 
   if (viewMode == 2) {
-    document.getElementById("liveGraph").classList.toggle("active");
-    document.getElementById("liveGraph_overTime").classList.toggle("active");
+    
+    if(document.getElementById("liveGraph").classList.contains("active"))
+    {
+      document.getElementById("liveGraph").classList.toggle("active");
+    }
+    if(document.getElementById("liveGraph_overTime").classList.contains("active"))
+    {
+      document.getElementById("liveGraph_overTime").classList.toggle("active");
+    }
     
     //duplicateScreen.classList.toggle("active");
     menuElement.classList.toggle("active");
