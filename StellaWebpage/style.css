@@ -427,6 +427,11 @@ label {
   font-family: "Inter", sans-serif;
 }
 
+.modeContainer input
+{
+  width: 25%;
+}
+
 .dataMode.active:hover {
   cursor: pointer;
   opacity: 100%;

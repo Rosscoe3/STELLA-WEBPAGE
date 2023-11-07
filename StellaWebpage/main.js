@@ -96,7 +96,7 @@ let srGraph_numerator = document.getElementById("SR_Selector_1");
 let srGraph_denominator = document.getElementById("SR_Selector_2");
 let srGraph_numerator_value, srGraph_denominator_value;
 
-//** HELP BUTTONS FOR PICKING GRAPHS */
+//** LIVE BUTTONS FOR PICKING GRAPHS */
 let raw_element_live = document.getElementById("graphs_raw_live");
 let duplicate_element_live = document.getElementById("graphs_duplicate_live");
 let overTime_live = document.getElementById("graphs_live_overTime");
@@ -145,6 +145,8 @@ let rawOverTime_visibility_live_icon = document.getElementById("visible_raw_live
 let toggleUnitLabels_icon = document.getElementById("unitsToggle");
 let toggleUnitLabels_live_icon = document.getElementById("units_live_toggle");
 let toggleUnitLabels_liveOverTime_icon = document.getElementById("units_live_overTime_toggle");
+
+let liveOverTime_increment = document.getElementById("liveGraph_overTime_increment");
 
 let raw_labels_visible = true;
 let ndvi_visibility_icon = document.getElementById("visibility_ndvi");
@@ -387,7 +389,7 @@ const serialScaleController = new SerialScaleController();
 var deviceConnected = false;
 var paused = false;
 var calibrationBatchSelected = false;
-var readTime = 500;
+var readTime = 700;
 
 //** VARIOUS VARIABLES */
 var RESOURCE_LOADED = false;
@@ -4026,10 +4028,12 @@ async function getSerialMessage() {
       getSerialMessage();
       decipherSerialMessage(message);
     }
-  }, 800);
+  }, readTime);
 }
 
 var liveGraph_overTime_array = [];
+let decimal_hour = 0;
+let overTime_increment = 0.01;
 
 function decipherSerialMessage(message) {
   let messageSplit = message.split(" ");
@@ -4138,8 +4142,8 @@ function decipherSerialMessage(message) {
     let year;
     let month;
     let day;
-    let decimal_hour;
     let UID_value;
+    let decimal_hour_new;
     let batchNmb_value;
 
     //** UPDATE YEAR, MONTH, and DAY VALUE */
@@ -4186,14 +4190,22 @@ function decipherSerialMessage(message) {
     //** UPDATE DECIMAL HOUR FROM LIVE FEED */
     if(messageSplit.includes("dec_hour,"))
     {
-      let dec_hour = messageSplit[messageSplit.indexOf("dec_hour,") + 1];
+      decimal_hour_new = messageSplit[messageSplit.indexOf("dec_hour,") + 1];
 
-      if (!isNaN(parseFloat(dec_hour))) {
+      if (!isNaN(parseFloat(decimal_hour_new))) {
+
+        console.log("decimal Hour with increment: " + (decimal_hour + overTime_increment));
+        console.log("incomming decimal hour: " + parseFloat(decimal_hour_new));
 
         //** MAKE SURE ITS GREATER THAN PREVIOUS, WILL HAVE ISSUES IF USED AT MIDNIGHT */
-        if(decimal_hour => dec_hour)
+        if((parseFloat(decimal_hour_new)) > decimal_hour + overTime_increment)
         {
-          decimal_hour = parseFloat(dec_hour);
+          decimal_hour = parseFloat(decimal_hour_new);
+          console.log("NEW");
+        }
+        else
+        {
+          return;
         }
       }
     }
@@ -4234,6 +4246,10 @@ function decipherSerialMessage(message) {
         };
 
         //** CREATE ARRAY AND ADD IT TO THE LIVE ARRAY OF THAT TYPE */
+
+        //console.log("decimal hour new: " + decimal_hour_new);
+        console.log("decimal hour: " + decimal_hour);
+
         if(liveOverTime_reading)
         {
           var arrayValue = {
@@ -5482,6 +5498,12 @@ rawOverTime_visibility_icon.addEventListener("click", function () {
     document.getElementById("visibleIcon_rawOverTime").innerHTML = "visibility_off";
   }
   rawOverTime_Chart.update();
+});
+
+//** TOGGLE INPUT FOR LIVE_OVER_TIME INCREMENT */
+liveOverTime_increment.addEventListener("click", function() {
+  console.log("INPUT CHANGED: " +  liveOverTime_increment.value);
+  overTime_increment = parseFloat(liveOverTime_increment.value);
 });
 
 
