@@ -4033,7 +4033,7 @@ async function getSerialMessage() {
 
 var liveGraph_overTime_array = [];
 let decimal_hour = 0;
-let overTime_increment = 0.01;
+let overTime_increment = (0.00278 / 2);
 
 function decipherSerialMessage(message) {
   let messageSplit = message.split(" ");
@@ -4194,14 +4194,14 @@ function decipherSerialMessage(message) {
 
       if (!isNaN(parseFloat(decimal_hour_new))) {
 
-        console.log("decimal Hour with increment: " + (decimal_hour + overTime_increment));
-        console.log("incomming decimal hour: " + parseFloat(decimal_hour_new));
+        //console.log("decimal Hour with increment: " + (decimal_hour + overTime_increment));
+        //console.log("incomming decimal hour: " + parseFloat(decimal_hour_new));
 
         //** MAKE SURE ITS GREATER THAN PREVIOUS, WILL HAVE ISSUES IF USED AT MIDNIGHT */
         if((parseFloat(decimal_hour_new)) > decimal_hour + overTime_increment)
         {
           decimal_hour = parseFloat(decimal_hour_new);
-          console.log("NEW");
+          //console.log("NEW");
         }
         else
         {
@@ -4570,7 +4570,7 @@ function decipherSerialMessage(message) {
       timestamp: 0,
     });
 
-    console.log(liveGraph_overTime_array);
+    //console.log(liveGraph_overTime_array);
   }
 }
 
@@ -5503,7 +5503,11 @@ rawOverTime_visibility_icon.addEventListener("click", function () {
 //** TOGGLE INPUT FOR LIVE_OVER_TIME INCREMENT */
 liveOverTime_increment.addEventListener("click", function() {
   console.log("INPUT CHANGED: " +  liveOverTime_increment.value);
-  overTime_increment = parseFloat(liveOverTime_increment.value);
+
+  overTime_increment = (liveOverTime_increment.value - 1) * 0.000278;
+  
+  console.log(overTime_increment);
+  // overTime_increment = parseFloat(liveOverTime_increment.value);
 });
 
 
