@@ -63,6 +63,7 @@ let dataArray = [];
 let newDataArray = [];
 let dataArrayBatches = [[]];
 let currentBatchArray = [[]];
+let liveBatchArray = [[]];
 let dataTimeIndex = 0;
 let animationTime = 1500;
 let currentDataBatchIndex = 0;
@@ -121,6 +122,7 @@ let sidebar = document.getElementById("sidebar");
 let sidebar_live = document.getElementById("sidebar_live");
 let sidebarButton = document.getElementById("openSidebarIcon");
 let refresh_liveGraph = document.getElementById("reset_liveGraph");
+// let download_liveGraph = document.getElementById("download_liveOverTime");
 
 let readDeviceBtn = document.getElementById("read");
 let recording_live_label = document.getElementById("recording_label");
@@ -2985,808 +2987,1872 @@ function updateChart(backward, index, exactIndex) {
     }
 
     var progress = (dataTimeIndex / (currentBatchArray.length - 1)) * 100;
-    //console.log("PROGRESS: " + progress + " DATA INDEX: " + dataTimeIndex);
     frameNumber.innerHTML = dataTimeIndex + 1 + "/" + currentBatchArray.length;
 
-    //** VISIBLE LIGHT RAW */
-    mainChart.data.datasets[13].data = [
-      {
-        x: 450,
-        y: currentBatchArray[dataTimeIndex].V450_irradiance_uW_per_cm_squared,
-      },
-      {
-        x: 500,
-        y: currentBatchArray[dataTimeIndex].B500_irradiance_uW_per_cm_squared,
-      },
-      {
-        x: 550,
-        y: currentBatchArray[dataTimeIndex].G550_irradiance_uW_per_cm_squared,
-      },
-      {
-        x: 570,
-        y: currentBatchArray[dataTimeIndex].Y570_irradiance_uW_per_cm_squared,
-      },
-      {
-        x: 600,
-        y: currentBatchArray[dataTimeIndex].O600_irradiance_uW_per_cm_squared,
-      },
-      {
-        x: 650,
-        y: currentBatchArray[dataTimeIndex].R650_irradiance_uW_per_cm_squared,
-      },
-    ];
 
-    //** INFRARED RAW */
-    mainChart.data.datasets[12].data = [
-      {
-        x: 610,
-        y: currentBatchArray[dataTimeIndex].nir610_irradiance_uW_per_cm_squared,
-      },
-      {
-        x: 680,
-        y: currentBatchArray[dataTimeIndex].nir680_irradiance_uW_per_cm_squared,
-      },
-      {
-        x: 730,
-        y: currentBatchArray[dataTimeIndex].nir730_irradiance_uW_per_cm_squared,
-      },
-      {
-        x: 760,
-        y: currentBatchArray[dataTimeIndex].nir760_irradiance_uW_per_cm_squared,
-      },
-      {
-        x: 810,
-        y: currentBatchArray[dataTimeIndex].nir810_irradiance_uW_per_cm_squared,
-      },
-      {
-        x: 860,
-        y: currentBatchArray[dataTimeIndex].nir860_irradiance_uW_per_cm_squared,
-      },
-    ];
-
-    //** USED FOR GRAPHING STANDARD DEVIATION */
-    if (dataIsAverage) {
-      mainChart.data.datasets[14].data = [
+    if(currentBatchArray[dataTimeIndex].timestamp)
+    {
+      //** VISIBLE LIGHT RAW */
+      mainChart.data.datasets[13].data = [
         {
           x: 450,
-          y:
-            parseFloat(
-              currentBatchArray[dataTimeIndex].V450_irradiance_uW_per_cm_squared
-            ) +
-            parseFloat(
-              standardDeviation_array[0].V450_irradiance_uW_per_cm_squared
-            ),
-        },
-        {
-          x: 450,
-          y:
-            parseFloat(
-              currentBatchArray[dataTimeIndex].V450_irradiance_uW_per_cm_squared
-            ) -
-            parseFloat(
-              standardDeviation_array[0].V450_irradiance_uW_per_cm_squared
-            ),
+          y: currentBatchArray[dataTimeIndex].V450_irradiance_uW_per_cm_squared,
         },
         {
           x: 500,
-          y:
-            parseFloat(
-              currentBatchArray[dataTimeIndex].B500_irradiance_uW_per_cm_squared
-            ) +
-            parseFloat(
-              standardDeviation_array[0].B500_irradiance_uW_per_cm_squared
-            ),
-        },
-        {
-          x: 500,
-          y:
-            parseFloat(
-              currentBatchArray[dataTimeIndex].B500_irradiance_uW_per_cm_squared
-            ) -
-            parseFloat(
-              standardDeviation_array[0].B500_irradiance_uW_per_cm_squared
-            ),
+          y: currentBatchArray[dataTimeIndex].B500_irradiance_uW_per_cm_squared,
         },
         {
           x: 550,
-          y:
-            parseFloat(
-              currentBatchArray[dataTimeIndex].G550_irradiance_uW_per_cm_squared
-            ) +
-            parseFloat(
-              standardDeviation_array[0].G550_irradiance_uW_per_cm_squared
-            ),
-        },
-        {
-          x: 550,
-          y:
-            parseFloat(
-              currentBatchArray[dataTimeIndex].G550_irradiance_uW_per_cm_squared
-            ) -
-            parseFloat(
-              standardDeviation_array[0].G550_irradiance_uW_per_cm_squared
-            ),
+          y: currentBatchArray[dataTimeIndex].G550_irradiance_uW_per_cm_squared,
         },
         {
           x: 570,
-          y:
-            parseFloat(
-              currentBatchArray[dataTimeIndex].Y570_irradiance_uW_per_cm_squared
-            ) +
-            parseFloat(
-              standardDeviation_array[0].Y570_irradiance_uW_per_cm_squared
-            ),
-        },
-        {
-          x: 570,
-          y:
-            parseFloat(
-              currentBatchArray[dataTimeIndex].Y570_irradiance_uW_per_cm_squared
-            ) -
-            parseFloat(
-              standardDeviation_array[0].Y570_irradiance_uW_per_cm_squared
-            ),
+          y: currentBatchArray[dataTimeIndex].Y570_irradiance_uW_per_cm_squared,
         },
         {
           x: 600,
-          y:
-            parseFloat(
-              currentBatchArray[dataTimeIndex].O600_irradiance_uW_per_cm_squared
-            ) +
-            parseFloat(
-              standardDeviation_array[0].O600_irradiance_uW_per_cm_squared
-            ),
-        },
-        {
-          x: 600,
-          y:
-            parseFloat(
-              currentBatchArray[dataTimeIndex].O600_irradiance_uW_per_cm_squared
-            ) -
-            parseFloat(
-              standardDeviation_array[0].O600_irradiance_uW_per_cm_squared
-            ),
-        },
-        {
-          x: 610,
-          y:
-            parseFloat(
-              currentBatchArray[dataTimeIndex]
-                .nir610_irradiance_uW_per_cm_squared
-            ) +
-            parseFloat(
-              standardDeviation_array[0].nir610_irradiance_uW_per_cm_squared
-            ),
-        },
-        {
-          x: 610,
-          y:
-            parseFloat(
-              currentBatchArray[dataTimeIndex]
-                .nir610_irradiance_uW_per_cm_squared
-            ) -
-            parseFloat(
-              standardDeviation_array[0].nir610_irradiance_uW_per_cm_squared
-            ),
+          y: currentBatchArray[dataTimeIndex].O600_irradiance_uW_per_cm_squared,
         },
         {
           x: 650,
-          y:
-            parseFloat(
-              currentBatchArray[dataTimeIndex].R650_irradiance_uW_per_cm_squared
-            ) +
-            parseFloat(
-              standardDeviation_array[0].R650_irradiance_uW_per_cm_squared
-            ),
-        },
-        {
-          x: 650,
-          y:
-            parseFloat(
-              currentBatchArray[dataTimeIndex].R650_irradiance_uW_per_cm_squared
-            ) -
-            parseFloat(
-              standardDeviation_array[0].R650_irradiance_uW_per_cm_squared
-            ),
-        },
-        {
-          x: 680,
-          y:
-            parseFloat(
-              currentBatchArray[dataTimeIndex]
-                .nir680_irradiance_uW_per_cm_squared
-            ) +
-            parseFloat(
-              standardDeviation_array[0].nir680_irradiance_uW_per_cm_squared
-            ),
-        },
-        {
-          x: 680,
-          y:
-            parseFloat(
-              currentBatchArray[dataTimeIndex]
-                .nir680_irradiance_uW_per_cm_squared
-            ) -
-            parseFloat(
-              standardDeviation_array[0].nir680_irradiance_uW_per_cm_squared
-            ),
-        },
-        {
-          x: 730,
-          y:
-            parseFloat(
-              currentBatchArray[dataTimeIndex]
-                .nir730_irradiance_uW_per_cm_squared
-            ) +
-            parseFloat(
-              standardDeviation_array[0].nir730_irradiance_uW_per_cm_squared
-            ),
-        },
-        {
-          x: 730,
-          y:
-            parseFloat(
-              currentBatchArray[dataTimeIndex]
-                .nir730_irradiance_uW_per_cm_squared
-            ) -
-            parseFloat(
-              standardDeviation_array[0].nir730_irradiance_uW_per_cm_squared
-            ),
-        },
-        {
-          x: 760,
-          y:
-            parseFloat(
-              currentBatchArray[dataTimeIndex]
-                .nir760_irradiance_uW_per_cm_squared
-            ) +
-            parseFloat(
-              standardDeviation_array[0].nir760_irradiance_uW_per_cm_squared
-            ),
-        },
-        {
-          x: 760,
-          y:
-            parseFloat(
-              currentBatchArray[dataTimeIndex]
-                .nir760_irradiance_uW_per_cm_squared
-            ) -
-            parseFloat(
-              standardDeviation_array[0].nir760_irradiance_uW_per_cm_squared
-            ),
-        },
-        {
-          x: 810,
-          y:
-            parseFloat(
-              currentBatchArray[dataTimeIndex]
-                .nir810_irradiance_uW_per_cm_squared
-            ) +
-            parseFloat(
-              standardDeviation_array[0].nir810_irradiance_uW_per_cm_squared
-            ),
-        },
-        {
-          x: 810,
-          y:
-            parseFloat(
-              currentBatchArray[dataTimeIndex]
-                .nir810_irradiance_uW_per_cm_squared
-            ) -
-            parseFloat(
-              standardDeviation_array[0].nir810_irradiance_uW_per_cm_squared
-            ),
-        },
-        {
-          x: 860,
-          y:
-            parseFloat(
-              currentBatchArray[dataTimeIndex]
-                .nir860_irradiance_uW_per_cm_squared
-            ) +
-            parseFloat(
-              standardDeviation_array[0].nir860_irradiance_uW_per_cm_squared
-            ),
-        },
-        {
-          x: 860,
-          y:
-            parseFloat(
-              currentBatchArray[dataTimeIndex]
-                .nir860_irradiance_uW_per_cm_squared
-            ) -
-            parseFloat(
-              standardDeviation_array[0].nir860_irradiance_uW_per_cm_squared
-            ),
+          y: currentBatchArray[dataTimeIndex].R650_irradiance_uW_per_cm_squared,
         },
       ];
-    }
-
-    //** ADD ALL NORMALIZED VALUES TO CURVE, START AT ONE TO AVOID LABELS*/
-    //** NORMALIZED VISIBLE */
-    for (let i = 0; i < (calibrationArray_Visible.length - cut) / step; i++) {
-      mainChart.data.datasets[6].data[i] = {
-        x: parseInt(calibrationArray_Visible[i * step].wavelength),
-        y:
-          currentBatchArray[dataTimeIndex].V450_irradiance_uW_per_cm_squared *
-          parseFloat(calibrationArray_Visible[i * step].V450_power),
-      };
-      mainChart.data.datasets[7].data[i] = {
-        x: parseInt(calibrationArray_Visible[i * step].wavelength),
-        y:
-          currentBatchArray[dataTimeIndex].B500_irradiance_uW_per_cm_squared *
-          parseFloat(calibrationArray_Visible[i * step].B500_power),
-      };
-      mainChart.data.datasets[8].data[i] = {
-        x: parseInt(calibrationArray_Visible[i * step].wavelength),
-        y:
-          currentBatchArray[dataTimeIndex].G550_irradiance_uW_per_cm_squared *
-          parseFloat(calibrationArray_Visible[i * step].G550_power),
-      };
-      mainChart.data.datasets[9].data[i] = {
-        x: parseInt(calibrationArray_Visible[i * step].wavelength),
-        y:
-          currentBatchArray[dataTimeIndex].Y570_irradiance_uW_per_cm_squared *
-          parseFloat(calibrationArray_Visible[i * step].Y570_power),
-      };
-      mainChart.data.datasets[10].data[i] = {
-        x: parseInt(calibrationArray_Visible[i * step].wavelength),
-        y:
-          currentBatchArray[dataTimeIndex].O600_irradiance_uW_per_cm_squared *
-          parseFloat(calibrationArray_Visible[i * step].O600_power),
-      };
-      mainChart.data.datasets[11].data[i] = {
-        x: parseInt(calibrationArray_Visible[i * step].wavelength),
-        y:
-          currentBatchArray[dataTimeIndex].R650_irradiance_uW_per_cm_squared *
-          parseFloat(calibrationArray_Visible[i * step].R650_power),
-      };
-    }
-    //** NORMALIZED INFRARED */
-    for (let i = 0; i < (calibrationArray_Infrared.length - cut) / step; i++) {
-      mainChart.data.datasets[0].data[i] = {
-        x: parseInt(calibrationArray_Infrared[i * step].Lambda),
-        y:
-          currentBatchArray[dataTimeIndex].nir610_irradiance_uW_per_cm_squared *
-          parseFloat(calibrationArray_Infrared[i * step].nir610_power),
-      };
-      mainChart.data.datasets[1].data[i] = {
-        x: parseInt(calibrationArray_Infrared[i * step].Lambda),
-        y:
-          currentBatchArray[dataTimeIndex].nir680_irradiance_uW_per_cm_squared *
-          parseFloat(calibrationArray_Infrared[i * step].nir680_power),
-      };
-      mainChart.data.datasets[2].data[i] = {
-        x: parseInt(calibrationArray_Infrared[i * step].Lambda),
-        y:
-          currentBatchArray[dataTimeIndex].nir730_irradiance_uW_per_cm_squared *
-          parseFloat(calibrationArray_Infrared[i * step].nir730_power),
-      };
-      mainChart.data.datasets[3].data[i] = {
-        x: parseInt(calibrationArray_Infrared[i * step].Lambda),
-        y:
-          currentBatchArray[dataTimeIndex].nir760_irradiance_uW_per_cm_squared *
-          parseFloat(calibrationArray_Infrared[i * step].nir760_power),
-      };
-      mainChart.data.datasets[4].data[i] = {
-        x: parseInt(calibrationArray_Infrared[i * step].Lambda),
-        y:
-          currentBatchArray[dataTimeIndex].nir810_irradiance_uW_per_cm_squared *
-          parseFloat(calibrationArray_Infrared[i * step].nir810_power),
-      };
-      mainChart.data.datasets[5].data[i] = {
-        x: parseInt(calibrationArray_Infrared[i * step].Lambda),
-        y:
-          currentBatchArray[dataTimeIndex].nir860_irradiance_uW_per_cm_squared *
-          parseFloat(calibrationArray_Infrared[i * step].nir860_power),
-      };
-    }
-
-    //** UPDATE AIR / SURFACE TEMP */
-    for (let i = 0; i < currentBatchArray.length; i++) {
-      
-      //** GRAB LAST VALUE OF ARRAY TO SET THE MAX TIMESTAMP OF CHART */
-      if (i == currentBatchArray.length - 1) {
-        tempChart.options.scales.x.max = currentBatchArray[i].timestamp.replace(
-          /\s/g,
-          ""
-        );
-      }
-      //** GRAB FIRST VALUE OF ARRAY TO SET THE MIN TIMESTAMP OF CHART */
-      else if (i == 0) {
-        tempChart.options.scales.x.min = currentBatchArray[i].timestamp.replace(
-          /\s/g,
-          ""
-        );
-      }
-
-      tempChart.data.datasets[0].data[i] = {
-        x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
-        // x: parseFloat(currentBatchArray[i].decimal_hour),
-        y: parseFloat(currentBatchArray[i].air_temperature_C),
-      };
-      tempChart.data.datasets[1].data[i] = {
-        x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
-        // x: parseFloat(currentBatchArray[i].decimal_hour),
-        y: parseFloat(currentBatchArray[i].surface_temperature_C),
-      };
-    }
-
-    //** UPDATE RAW - OVER TIME */
-    for (let i = 0; i < currentBatchArray.length; i++) {
-      //** GRAB LAST VALUE OF ARRAY TO SET THE MAX TIMESTAMP OF CHART */
-      if (i == currentBatchArray.length - 1) {
-        rawOverTime_Chart.options.scales.x.max = currentBatchArray[i].timestamp.replace(
-          /\s/g,
-          ""
-        );
-      }
-      //** GRAB FIRST VALUE OF ARRAY TO SET THE MIN TIMESTAMP OF CHART */
-      else if (i == 0) {
-        rawOverTime_Chart.options.scales.x.min = currentBatchArray[i].timestamp.replace(
-          /\s/g,
-          ""
-        );
-      }
-
-      //** 450 NM */
-      rawOverTime_Chart.data.datasets[0].data[i] = {
-        x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
-        // x: parseFloat(currentBatchArray[i].decimal_hour),
-        y: parseFloat(currentBatchArray[i].V450_irradiance_uW_per_cm_squared),
-      };
-      //** 500 NM */
-      rawOverTime_Chart.data.datasets[1].data[i] = {
-        x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
-        // x: parseFloat(currentBatchArray[i].decimal_hour),
-        y: parseFloat(currentBatchArray[i].B500_irradiance_uW_per_cm_squared),
-      };
-      //** 550 NM */
-      rawOverTime_Chart.data.datasets[2].data[i] = {
-        x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
-        // x: parseFloat(currentBatchArray[i].decimal_hour),
-        y: parseFloat(currentBatchArray[i].G550_irradiance_uW_per_cm_squared),
-      };
-      //** 570 NM */
-      rawOverTime_Chart.data.datasets[3].data[i] = {
-        x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
-        // x: parseFloat(currentBatchArray[i].decimal_hour),
-        y: parseFloat(currentBatchArray[i].Y570_irradiance_uW_per_cm_squared),
-      };
-      //** 600 NM */
-      rawOverTime_Chart.data.datasets[4].data[i] = {
-        x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
-        // x: parseFloat(currentBatchArray[i].decimal_hour),
-        y: parseFloat(currentBatchArray[i].O600_irradiance_uW_per_cm_squared),
-      };
-      //** 610 NM */
-      rawOverTime_Chart.data.datasets[5].data[i] = {
-        x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
-        // x: parseFloat(currentBatchArray[i].decimal_hour),
-        y: parseFloat(currentBatchArray[i].nir610_irradiance_uW_per_cm_squared),
-      };
-      //** 680 NM */
-      rawOverTime_Chart.data.datasets[6].data[i] = {
-        x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
-        // x: parseFloat(currentBatchArray[i].decimal_hour),
-        y: parseFloat(currentBatchArray[i].nir680_irradiance_uW_per_cm_squared),
-      };
-      //** 730 NM */
-      rawOverTime_Chart.data.datasets[7].data[i] = {
-        x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
-        // x: parseFloat(currentBatchArray[i].decimal_hour),
-        y: parseFloat(currentBatchArray[i].nir730_irradiance_uW_per_cm_squared),
-      };
-      //** 760 NM */
-      rawOverTime_Chart.data.datasets[8].data[i] = {
-        x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
-        // x: parseFloat(currentBatchArray[i].decimal_hour),
-        y: parseFloat(currentBatchArray[i].nir760_irradiance_uW_per_cm_squared),
-      };
-      //** 810 NM */
-      rawOverTime_Chart.data.datasets[9].data[i] = {
-        x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
-        // x: parseFloat(currentBatchArray[i].decimal_hour),
-        y: parseFloat(currentBatchArray[i].nir810_irradiance_uW_per_cm_squared),
-      };
-      //** 860 NM */
-      rawOverTime_Chart.data.datasets[10].data[i] = {
-        x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
-        // x: parseFloat(currentBatchArray[i].decimal_hour),
-        y: parseFloat(currentBatchArray[i].nir860_irradiance_uW_per_cm_squared),
-      };
-    }
-
-    //** UPDATE NDVI */
-    if (ndvi_element.classList.contains("selected")) {
-      for (let i = 0; i < currentBatchArray.length; i++) {
-        //** GRAB LAST VALUE OF ARRAY TO SET THE MAX TIMESTAMP OF CHART */
-        if (i == currentBatchArray.length - 1) {
-          chart2.options.scales.x.max = currentBatchArray[i].timestamp.replace(
-            /\s/g,
-            ""
-          );
-        }
-        //** GRAB FIRST VALUE OF ARRAY TO SET THE MIN TIMESTAMP OF CHART */
-        else if (i == 0) {
-          chart2.options.scales.x.min = currentBatchArray[i].timestamp.replace(
-            /\s/g,
-            ""
-          );
-        }
-
-        chart2.data.datasets[0].data[i] = {
-          x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
-          // x: parseFloat(currentBatchArray[i].decimal_hour),
-          y: calculateNDVI(i),
-        };
-      }
-    }
-
-    //** UPDATE REFLECTANCE */
-    if (reflectance_element.classList.contains("selected")) {
-      console.log("V450: " + currentBatchArray[dataTimeIndex].V450_reflectance);
-      console.log("B500: " + currentBatchArray[dataTimeIndex].B500_reflectance);
-      console.log("G550: " + currentBatchArray[dataTimeIndex].G550_reflectance);
-      console.log("Y570: " + currentBatchArray[dataTimeIndex].Y570_reflectance);
-      console.log("O600: " + currentBatchArray[dataTimeIndex].O600_reflectance);
-      console.log("R650: " + currentBatchArray[dataTimeIndex].R650_reflectance);
-      console.log(
-        "nir610: " + currentBatchArray[dataTimeIndex].nir610_reflectance
-      );
-      console.log(
-        "nir680: " + currentBatchArray[dataTimeIndex].nir680_reflectance
-      );
-      console.log(
-        "nir730: " + currentBatchArray[dataTimeIndex].nir730_reflectance
-      );
-      console.log(
-        "nir760: " + currentBatchArray[dataTimeIndex].nir760_reflectance
-      );
-      console.log(
-        "nir810: " + currentBatchArray[dataTimeIndex].nir810_reflectance
-      );
-      console.log(
-        "nir860: " + currentBatchArray[dataTimeIndex].nir860_reflectance
-      );
-      console.log("DATA TIME INDEX: " + dataTimeIndex);
-
-      reflectance_chart.data.datasets[0].data = [
-        {
-          x: 450,
-          y: currentBatchArray[dataTimeIndex].V450_reflectance,
-        },
-        {
-          x: 500,
-          y: currentBatchArray[dataTimeIndex].B500_reflectance,
-        },
-        {
-          x: 550,
-          y: currentBatchArray[dataTimeIndex].G550_reflectance,
-        },
-        {
-          x: 570,
-          y: currentBatchArray[dataTimeIndex].Y570_reflectance,
-        },
-        {
-          x: 600,
-          y: currentBatchArray[dataTimeIndex].O600_reflectance,
-        },
+  
+      //** INFRARED RAW */
+      mainChart.data.datasets[12].data = [
         {
           x: 610,
-          y: currentBatchArray[dataTimeIndex].nir610_reflectance,
-        },
-        {
-          x: 650,
-          y: currentBatchArray[dataTimeIndex].R650_reflectance,
+          y: currentBatchArray[dataTimeIndex].nir610_irradiance_uW_per_cm_squared,
         },
         {
           x: 680,
-          y: currentBatchArray[dataTimeIndex].nir680_reflectance,
+          y: currentBatchArray[dataTimeIndex].nir680_irradiance_uW_per_cm_squared,
         },
         {
           x: 730,
-          y: currentBatchArray[dataTimeIndex].nir730_reflectance,
+          y: currentBatchArray[dataTimeIndex].nir730_irradiance_uW_per_cm_squared,
         },
         {
           x: 760,
-          y: currentBatchArray[dataTimeIndex].nir760_reflectance,
+          y: currentBatchArray[dataTimeIndex].nir760_irradiance_uW_per_cm_squared,
         },
         {
           x: 810,
-          y: currentBatchArray[dataTimeIndex].nir810_reflectance,
+          y: currentBatchArray[dataTimeIndex].nir810_irradiance_uW_per_cm_squared,
         },
         {
           x: 860,
-          y: currentBatchArray[dataTimeIndex].nir860_reflectance,
+          y: currentBatchArray[dataTimeIndex].nir860_irradiance_uW_per_cm_squared,
         },
       ];
-      //console.log(currentBatchArray[dataTimeIndex]);
-    }
-
-    //** UPDATE NIRv */
-    if (calibrationBatchSelected) {
+  
+      //** USED FOR GRAPHING STANDARD DEVIATION */
+      if (dataIsAverage) {
+        mainChart.data.datasets[14].data = [
+          {
+            x: 450,
+            y:
+              parseFloat(
+                currentBatchArray[dataTimeIndex].V450_irradiance_uW_per_cm_squared
+              ) +
+              parseFloat(
+                standardDeviation_array[0].V450_irradiance_uW_per_cm_squared
+              ),
+          },
+          {
+            x: 450,
+            y:
+              parseFloat(
+                currentBatchArray[dataTimeIndex].V450_irradiance_uW_per_cm_squared
+              ) -
+              parseFloat(
+                standardDeviation_array[0].V450_irradiance_uW_per_cm_squared
+              ),
+          },
+          {
+            x: 500,
+            y:
+              parseFloat(
+                currentBatchArray[dataTimeIndex].B500_irradiance_uW_per_cm_squared
+              ) +
+              parseFloat(
+                standardDeviation_array[0].B500_irradiance_uW_per_cm_squared
+              ),
+          },
+          {
+            x: 500,
+            y:
+              parseFloat(
+                currentBatchArray[dataTimeIndex].B500_irradiance_uW_per_cm_squared
+              ) -
+              parseFloat(
+                standardDeviation_array[0].B500_irradiance_uW_per_cm_squared
+              ),
+          },
+          {
+            x: 550,
+            y:
+              parseFloat(
+                currentBatchArray[dataTimeIndex].G550_irradiance_uW_per_cm_squared
+              ) +
+              parseFloat(
+                standardDeviation_array[0].G550_irradiance_uW_per_cm_squared
+              ),
+          },
+          {
+            x: 550,
+            y:
+              parseFloat(
+                currentBatchArray[dataTimeIndex].G550_irradiance_uW_per_cm_squared
+              ) -
+              parseFloat(
+                standardDeviation_array[0].G550_irradiance_uW_per_cm_squared
+              ),
+          },
+          {
+            x: 570,
+            y:
+              parseFloat(
+                currentBatchArray[dataTimeIndex].Y570_irradiance_uW_per_cm_squared
+              ) +
+              parseFloat(
+                standardDeviation_array[0].Y570_irradiance_uW_per_cm_squared
+              ),
+          },
+          {
+            x: 570,
+            y:
+              parseFloat(
+                currentBatchArray[dataTimeIndex].Y570_irradiance_uW_per_cm_squared
+              ) -
+              parseFloat(
+                standardDeviation_array[0].Y570_irradiance_uW_per_cm_squared
+              ),
+          },
+          {
+            x: 600,
+            y:
+              parseFloat(
+                currentBatchArray[dataTimeIndex].O600_irradiance_uW_per_cm_squared
+              ) +
+              parseFloat(
+                standardDeviation_array[0].O600_irradiance_uW_per_cm_squared
+              ),
+          },
+          {
+            x: 600,
+            y:
+              parseFloat(
+                currentBatchArray[dataTimeIndex].O600_irradiance_uW_per_cm_squared
+              ) -
+              parseFloat(
+                standardDeviation_array[0].O600_irradiance_uW_per_cm_squared
+              ),
+          },
+          {
+            x: 610,
+            y:
+              parseFloat(
+                currentBatchArray[dataTimeIndex]
+                  .nir610_irradiance_uW_per_cm_squared
+              ) +
+              parseFloat(
+                standardDeviation_array[0].nir610_irradiance_uW_per_cm_squared
+              ),
+          },
+          {
+            x: 610,
+            y:
+              parseFloat(
+                currentBatchArray[dataTimeIndex]
+                  .nir610_irradiance_uW_per_cm_squared
+              ) -
+              parseFloat(
+                standardDeviation_array[0].nir610_irradiance_uW_per_cm_squared
+              ),
+          },
+          {
+            x: 650,
+            y:
+              parseFloat(
+                currentBatchArray[dataTimeIndex].R650_irradiance_uW_per_cm_squared
+              ) +
+              parseFloat(
+                standardDeviation_array[0].R650_irradiance_uW_per_cm_squared
+              ),
+          },
+          {
+            x: 650,
+            y:
+              parseFloat(
+                currentBatchArray[dataTimeIndex].R650_irradiance_uW_per_cm_squared
+              ) -
+              parseFloat(
+                standardDeviation_array[0].R650_irradiance_uW_per_cm_squared
+              ),
+          },
+          {
+            x: 680,
+            y:
+              parseFloat(
+                currentBatchArray[dataTimeIndex]
+                  .nir680_irradiance_uW_per_cm_squared
+              ) +
+              parseFloat(
+                standardDeviation_array[0].nir680_irradiance_uW_per_cm_squared
+              ),
+          },
+          {
+            x: 680,
+            y:
+              parseFloat(
+                currentBatchArray[dataTimeIndex]
+                  .nir680_irradiance_uW_per_cm_squared
+              ) -
+              parseFloat(
+                standardDeviation_array[0].nir680_irradiance_uW_per_cm_squared
+              ),
+          },
+          {
+            x: 730,
+            y:
+              parseFloat(
+                currentBatchArray[dataTimeIndex]
+                  .nir730_irradiance_uW_per_cm_squared
+              ) +
+              parseFloat(
+                standardDeviation_array[0].nir730_irradiance_uW_per_cm_squared
+              ),
+          },
+          {
+            x: 730,
+            y:
+              parseFloat(
+                currentBatchArray[dataTimeIndex]
+                  .nir730_irradiance_uW_per_cm_squared
+              ) -
+              parseFloat(
+                standardDeviation_array[0].nir730_irradiance_uW_per_cm_squared
+              ),
+          },
+          {
+            x: 760,
+            y:
+              parseFloat(
+                currentBatchArray[dataTimeIndex]
+                  .nir760_irradiance_uW_per_cm_squared
+              ) +
+              parseFloat(
+                standardDeviation_array[0].nir760_irradiance_uW_per_cm_squared
+              ),
+          },
+          {
+            x: 760,
+            y:
+              parseFloat(
+                currentBatchArray[dataTimeIndex]
+                  .nir760_irradiance_uW_per_cm_squared
+              ) -
+              parseFloat(
+                standardDeviation_array[0].nir760_irradiance_uW_per_cm_squared
+              ),
+          },
+          {
+            x: 810,
+            y:
+              parseFloat(
+                currentBatchArray[dataTimeIndex]
+                  .nir810_irradiance_uW_per_cm_squared
+              ) +
+              parseFloat(
+                standardDeviation_array[0].nir810_irradiance_uW_per_cm_squared
+              ),
+          },
+          {
+            x: 810,
+            y:
+              parseFloat(
+                currentBatchArray[dataTimeIndex]
+                  .nir810_irradiance_uW_per_cm_squared
+              ) -
+              parseFloat(
+                standardDeviation_array[0].nir810_irradiance_uW_per_cm_squared
+              ),
+          },
+          {
+            x: 860,
+            y:
+              parseFloat(
+                currentBatchArray[dataTimeIndex]
+                  .nir860_irradiance_uW_per_cm_squared
+              ) +
+              parseFloat(
+                standardDeviation_array[0].nir860_irradiance_uW_per_cm_squared
+              ),
+          },
+          {
+            x: 860,
+            y:
+              parseFloat(
+                currentBatchArray[dataTimeIndex]
+                  .nir860_irradiance_uW_per_cm_squared
+              ) -
+              parseFloat(
+                standardDeviation_array[0].nir860_irradiance_uW_per_cm_squared
+              ),
+          },
+        ];
+      }
+  
+      //** ADD ALL NORMALIZED VALUES TO CURVE, START AT ONE TO AVOID LABELS*/
+      //** NORMALIZED VISIBLE */
+      for (let i = 0; i < (calibrationArray_Visible.length - cut) / step; i++) {
+        mainChart.data.datasets[6].data[i] = {
+          x: parseInt(calibrationArray_Visible[i * step].wavelength),
+          y:
+            currentBatchArray[dataTimeIndex].V450_irradiance_uW_per_cm_squared *
+            parseFloat(calibrationArray_Visible[i * step].V450_power),
+        };
+        mainChart.data.datasets[7].data[i] = {
+          x: parseInt(calibrationArray_Visible[i * step].wavelength),
+          y:
+            currentBatchArray[dataTimeIndex].B500_irradiance_uW_per_cm_squared *
+            parseFloat(calibrationArray_Visible[i * step].B500_power),
+        };
+        mainChart.data.datasets[8].data[i] = {
+          x: parseInt(calibrationArray_Visible[i * step].wavelength),
+          y:
+            currentBatchArray[dataTimeIndex].G550_irradiance_uW_per_cm_squared *
+            parseFloat(calibrationArray_Visible[i * step].G550_power),
+        };
+        mainChart.data.datasets[9].data[i] = {
+          x: parseInt(calibrationArray_Visible[i * step].wavelength),
+          y:
+            currentBatchArray[dataTimeIndex].Y570_irradiance_uW_per_cm_squared *
+            parseFloat(calibrationArray_Visible[i * step].Y570_power),
+        };
+        mainChart.data.datasets[10].data[i] = {
+          x: parseInt(calibrationArray_Visible[i * step].wavelength),
+          y:
+            currentBatchArray[dataTimeIndex].O600_irradiance_uW_per_cm_squared *
+            parseFloat(calibrationArray_Visible[i * step].O600_power),
+        };
+        mainChart.data.datasets[11].data[i] = {
+          x: parseInt(calibrationArray_Visible[i * step].wavelength),
+          y:
+            currentBatchArray[dataTimeIndex].R650_irradiance_uW_per_cm_squared *
+            parseFloat(calibrationArray_Visible[i * step].R650_power),
+        };
+      }
+      //** NORMALIZED INFRARED */
+      for (let i = 0; i < (calibrationArray_Infrared.length - cut) / step; i++) {
+        mainChart.data.datasets[0].data[i] = {
+          x: parseInt(calibrationArray_Infrared[i * step].Lambda),
+          y:
+            currentBatchArray[dataTimeIndex].nir610_irradiance_uW_per_cm_squared *
+            parseFloat(calibrationArray_Infrared[i * step].nir610_power),
+        };
+        mainChart.data.datasets[1].data[i] = {
+          x: parseInt(calibrationArray_Infrared[i * step].Lambda),
+          y:
+            currentBatchArray[dataTimeIndex].nir680_irradiance_uW_per_cm_squared *
+            parseFloat(calibrationArray_Infrared[i * step].nir680_power),
+        };
+        mainChart.data.datasets[2].data[i] = {
+          x: parseInt(calibrationArray_Infrared[i * step].Lambda),
+          y:
+            currentBatchArray[dataTimeIndex].nir730_irradiance_uW_per_cm_squared *
+            parseFloat(calibrationArray_Infrared[i * step].nir730_power),
+        };
+        mainChart.data.datasets[3].data[i] = {
+          x: parseInt(calibrationArray_Infrared[i * step].Lambda),
+          y:
+            currentBatchArray[dataTimeIndex].nir760_irradiance_uW_per_cm_squared *
+            parseFloat(calibrationArray_Infrared[i * step].nir760_power),
+        };
+        mainChart.data.datasets[4].data[i] = {
+          x: parseInt(calibrationArray_Infrared[i * step].Lambda),
+          y:
+            currentBatchArray[dataTimeIndex].nir810_irradiance_uW_per_cm_squared *
+            parseFloat(calibrationArray_Infrared[i * step].nir810_power),
+        };
+        mainChart.data.datasets[5].data[i] = {
+          x: parseInt(calibrationArray_Infrared[i * step].Lambda),
+          y:
+            currentBatchArray[dataTimeIndex].nir860_irradiance_uW_per_cm_squared *
+            parseFloat(calibrationArray_Infrared[i * step].nir860_power),
+        };
+      }
+  
+      //** UPDATE AIR / SURFACE TEMP */
       for (let i = 0; i < currentBatchArray.length; i++) {
+        
         //** GRAB LAST VALUE OF ARRAY TO SET THE MAX TIMESTAMP OF CHART */
         if (i == currentBatchArray.length - 1) {
-          NIRv_chart.options.scales.x.max = currentBatchArray[
-            i
-          ].timestamp.replace(/\s/g, "");
-          //console.log(currentBatchArray[i].timestamp.replace(/\s/g, ""));
+          
+          //** CHECK BOTH TIMESTAMP TYPES */
+          if(currentBatchArray[i].timestamp)
+          {
+            tempChart.options.scales.x.max = currentBatchArray[i].timestamp.replace(
+              /\s/g,
+              ""
+            );
+          }
+          else if(currentBatchArray[i].timestamp_iso8601)
+          {
+            tempChart.options.scales.x.max = currentBatchArray[i].timestamp_iso8601.replace(
+              /\s/g,
+              ""
+            );
+          }
         }
         //** GRAB FIRST VALUE OF ARRAY TO SET THE MIN TIMESTAMP OF CHART */
         else if (i == 0) {
-          NIRv_chart.options.scales.x.min = currentBatchArray[
-            i
-          ].timestamp.replace(/\s/g, "");
+          
+          //** CHECK BOTH TIMESTAMP TYPES */
+          if(currentBatchArray[i].timestamp)
+          {
+            tempChart.options.scales.x.min = currentBatchArray[i].timestamp.replace(
+              /\s/g,
+              ""
+            );
+          }
+          else if(currentBatchArray[i].timestamp_iso8601)
+          {
+            tempChart.options.scales.x.min = currentBatchArray[i].timestamp_iso8601.replace(
+              /\s/g,
+              ""
+            );
+          }
         }
-
-        NIRv_chart.data.datasets[0].data[i] = {
-          x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
-          // x: parseFloat(currentBatchArray[i].decimal_hour),
-          y: currentBatchArray[i].NIRv,
-        };
+  
+        //** CHECK BOTH TIMESTAMP TYPES */
+        if(currentBatchArray[i].timestamp)
+        {
+          tempChart.data.datasets[0].data[i] = {
+            x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
+            // x: parseFloat(currentBatchArray[i].decimal_hour),
+            y: parseFloat(currentBatchArray[i].air_temperature_C),
+          };
+          tempChart.data.datasets[1].data[i] = {
+            x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
+            // x: parseFloat(currentBatchArray[i].decimal_hour),
+            y: parseFloat(currentBatchArray[i].surface_temperature_C),
+          };
+        }
+        else if(currentBatchArray[i].timestamp_iso8601)
+        {
+          tempChart.data.datasets[0].data[i] = {
+            x: currentBatchArray[i].timestamp_iso8601.replace(/\s/g, ""),
+            // x: parseFloat(currentBatchArray[i].decimal_hour),
+            y: parseFloat(currentBatchArray[i].air_temperature_C),
+          };
+          tempChart.data.datasets[1].data[i] = {
+            x: currentBatchArray[i].timestamp_iso8601.replace(/\s/g, ""),
+            // x: parseFloat(currentBatchArray[i].decimal_hour),
+            y: parseFloat(currentBatchArray[i].surface_temperature_C),
+          };
+        }
       }
-      //console.log("GRAPHED NIRv");
-    }
-
-    //** UPDATE SR or SIMPLE RATIO **//
-    if (sr_element.classList.contains("selected")) {
+  
+      //** UPDATE RAW - OVER TIME */
       for (let i = 0; i < currentBatchArray.length; i++) {
         //** GRAB LAST VALUE OF ARRAY TO SET THE MAX TIMESTAMP OF CHART */
-        if (i == currentBatchArray.length - 1) {
-          SR_chart.options.scales.x.max = currentBatchArray[
-            i
-          ].timestamp.replace(/\s/g, "");
+        if (i == currentBatchArray.length - 1) 
+        {
+          //** CHECK BOTH TIMESTAMP TYPES */
+          if(currentBatchArray[i].timestamp)
+          {
+            rawOverTime_Chart.options.scales.x.max = currentBatchArray[i].timestamp.replace(
+              /\s/g,
+              ""
+            );
+          }
+          else if(currentBatchArray[i].timestamp_iso8601)
+          {
+            rawOverTime_Chart.options.scales.x.max = currentBatchArray[i].timestamp_iso8601.replace(
+              /\s/g,
+              ""
+            );
+          }
         }
         //** GRAB FIRST VALUE OF ARRAY TO SET THE MIN TIMESTAMP OF CHART */
         else if (i == 0) {
-          SR_chart.options.scales.x.min = currentBatchArray[
-            i
-          ].timestamp.replace(/\s/g, "");
+          //** CHECK BOTH TIMESTAMP TYPES */
+          if(currentBatchArray[i].timestamp)
+          {
+            rawOverTime_Chart.options.scales.x.min = currentBatchArray[i].timestamp.replace(
+              /\s/g,
+              ""
+            );
+          }
+          else if(currentBatchArray[i].timestamp_iso8601)
+          {
+            rawOverTime_Chart.options.scales.x.min = currentBatchArray[i].timestamp_iso8601.replace(
+              /\s/g,
+              ""
+            );
+          }
         }
-
-        //** SELECT NUMERATOR BASED ON SELECTOR VALUE */
-        if (srGraph_numerator.value == "450nm") {
-          srGraph_numerator_value =
-            currentBatchArray[i].V450_irradiance_uW_per_cm_squared;
-        } else if (srGraph_numerator.value == "500nm") {
-          srGraph_numerator_value =
-            currentBatchArray[i].B500_irradiance_uW_per_cm_squared;
-        } else if (srGraph_numerator.value == "550nm") {
-          srGraph_numerator_value =
-            currentBatchArray[i].G550_irradiance_uW_per_cm_squared;
-        } else if (srGraph_numerator.value == "570nm") {
-          srGraph_numerator_value =
-            currentBatchArray[i].Y570_irradiance_uW_per_cm_squared;
-        } else if (srGraph_numerator.value == "600nm") {
-          srGraph_numerator_value =
-            currentBatchArray[i].O600_irradiance_uW_per_cm_squared;
-        } else if (srGraph_numerator.value == "650nm") {
-          srGraph_numerator_value =
-            currentBatchArray[i].R650_irradiance_uW_per_cm_squared;
-        } else if (srGraph_numerator.value == "610nm") {
-          srGraph_numerator_value =
-            currentBatchArray[i].nir610_irradiance_uW_per_cm_squared;
-        } else if (srGraph_numerator.value == "680nm") {
-          srGraph_numerator_value =
-            currentBatchArray[i].nir680_irradiance_uW_per_cm_squared;
-        } else if (srGraph_numerator.value == "730nm") {
-          srGraph_numerator_value =
-            currentBatchArray[i].nir730_irradiance_uW_per_cm_squared;
-        } else if (srGraph_numerator.value == "760nm") {
-          srGraph_numerator_value =
-            currentBatchArray[i].nir760_irradiance_uW_per_cm_squared;
-        } else if (srGraph_numerator.value == "810nm") {
-          srGraph_numerator_value =
-            currentBatchArray[i].nir810_irradiance_uW_per_cm_squared;
-        } else if (srGraph_numerator.value == "860nm") {
-          srGraph_numerator_value =
-            currentBatchArray[i].nir860_irradiance_uW_per_cm_squared;
+  
+        //** CHECK BOTH TIMESTAMP TYPES AND ADD DATA TO CHARTS*/
+        if(currentBatchArray[i].timestamp)
+        {
+          //** 450 NM */
+          rawOverTime_Chart.data.datasets[0].data[i] = {
+            x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
+            // x: parseFloat(currentBatchArray[i].decimal_hour),
+            y: parseFloat(currentBatchArray[i].V450_irradiance_uW_per_cm_squared),
+          };
+          //** 500 NM */
+          rawOverTime_Chart.data.datasets[1].data[i] = {
+            x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
+            // x: parseFloat(currentBatchArray[i].decimal_hour),
+            y: parseFloat(currentBatchArray[i].B500_irradiance_uW_per_cm_squared),
+          };
+          //** 550 NM */
+          rawOverTime_Chart.data.datasets[2].data[i] = {
+            x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
+            // x: parseFloat(currentBatchArray[i].decimal_hour),
+            y: parseFloat(currentBatchArray[i].G550_irradiance_uW_per_cm_squared),
+          };
+          //** 570 NM */
+          rawOverTime_Chart.data.datasets[3].data[i] = {
+            x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
+            // x: parseFloat(currentBatchArray[i].decimal_hour),
+            y: parseFloat(currentBatchArray[i].Y570_irradiance_uW_per_cm_squared),
+          };
+          //** 600 NM */
+          rawOverTime_Chart.data.datasets[4].data[i] = {
+            x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
+            // x: parseFloat(currentBatchArray[i].decimal_hour),
+            y: parseFloat(currentBatchArray[i].O600_irradiance_uW_per_cm_squared),
+          };
+          //** 610 NM */
+          rawOverTime_Chart.data.datasets[5].data[i] = {
+            x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
+            // x: parseFloat(currentBatchArray[i].decimal_hour),
+            y: parseFloat(currentBatchArray[i].nir610_irradiance_uW_per_cm_squared),
+          };
+          //** 680 NM */
+          rawOverTime_Chart.data.datasets[6].data[i] = {
+            x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
+            // x: parseFloat(currentBatchArray[i].decimal_hour),
+            y: parseFloat(currentBatchArray[i].nir680_irradiance_uW_per_cm_squared),
+          };
+          //** 730 NM */
+          rawOverTime_Chart.data.datasets[7].data[i] = {
+            x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
+            // x: parseFloat(currentBatchArray[i].decimal_hour),
+            y: parseFloat(currentBatchArray[i].nir730_irradiance_uW_per_cm_squared),
+          };
+          //** 760 NM */
+          rawOverTime_Chart.data.datasets[8].data[i] = {
+            x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
+            // x: parseFloat(currentBatchArray[i].decimal_hour),
+            y: parseFloat(currentBatchArray[i].nir760_irradiance_uW_per_cm_squared),
+          };
+          //** 810 NM */
+          rawOverTime_Chart.data.datasets[9].data[i] = {
+            x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
+            // x: parseFloat(currentBatchArray[i].decimal_hour),
+            y: parseFloat(currentBatchArray[i].nir810_irradiance_uW_per_cm_squared),
+          };
+          //** 860 NM */
+          rawOverTime_Chart.data.datasets[10].data[i] = {
+            x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
+            // x: parseFloat(currentBatchArray[i].decimal_hour),
+            y: parseFloat(currentBatchArray[i].nir860_irradiance_uW_per_cm_squared),
+          };
         }
-        //** DENOMINATOR */
-        if (srGraph_denominator.value == "450nm") {
-          srGraph_denominator_value =
-            currentBatchArray[i].V450_irradiance_uW_per_cm_squared;
-        } else if (srGraph_denominator.value == "500nm") {
-          srGraph_denominator_value =
-            currentBatchArray[i].B500_irradiance_uW_per_cm_squared;
-        } else if (srGraph_denominator.value == "550nm") {
-          srGraph_denominator_value =
-            currentBatchArray[i].G550_irradiance_uW_per_cm_squared;
-        } else if (srGraph_denominator.value == "570nm") {
-          srGraph_denominator_value =
-            currentBatchArray[i].Y570_irradiance_uW_per_cm_squared;
-        } else if (srGraph_denominator.value == "600nm") {
-          srGraph_denominator_value =
-            currentBatchArray[i].O600_irradiance_uW_per_cm_squared;
-        } else if (srGraph_denominator.value == "650nm") {
-          srGraph_denominator_value =
-            currentBatchArray[i].R650_irradiance_uW_per_cm_squared;
-        } else if (srGraph_denominator.value == "610nm") {
-          srGraph_denominator_value =
-            currentBatchArray[i].nir610_irradiance_uW_per_cm_squared;
-        } else if (srGraph_denominator.value == "680nm") {
-          srGraph_denominator_value =
-            currentBatchArray[i].nir680_irradiance_uW_per_cm_squared;
-        } else if (srGraph_denominator.value == "730nm") {
-          srGraph_denominator_value =
-            currentBatchArray[i].nir730_irradiance_uW_per_cm_squared;
-        } else if (srGraph_denominator.value == "760nm") {
-          srGraph_denominator_value =
-            currentBatchArray[i].nir760_irradiance_uW_per_cm_squared;
-        } else if (srGraph_denominator.value == "810nm") {
-          srGraph_denominator_value =
-            currentBatchArray[i].nir810_irradiance_uW_per_cm_squared;
-        } else if (srGraph_denominator.value == "860nm") {
-          srGraph_denominator_value =
-            currentBatchArray[i].nir860_irradiance_uW_per_cm_squared;
+        else if(currentBatchArray[i].timestamp_iso8601)
+        {
+          //** 450 NM */
+          rawOverTime_Chart.data.datasets[0].data[i] = {
+            x: currentBatchArray[i].timestamp_iso8601.replace(/\s/g, ""),
+            y: parseFloat(currentBatchArray[i].irradiance_450nm_blue_irradiance_uW_per_cm_squared),
+          };
+          //** 500 NM */
+          rawOverTime_Chart.data.datasets[1].data[i] = {
+            x: currentBatchArray[i].timestamp_iso8601.replace(/\s/g, ""),
+            y: parseFloat(currentBatchArray[i].irradiance_500nm_cyan_irradiance_uW_per_cm_squared),
+          };
+          //** 550 NM */
+          rawOverTime_Chart.data.datasets[2].data[i] = {
+            x: currentBatchArray[i].timestamp_iso8601.replace(/\s/g, ""),
+            y: parseFloat(currentBatchArray[i].irradiance_550nm_green_irradiance_uW_per_cm_squared),
+          };
+          //** 570 NM */
+          rawOverTime_Chart.data.datasets[3].data[i] = {
+            x: currentBatchArray[i].timestamp_iso8601.replace(/\s/g, ""),
+            y: parseFloat(currentBatchArray[i].irradiance_570nm_yellow_irradiance_uW_per_cm_squared),
+          };
+          //** 600 NM */
+          rawOverTime_Chart.data.datasets[4].data[i] = {
+            x: currentBatchArray[i].timestamp_iso8601.replace(/\s/g, ""),
+            y: parseFloat(currentBatchArray[i].irradiance_600nm_orange_irradiance_uW_per_cm_squared),
+          };
+          //** 610 NM */
+          rawOverTime_Chart.data.datasets[5].data[i] = {
+            x: currentBatchArray[i].timestamp_iso8601.replace(/\s/g, ""),
+            y: parseFloat(currentBatchArray[i].irradiance_610nm_orange_irradiance_uW_per_cm_squared),
+          };
+          //** 680 NM */
+          rawOverTime_Chart.data.datasets[6].data[i] = {
+            x: currentBatchArray[i].timestamp_iso8601.replace(/\s/g, ""),
+            y: parseFloat(currentBatchArray[i].irradiance_680nm_near_infrared_irradiance_uW_per_cm_squared),
+          };
+          //** 730 NM */
+          rawOverTime_Chart.data.datasets[7].data[i] = {
+            x: currentBatchArray[i].timestamp_iso8601.replace(/\s/g, ""),
+            y: parseFloat(currentBatchArray[i].irradiance_730nm_near_infrared_irradiance_uW_per_cm_squared),
+          };
+          //** 760 NM */
+          rawOverTime_Chart.data.datasets[8].data[i] = {
+            x: currentBatchArray[i].timestamp_iso8601.replace(/\s/g, ""),
+            y: parseFloat(currentBatchArray[i].irradiance_760nm_near_infrared_irradiance_uW_per_cm_squared),
+          };
+          //** 810 NM */
+          rawOverTime_Chart.data.datasets[9].data[i] = {
+            x: currentBatchArray[i].timestamp_iso8601.replace(/\s/g, ""),
+            y: parseFloat(currentBatchArray[i].irradiance_810nm_near_infrared_irradiance_uW_per_cm_squared),
+          };
+          //** 860 NM */
+          rawOverTime_Chart.data.datasets[10].data[i] = {
+            x: currentBatchArray[i].timestamp_iso8601.replace(/\s/g, ""),
+            y: parseFloat(currentBatchArray[i].irradiance_860nm_near_infrared_irradiance_uW_per_cm_squared),
+          };
         }
-
-        currentBatchArray[i].simpleRatio =
-          srGraph_numerator_value / srGraph_denominator_value;
-        // currentBatchArray[i].simpleRatio = currentBatchArray[i].nir860_irradiance_uW_per_cm_squared / currentBatchArray[i].R650_irradiance_uW_per_cm_squared;
-        // currentBatchArray[i].simpleRatio = currentBatchArray[i].nir860_reflectance / currentBatchArray[i].R650_reflectance;
-
-        SR_chart.data.datasets[0].data[i] = {
-          x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
-          y: currentBatchArray[i].simpleRatio,
-        };
-
-        //console.log("GRAPHED Simple Ratio: " + currentBatchArray[i].B500_irradiance_uW_per_cm_squared);
       }
-    }
+  
+      //** UPDATE NDVI */
+      if (ndvi_element.classList.contains("selected")) {
+        for (let i = 0; i < currentBatchArray.length; i++) {
+          //** GRAB LAST VALUE OF ARRAY TO SET THE MAX TIMESTAMP OF CHART */
+          if (i == currentBatchArray.length - 1) {
+            chart2.options.scales.x.max = currentBatchArray[i].timestamp.replace(
+              /\s/g,
+              ""
+            );
+          }
+          //** GRAB FIRST VALUE OF ARRAY TO SET THE MIN TIMESTAMP OF CHART */
+          else if (i == 0) {
+            chart2.options.scales.x.min = currentBatchArray[i].timestamp.replace(
+              /\s/g,
+              ""
+            );
+          }
+  
+          chart2.data.datasets[0].data[i] = {
+            x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
+            // x: parseFloat(currentBatchArray[i].decimal_hour),
+            y: calculateNDVI(i),
+          };
+        }
+      }
+  
+      //** UPDATE REFLECTANCE */
+      if (reflectance_element.classList.contains("selected")) {
+        console.log("V450: " + currentBatchArray[dataTimeIndex].V450_reflectance);
+        console.log("B500: " + currentBatchArray[dataTimeIndex].B500_reflectance);
+        console.log("G550: " + currentBatchArray[dataTimeIndex].G550_reflectance);
+        console.log("Y570: " + currentBatchArray[dataTimeIndex].Y570_reflectance);
+        console.log("O600: " + currentBatchArray[dataTimeIndex].O600_reflectance);
+        console.log("R650: " + currentBatchArray[dataTimeIndex].R650_reflectance);
+        console.log(
+          "nir610: " + currentBatchArray[dataTimeIndex].nir610_reflectance
+        );
+        console.log(
+          "nir680: " + currentBatchArray[dataTimeIndex].nir680_reflectance
+        );
+        console.log(
+          "nir730: " + currentBatchArray[dataTimeIndex].nir730_reflectance
+        );
+        console.log(
+          "nir760: " + currentBatchArray[dataTimeIndex].nir760_reflectance
+        );
+        console.log(
+          "nir810: " + currentBatchArray[dataTimeIndex].nir810_reflectance
+        );
+        console.log(
+          "nir860: " + currentBatchArray[dataTimeIndex].nir860_reflectance
+        );
+        console.log("DATA TIME INDEX: " + dataTimeIndex);
+  
+        reflectance_chart.data.datasets[0].data = [
+          {
+            x: 450,
+            y: currentBatchArray[dataTimeIndex].V450_reflectance,
+          },
+          {
+            x: 500,
+            y: currentBatchArray[dataTimeIndex].B500_reflectance,
+          },
+          {
+            x: 550,
+            y: currentBatchArray[dataTimeIndex].G550_reflectance,
+          },
+          {
+            x: 570,
+            y: currentBatchArray[dataTimeIndex].Y570_reflectance,
+          },
+          {
+            x: 600,
+            y: currentBatchArray[dataTimeIndex].O600_reflectance,
+          },
+          {
+            x: 610,
+            y: currentBatchArray[dataTimeIndex].nir610_reflectance,
+          },
+          {
+            x: 650,
+            y: currentBatchArray[dataTimeIndex].R650_reflectance,
+          },
+          {
+            x: 680,
+            y: currentBatchArray[dataTimeIndex].nir680_reflectance,
+          },
+          {
+            x: 730,
+            y: currentBatchArray[dataTimeIndex].nir730_reflectance,
+          },
+          {
+            x: 760,
+            y: currentBatchArray[dataTimeIndex].nir760_reflectance,
+          },
+          {
+            x: 810,
+            y: currentBatchArray[dataTimeIndex].nir810_reflectance,
+          },
+          {
+            x: 860,
+            y: currentBatchArray[dataTimeIndex].nir860_reflectance,
+          },
+        ];
+        //console.log(currentBatchArray[dataTimeIndex]);
+      }
+  
+      //** UPDATE NIRv */
+      if (calibrationBatchSelected) {
+        for (let i = 0; i < currentBatchArray.length; i++) {
+          //** GRAB LAST VALUE OF ARRAY TO SET THE MAX TIMESTAMP OF CHART */
+          if (i == currentBatchArray.length - 1) {
+            NIRv_chart.options.scales.x.max = currentBatchArray[
+              i
+            ].timestamp.replace(/\s/g, "");
+            //console.log(currentBatchArray[i].timestamp.replace(/\s/g, ""));
+          }
+          //** GRAB FIRST VALUE OF ARRAY TO SET THE MIN TIMESTAMP OF CHART */
+          else if (i == 0) {
+            NIRv_chart.options.scales.x.min = currentBatchArray[
+              i
+            ].timestamp.replace(/\s/g, "");
+          }
+  
+          NIRv_chart.data.datasets[0].data[i] = {
+            x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
+            // x: parseFloat(currentBatchArray[i].decimal_hour),
+            y: currentBatchArray[i].NIRv,
+          };
+        }
+        //console.log("GRAPHED NIRv");
+      }
+  
+      //** UPDATE SR or SIMPLE RATIO **//
+      if (sr_element.classList.contains("selected")) {
+        for (let i = 0; i < currentBatchArray.length; i++) {
+          //** GRAB LAST VALUE OF ARRAY TO SET THE MAX TIMESTAMP OF CHART */
+          if (i == currentBatchArray.length - 1) {
+            SR_chart.options.scales.x.max = currentBatchArray[
+              i
+            ].timestamp.replace(/\s/g, "");
+          }
+          //** GRAB FIRST VALUE OF ARRAY TO SET THE MIN TIMESTAMP OF CHART */
+          else if (i == 0) {
+            SR_chart.options.scales.x.min = currentBatchArray[
+              i
+            ].timestamp.replace(/\s/g, "");
+          }
+  
+          //** SELECT NUMERATOR BASED ON SELECTOR VALUE */
+          if (srGraph_numerator.value == "450nm") {
+            srGraph_numerator_value =
+              currentBatchArray[i].V450_irradiance_uW_per_cm_squared;
+          } else if (srGraph_numerator.value == "500nm") {
+            srGraph_numerator_value =
+              currentBatchArray[i].B500_irradiance_uW_per_cm_squared;
+          } else if (srGraph_numerator.value == "550nm") {
+            srGraph_numerator_value =
+              currentBatchArray[i].G550_irradiance_uW_per_cm_squared;
+          } else if (srGraph_numerator.value == "570nm") {
+            srGraph_numerator_value =
+              currentBatchArray[i].Y570_irradiance_uW_per_cm_squared;
+          } else if (srGraph_numerator.value == "600nm") {
+            srGraph_numerator_value =
+              currentBatchArray[i].O600_irradiance_uW_per_cm_squared;
+          } else if (srGraph_numerator.value == "650nm") {
+            srGraph_numerator_value =
+              currentBatchArray[i].R650_irradiance_uW_per_cm_squared;
+          } else if (srGraph_numerator.value == "610nm") {
+            srGraph_numerator_value =
+              currentBatchArray[i].nir610_irradiance_uW_per_cm_squared;
+          } else if (srGraph_numerator.value == "680nm") {
+            srGraph_numerator_value =
+              currentBatchArray[i].nir680_irradiance_uW_per_cm_squared;
+          } else if (srGraph_numerator.value == "730nm") {
+            srGraph_numerator_value =
+              currentBatchArray[i].nir730_irradiance_uW_per_cm_squared;
+          } else if (srGraph_numerator.value == "760nm") {
+            srGraph_numerator_value =
+              currentBatchArray[i].nir760_irradiance_uW_per_cm_squared;
+          } else if (srGraph_numerator.value == "810nm") {
+            srGraph_numerator_value =
+              currentBatchArray[i].nir810_irradiance_uW_per_cm_squared;
+          } else if (srGraph_numerator.value == "860nm") {
+            srGraph_numerator_value =
+              currentBatchArray[i].nir860_irradiance_uW_per_cm_squared;
+          }
+          //** DENOMINATOR */
+          if (srGraph_denominator.value == "450nm") {
+            srGraph_denominator_value =
+              currentBatchArray[i].V450_irradiance_uW_per_cm_squared;
+          } else if (srGraph_denominator.value == "500nm") {
+            srGraph_denominator_value =
+              currentBatchArray[i].B500_irradiance_uW_per_cm_squared;
+          } else if (srGraph_denominator.value == "550nm") {
+            srGraph_denominator_value =
+              currentBatchArray[i].G550_irradiance_uW_per_cm_squared;
+          } else if (srGraph_denominator.value == "570nm") {
+            srGraph_denominator_value =
+              currentBatchArray[i].Y570_irradiance_uW_per_cm_squared;
+          } else if (srGraph_denominator.value == "600nm") {
+            srGraph_denominator_value =
+              currentBatchArray[i].O600_irradiance_uW_per_cm_squared;
+          } else if (srGraph_denominator.value == "650nm") {
+            srGraph_denominator_value =
+              currentBatchArray[i].R650_irradiance_uW_per_cm_squared;
+          } else if (srGraph_denominator.value == "610nm") {
+            srGraph_denominator_value =
+              currentBatchArray[i].nir610_irradiance_uW_per_cm_squared;
+          } else if (srGraph_denominator.value == "680nm") {
+            srGraph_denominator_value =
+              currentBatchArray[i].nir680_irradiance_uW_per_cm_squared;
+          } else if (srGraph_denominator.value == "730nm") {
+            srGraph_denominator_value =
+              currentBatchArray[i].nir730_irradiance_uW_per_cm_squared;
+          } else if (srGraph_denominator.value == "760nm") {
+            srGraph_denominator_value =
+              currentBatchArray[i].nir760_irradiance_uW_per_cm_squared;
+          } else if (srGraph_denominator.value == "810nm") {
+            srGraph_denominator_value =
+              currentBatchArray[i].nir810_irradiance_uW_per_cm_squared;
+          } else if (srGraph_denominator.value == "860nm") {
+            srGraph_denominator_value =
+              currentBatchArray[i].nir860_irradiance_uW_per_cm_squared;
+          }
+  
+          currentBatchArray[i].simpleRatio =
+            srGraph_numerator_value / srGraph_denominator_value;
+          // currentBatchArray[i].simpleRatio = currentBatchArray[i].nir860_irradiance_uW_per_cm_squared / currentBatchArray[i].R650_irradiance_uW_per_cm_squared;
+          // currentBatchArray[i].simpleRatio = currentBatchArray[i].nir860_reflectance / currentBatchArray[i].R650_reflectance;
+  
+          SR_chart.data.datasets[0].data[i] = {
+            x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
+            y: currentBatchArray[i].simpleRatio,
+          };
+  
+          //console.log("GRAPHED Simple Ratio: " + currentBatchArray[i].B500_irradiance_uW_per_cm_squared);
+        }
+      }
+  
+      //** UPDATE DSWI 4 **//
+      if (dswi_element.classList.contains("selected")) {
+        for (let i = 0; i < currentBatchArray.length; i++) {
+          //** GRAB LAST VALUE OF ARRAY TO SET THE MAX TIMESTAMP OF CHART */
+          if (i == currentBatchArray.length - 1) {
+            DSWI_chart.options.scales.x.max = currentBatchArray[
+              i
+            ].timestamp.replace(/\s/g, "");
+          }
+          //** GRAB FIRST VALUE OF ARRAY TO SET THE MIN TIMESTAMP OF CHART */
+          else if (i == 0) {
+            DSWI_chart.options.scales.x.min = currentBatchArray[
+              i
+            ].timestamp.replace(/\s/g, "");
+          }
+  
+          //currentBatchArray[i].DSWI = currentBatchArray[i].G550_irradiance_uW_per_cm_squared / currentBatchArray[i].nir680_irradiance_uW_per_cm_squared;
+          currentBatchArray[i].DSWI =
+            currentBatchArray[i].G550_reflectance /
+            currentBatchArray[i].nir680_reflectance;
+  
+          DSWI_chart.data.datasets[0].data[i] = {
+            x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
+            y: currentBatchArray[i].DSWI,
+          };
+        }
+      }
 
-    //** UPDATE DSWI 4 **//
-    if (dswi_element.classList.contains("selected")) {
+    }
+    else if(currentBatchArray[dataTimeIndex].timestamp_iso8601)
+    {
+      //** VISIBLE LIGHT RAW */
+      mainChart.data.datasets[13].data = [
+        {
+          x: 450,
+          y: currentBatchArray[dataTimeIndex].irradiance_450nm_blue_irradiance_uW_per_cm_squared,
+        },
+        {
+          x: 500,
+          y: currentBatchArray[dataTimeIndex].irradiance_500nm_cyan_irradiance_uW_per_cm_squared,
+        },
+        {
+          x: 550,
+          y: currentBatchArray[dataTimeIndex].irradiance_550nm_green_irradiance_uW_per_cm_squared,
+        },
+        {
+          x: 570,
+          y: currentBatchArray[dataTimeIndex].irradiance_570nm_yellow_irradiance_uW_per_cm_squared,
+        },
+        {
+          x: 600,
+          y: currentBatchArray[dataTimeIndex].irradiance_600nm_orange_irradiance_uW_per_cm_squared,
+        },
+        {
+          x: 650,
+          y: currentBatchArray[dataTimeIndex].irradiance_650nm_red_irradiance_uW_per_cm_squared,
+        },
+      ];
+  
+      //** INFRARED RAW */
+      mainChart.data.datasets[12].data = [
+        {
+          x: 610,
+          y: currentBatchArray[dataTimeIndex].irradiance_610nm_orange_irradiance_uW_per_cm_squared,
+        },
+        {
+          x: 680,
+          y: currentBatchArray[dataTimeIndex].irradiance_680nm_near_infrared_irradiance_uW_per_cm_squared,
+        },
+        {
+          x: 730,
+          y: currentBatchArray[dataTimeIndex].irradiance_730nm_near_infrared_irradiance_uW_per_cm_squared,
+        },
+        {
+          x: 760,
+          y: currentBatchArray[dataTimeIndex].irradiance_760nm_near_infrared_irradiance_uW_per_cm_squared,
+        },
+        {
+          x: 810,
+          y: currentBatchArray[dataTimeIndex].irradiance_810nm_near_infrared_irradiance_uW_per_cm_squared,
+        },
+        {
+          x: 860,
+          y: currentBatchArray[dataTimeIndex].irradiance_860nm_near_infrared_irradiance_uW_per_cm_squared,
+        },
+      ];
+  
+      //** USED FOR GRAPHING STANDARD DEVIATION */
+      if (dataIsAverage) {
+        mainChart.data.datasets[14].data = [
+          {
+            x: 450,
+            y:
+              parseFloat(
+                currentBatchArray[dataTimeIndex].V450_irradiance_uW_per_cm_squared
+              ) +
+              parseFloat(
+                standardDeviation_array[0].V450_irradiance_uW_per_cm_squared
+              ),
+          },
+          {
+            x: 450,
+            y:
+              parseFloat(
+                currentBatchArray[dataTimeIndex].V450_irradiance_uW_per_cm_squared
+              ) -
+              parseFloat(
+                standardDeviation_array[0].V450_irradiance_uW_per_cm_squared
+              ),
+          },
+          {
+            x: 500,
+            y:
+              parseFloat(
+                currentBatchArray[dataTimeIndex].B500_irradiance_uW_per_cm_squared
+              ) +
+              parseFloat(
+                standardDeviation_array[0].B500_irradiance_uW_per_cm_squared
+              ),
+          },
+          {
+            x: 500,
+            y:
+              parseFloat(
+                currentBatchArray[dataTimeIndex].B500_irradiance_uW_per_cm_squared
+              ) -
+              parseFloat(
+                standardDeviation_array[0].B500_irradiance_uW_per_cm_squared
+              ),
+          },
+          {
+            x: 550,
+            y:
+              parseFloat(
+                currentBatchArray[dataTimeIndex].G550_irradiance_uW_per_cm_squared
+              ) +
+              parseFloat(
+                standardDeviation_array[0].G550_irradiance_uW_per_cm_squared
+              ),
+          },
+          {
+            x: 550,
+            y:
+              parseFloat(
+                currentBatchArray[dataTimeIndex].G550_irradiance_uW_per_cm_squared
+              ) -
+              parseFloat(
+                standardDeviation_array[0].G550_irradiance_uW_per_cm_squared
+              ),
+          },
+          {
+            x: 570,
+            y:
+              parseFloat(
+                currentBatchArray[dataTimeIndex].Y570_irradiance_uW_per_cm_squared
+              ) +
+              parseFloat(
+                standardDeviation_array[0].Y570_irradiance_uW_per_cm_squared
+              ),
+          },
+          {
+            x: 570,
+            y:
+              parseFloat(
+                currentBatchArray[dataTimeIndex].Y570_irradiance_uW_per_cm_squared
+              ) -
+              parseFloat(
+                standardDeviation_array[0].Y570_irradiance_uW_per_cm_squared
+              ),
+          },
+          {
+            x: 600,
+            y:
+              parseFloat(
+                currentBatchArray[dataTimeIndex].O600_irradiance_uW_per_cm_squared
+              ) +
+              parseFloat(
+                standardDeviation_array[0].O600_irradiance_uW_per_cm_squared
+              ),
+          },
+          {
+            x: 600,
+            y:
+              parseFloat(
+                currentBatchArray[dataTimeIndex].O600_irradiance_uW_per_cm_squared
+              ) -
+              parseFloat(
+                standardDeviation_array[0].O600_irradiance_uW_per_cm_squared
+              ),
+          },
+          {
+            x: 610,
+            y:
+              parseFloat(
+                currentBatchArray[dataTimeIndex]
+                  .nir610_irradiance_uW_per_cm_squared
+              ) +
+              parseFloat(
+                standardDeviation_array[0].nir610_irradiance_uW_per_cm_squared
+              ),
+          },
+          {
+            x: 610,
+            y:
+              parseFloat(
+                currentBatchArray[dataTimeIndex]
+                  .nir610_irradiance_uW_per_cm_squared
+              ) -
+              parseFloat(
+                standardDeviation_array[0].nir610_irradiance_uW_per_cm_squared
+              ),
+          },
+          {
+            x: 650,
+            y:
+              parseFloat(
+                currentBatchArray[dataTimeIndex].R650_irradiance_uW_per_cm_squared
+              ) +
+              parseFloat(
+                standardDeviation_array[0].R650_irradiance_uW_per_cm_squared
+              ),
+          },
+          {
+            x: 650,
+            y:
+              parseFloat(
+                currentBatchArray[dataTimeIndex].R650_irradiance_uW_per_cm_squared
+              ) -
+              parseFloat(
+                standardDeviation_array[0].R650_irradiance_uW_per_cm_squared
+              ),
+          },
+          {
+            x: 680,
+            y:
+              parseFloat(
+                currentBatchArray[dataTimeIndex]
+                  .nir680_irradiance_uW_per_cm_squared
+              ) +
+              parseFloat(
+                standardDeviation_array[0].nir680_irradiance_uW_per_cm_squared
+              ),
+          },
+          {
+            x: 680,
+            y:
+              parseFloat(
+                currentBatchArray[dataTimeIndex]
+                  .nir680_irradiance_uW_per_cm_squared
+              ) -
+              parseFloat(
+                standardDeviation_array[0].nir680_irradiance_uW_per_cm_squared
+              ),
+          },
+          {
+            x: 730,
+            y:
+              parseFloat(
+                currentBatchArray[dataTimeIndex]
+                  .nir730_irradiance_uW_per_cm_squared
+              ) +
+              parseFloat(
+                standardDeviation_array[0].nir730_irradiance_uW_per_cm_squared
+              ),
+          },
+          {
+            x: 730,
+            y:
+              parseFloat(
+                currentBatchArray[dataTimeIndex]
+                  .nir730_irradiance_uW_per_cm_squared
+              ) -
+              parseFloat(
+                standardDeviation_array[0].nir730_irradiance_uW_per_cm_squared
+              ),
+          },
+          {
+            x: 760,
+            y:
+              parseFloat(
+                currentBatchArray[dataTimeIndex]
+                  .nir760_irradiance_uW_per_cm_squared
+              ) +
+              parseFloat(
+                standardDeviation_array[0].nir760_irradiance_uW_per_cm_squared
+              ),
+          },
+          {
+            x: 760,
+            y:
+              parseFloat(
+                currentBatchArray[dataTimeIndex]
+                  .nir760_irradiance_uW_per_cm_squared
+              ) -
+              parseFloat(
+                standardDeviation_array[0].nir760_irradiance_uW_per_cm_squared
+              ),
+          },
+          {
+            x: 810,
+            y:
+              parseFloat(
+                currentBatchArray[dataTimeIndex]
+                  .nir810_irradiance_uW_per_cm_squared
+              ) +
+              parseFloat(
+                standardDeviation_array[0].nir810_irradiance_uW_per_cm_squared
+              ),
+          },
+          {
+            x: 810,
+            y:
+              parseFloat(
+                currentBatchArray[dataTimeIndex]
+                  .nir810_irradiance_uW_per_cm_squared
+              ) -
+              parseFloat(
+                standardDeviation_array[0].nir810_irradiance_uW_per_cm_squared
+              ),
+          },
+          {
+            x: 860,
+            y:
+              parseFloat(
+                currentBatchArray[dataTimeIndex]
+                  .nir860_irradiance_uW_per_cm_squared
+              ) +
+              parseFloat(
+                standardDeviation_array[0].nir860_irradiance_uW_per_cm_squared
+              ),
+          },
+          {
+            x: 860,
+            y:
+              parseFloat(
+                currentBatchArray[dataTimeIndex]
+                  .nir860_irradiance_uW_per_cm_squared
+              ) -
+              parseFloat(
+                standardDeviation_array[0].nir860_irradiance_uW_per_cm_squared
+              ),
+          },
+        ];
+      }
+  
+      //** ADD ALL NORMALIZED VALUES TO CURVE, START AT ONE TO AVOID LABELS*/
+      //** NORMALIZED VISIBLE */
+      for (let i = 0; i < (calibrationArray_Visible.length - cut) / step; i++) {
+        mainChart.data.datasets[6].data[i] = {
+          x: parseInt(calibrationArray_Visible[i * step].wavelength),
+          y:
+            currentBatchArray[dataTimeIndex].V450_irradiance_uW_per_cm_squared *
+            parseFloat(calibrationArray_Visible[i * step].V450_power),
+        };
+        mainChart.data.datasets[7].data[i] = {
+          x: parseInt(calibrationArray_Visible[i * step].wavelength),
+          y:
+            currentBatchArray[dataTimeIndex].B500_irradiance_uW_per_cm_squared *
+            parseFloat(calibrationArray_Visible[i * step].B500_power),
+        };
+        mainChart.data.datasets[8].data[i] = {
+          x: parseInt(calibrationArray_Visible[i * step].wavelength),
+          y:
+            currentBatchArray[dataTimeIndex].G550_irradiance_uW_per_cm_squared *
+            parseFloat(calibrationArray_Visible[i * step].G550_power),
+        };
+        mainChart.data.datasets[9].data[i] = {
+          x: parseInt(calibrationArray_Visible[i * step].wavelength),
+          y:
+            currentBatchArray[dataTimeIndex].Y570_irradiance_uW_per_cm_squared *
+            parseFloat(calibrationArray_Visible[i * step].Y570_power),
+        };
+        mainChart.data.datasets[10].data[i] = {
+          x: parseInt(calibrationArray_Visible[i * step].wavelength),
+          y:
+            currentBatchArray[dataTimeIndex].O600_irradiance_uW_per_cm_squared *
+            parseFloat(calibrationArray_Visible[i * step].O600_power),
+        };
+        mainChart.data.datasets[11].data[i] = {
+          x: parseInt(calibrationArray_Visible[i * step].wavelength),
+          y:
+            currentBatchArray[dataTimeIndex].R650_irradiance_uW_per_cm_squared *
+            parseFloat(calibrationArray_Visible[i * step].R650_power),
+        };
+      }
+      //** NORMALIZED INFRARED */
+      for (let i = 0; i < (calibrationArray_Infrared.length - cut) / step; i++) {
+        mainChart.data.datasets[0].data[i] = {
+          x: parseInt(calibrationArray_Infrared[i * step].Lambda),
+          y:
+            currentBatchArray[dataTimeIndex].nir610_irradiance_uW_per_cm_squared *
+            parseFloat(calibrationArray_Infrared[i * step].nir610_power),
+        };
+        mainChart.data.datasets[1].data[i] = {
+          x: parseInt(calibrationArray_Infrared[i * step].Lambda),
+          y:
+            currentBatchArray[dataTimeIndex].nir680_irradiance_uW_per_cm_squared *
+            parseFloat(calibrationArray_Infrared[i * step].nir680_power),
+        };
+        mainChart.data.datasets[2].data[i] = {
+          x: parseInt(calibrationArray_Infrared[i * step].Lambda),
+          y:
+            currentBatchArray[dataTimeIndex].nir730_irradiance_uW_per_cm_squared *
+            parseFloat(calibrationArray_Infrared[i * step].nir730_power),
+        };
+        mainChart.data.datasets[3].data[i] = {
+          x: parseInt(calibrationArray_Infrared[i * step].Lambda),
+          y:
+            currentBatchArray[dataTimeIndex].nir760_irradiance_uW_per_cm_squared *
+            parseFloat(calibrationArray_Infrared[i * step].nir760_power),
+        };
+        mainChart.data.datasets[4].data[i] = {
+          x: parseInt(calibrationArray_Infrared[i * step].Lambda),
+          y:
+            currentBatchArray[dataTimeIndex].nir810_irradiance_uW_per_cm_squared *
+            parseFloat(calibrationArray_Infrared[i * step].nir810_power),
+        };
+        mainChart.data.datasets[5].data[i] = {
+          x: parseInt(calibrationArray_Infrared[i * step].Lambda),
+          y:
+            currentBatchArray[dataTimeIndex].nir860_irradiance_uW_per_cm_squared *
+            parseFloat(calibrationArray_Infrared[i * step].nir860_power),
+        };
+      }
+  
+      //** UPDATE AIR / SURFACE TEMP */
       for (let i = 0; i < currentBatchArray.length; i++) {
+        
         //** GRAB LAST VALUE OF ARRAY TO SET THE MAX TIMESTAMP OF CHART */
         if (i == currentBatchArray.length - 1) {
-          DSWI_chart.options.scales.x.max = currentBatchArray[
-            i
-          ].timestamp.replace(/\s/g, "");
+          
+          //** CHECK BOTH TIMESTAMP TYPES */
+          if(currentBatchArray[i].timestamp)
+          {
+            tempChart.options.scales.x.max = currentBatchArray[i].timestamp.replace(
+              /\s/g,
+              ""
+            );
+          }
+          else if(currentBatchArray[i].timestamp_iso8601)
+          {
+            tempChart.options.scales.x.max = currentBatchArray[i].timestamp_iso8601.replace(
+              /\s/g,
+              ""
+            );
+          }
         }
         //** GRAB FIRST VALUE OF ARRAY TO SET THE MIN TIMESTAMP OF CHART */
         else if (i == 0) {
-          DSWI_chart.options.scales.x.min = currentBatchArray[
-            i
-          ].timestamp.replace(/\s/g, "");
+          
+          //** CHECK BOTH TIMESTAMP TYPES */
+          if(currentBatchArray[i].timestamp)
+          {
+            tempChart.options.scales.x.min = currentBatchArray[i].timestamp.replace(
+              /\s/g,
+              ""
+            );
+          }
+          else if(currentBatchArray[i].timestamp_iso8601)
+          {
+            tempChart.options.scales.x.min = currentBatchArray[i].timestamp_iso8601.replace(
+              /\s/g,
+              ""
+            );
+          }
         }
-
-        //currentBatchArray[i].DSWI = currentBatchArray[i].G550_irradiance_uW_per_cm_squared / currentBatchArray[i].nir680_irradiance_uW_per_cm_squared;
-        currentBatchArray[i].DSWI =
-          currentBatchArray[i].G550_reflectance /
-          currentBatchArray[i].nir680_reflectance;
-
-        DSWI_chart.data.datasets[0].data[i] = {
-          x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
-          y: currentBatchArray[i].DSWI,
-        };
+  
+        //** CHECK BOTH TIMESTAMP TYPES */
+        if(currentBatchArray[i].timestamp)
+        {
+          tempChart.data.datasets[0].data[i] = {
+            x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
+            // x: parseFloat(currentBatchArray[i].decimal_hour),
+            y: parseFloat(currentBatchArray[i].air_temperature_C),
+          };
+          tempChart.data.datasets[1].data[i] = {
+            x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
+            // x: parseFloat(currentBatchArray[i].decimal_hour),
+            y: parseFloat(currentBatchArray[i].surface_temperature_C),
+          };
+        }
+        else if(currentBatchArray[i].timestamp_iso8601)
+        {
+          tempChart.data.datasets[0].data[i] = {
+            x: currentBatchArray[i].timestamp_iso8601.replace(/\s/g, ""),
+            // x: parseFloat(currentBatchArray[i].decimal_hour),
+            y: parseFloat(currentBatchArray[i].air_temperature_C),
+          };
+          tempChart.data.datasets[1].data[i] = {
+            x: currentBatchArray[i].timestamp_iso8601.replace(/\s/g, ""),
+            // x: parseFloat(currentBatchArray[i].decimal_hour),
+            y: parseFloat(currentBatchArray[i].surface_temperature_C),
+          };
+        }
+      }
+  
+      //** UPDATE RAW - OVER TIME */
+      for (let i = 0; i < currentBatchArray.length; i++) {
+        //** GRAB LAST VALUE OF ARRAY TO SET THE MAX TIMESTAMP OF CHART */
+        if (i == currentBatchArray.length - 1) 
+        {
+          //** CHECK BOTH TIMESTAMP TYPES */
+          if(currentBatchArray[i].timestamp)
+          {
+            rawOverTime_Chart.options.scales.x.max = currentBatchArray[i].timestamp.replace(
+              /\s/g,
+              ""
+            );
+          }
+          else if(currentBatchArray[i].timestamp_iso8601)
+          {
+            rawOverTime_Chart.options.scales.x.max = currentBatchArray[i].timestamp_iso8601.replace(
+              /\s/g,
+              ""
+            );
+          }
+        }
+        //** GRAB FIRST VALUE OF ARRAY TO SET THE MIN TIMESTAMP OF CHART */
+        else if (i == 0) {
+          //** CHECK BOTH TIMESTAMP TYPES */
+          if(currentBatchArray[i].timestamp)
+          {
+            rawOverTime_Chart.options.scales.x.min = currentBatchArray[i].timestamp.replace(
+              /\s/g,
+              ""
+            );
+          }
+          else if(currentBatchArray[i].timestamp_iso8601)
+          {
+            rawOverTime_Chart.options.scales.x.min = currentBatchArray[i].timestamp_iso8601.replace(
+              /\s/g,
+              ""
+            );
+          }
+        }
+  
+        //** CHECK BOTH TIMESTAMP TYPES AND ADD DATA TO CHARTS*/
+        if(currentBatchArray[i].timestamp)
+        {
+          //** 450 NM */
+          rawOverTime_Chart.data.datasets[0].data[i] = {
+            x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
+            // x: parseFloat(currentBatchArray[i].decimal_hour),
+            y: parseFloat(currentBatchArray[i].V450_irradiance_uW_per_cm_squared),
+          };
+          //** 500 NM */
+          rawOverTime_Chart.data.datasets[1].data[i] = {
+            x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
+            // x: parseFloat(currentBatchArray[i].decimal_hour),
+            y: parseFloat(currentBatchArray[i].B500_irradiance_uW_per_cm_squared),
+          };
+          //** 550 NM */
+          rawOverTime_Chart.data.datasets[2].data[i] = {
+            x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
+            // x: parseFloat(currentBatchArray[i].decimal_hour),
+            y: parseFloat(currentBatchArray[i].G550_irradiance_uW_per_cm_squared),
+          };
+          //** 570 NM */
+          rawOverTime_Chart.data.datasets[3].data[i] = {
+            x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
+            // x: parseFloat(currentBatchArray[i].decimal_hour),
+            y: parseFloat(currentBatchArray[i].Y570_irradiance_uW_per_cm_squared),
+          };
+          //** 600 NM */
+          rawOverTime_Chart.data.datasets[4].data[i] = {
+            x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
+            // x: parseFloat(currentBatchArray[i].decimal_hour),
+            y: parseFloat(currentBatchArray[i].O600_irradiance_uW_per_cm_squared),
+          };
+          //** 610 NM */
+          rawOverTime_Chart.data.datasets[5].data[i] = {
+            x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
+            // x: parseFloat(currentBatchArray[i].decimal_hour),
+            y: parseFloat(currentBatchArray[i].nir610_irradiance_uW_per_cm_squared),
+          };
+          //** 680 NM */
+          rawOverTime_Chart.data.datasets[6].data[i] = {
+            x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
+            // x: parseFloat(currentBatchArray[i].decimal_hour),
+            y: parseFloat(currentBatchArray[i].nir680_irradiance_uW_per_cm_squared),
+          };
+          //** 730 NM */
+          rawOverTime_Chart.data.datasets[7].data[i] = {
+            x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
+            // x: parseFloat(currentBatchArray[i].decimal_hour),
+            y: parseFloat(currentBatchArray[i].nir730_irradiance_uW_per_cm_squared),
+          };
+          //** 760 NM */
+          rawOverTime_Chart.data.datasets[8].data[i] = {
+            x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
+            // x: parseFloat(currentBatchArray[i].decimal_hour),
+            y: parseFloat(currentBatchArray[i].nir760_irradiance_uW_per_cm_squared),
+          };
+          //** 810 NM */
+          rawOverTime_Chart.data.datasets[9].data[i] = {
+            x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
+            // x: parseFloat(currentBatchArray[i].decimal_hour),
+            y: parseFloat(currentBatchArray[i].nir810_irradiance_uW_per_cm_squared),
+          };
+          //** 860 NM */
+          rawOverTime_Chart.data.datasets[10].data[i] = {
+            x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
+            // x: parseFloat(currentBatchArray[i].decimal_hour),
+            y: parseFloat(currentBatchArray[i].nir860_irradiance_uW_per_cm_squared),
+          };
+        }
+        else if(currentBatchArray[i].timestamp_iso8601)
+        {
+          //** 450 NM */
+          rawOverTime_Chart.data.datasets[0].data[i] = {
+            x: currentBatchArray[i].timestamp_iso8601.replace(/\s/g, ""),
+            y: parseFloat(currentBatchArray[i].irradiance_450nm_blue_irradiance_uW_per_cm_squared),
+          };
+          //** 500 NM */
+          rawOverTime_Chart.data.datasets[1].data[i] = {
+            x: currentBatchArray[i].timestamp_iso8601.replace(/\s/g, ""),
+            y: parseFloat(currentBatchArray[i].irradiance_500nm_cyan_irradiance_uW_per_cm_squared),
+          };
+          //** 550 NM */
+          rawOverTime_Chart.data.datasets[2].data[i] = {
+            x: currentBatchArray[i].timestamp_iso8601.replace(/\s/g, ""),
+            y: parseFloat(currentBatchArray[i].irradiance_550nm_green_irradiance_uW_per_cm_squared),
+          };
+          //** 570 NM */
+          rawOverTime_Chart.data.datasets[3].data[i] = {
+            x: currentBatchArray[i].timestamp_iso8601.replace(/\s/g, ""),
+            y: parseFloat(currentBatchArray[i].irradiance_570nm_yellow_irradiance_uW_per_cm_squared),
+          };
+          //** 600 NM */
+          rawOverTime_Chart.data.datasets[4].data[i] = {
+            x: currentBatchArray[i].timestamp_iso8601.replace(/\s/g, ""),
+            y: parseFloat(currentBatchArray[i].irradiance_600nm_orange_irradiance_uW_per_cm_squared),
+          };
+          //** 610 NM */
+          rawOverTime_Chart.data.datasets[5].data[i] = {
+            x: currentBatchArray[i].timestamp_iso8601.replace(/\s/g, ""),
+            y: parseFloat(currentBatchArray[i].irradiance_610nm_orange_irradiance_uW_per_cm_squared),
+          };
+          //** 680 NM */
+          rawOverTime_Chart.data.datasets[6].data[i] = {
+            x: currentBatchArray[i].timestamp_iso8601.replace(/\s/g, ""),
+            y: parseFloat(currentBatchArray[i].irradiance_680nm_near_infrared_irradiance_uW_per_cm_squared),
+          };
+          //** 730 NM */
+          rawOverTime_Chart.data.datasets[7].data[i] = {
+            x: currentBatchArray[i].timestamp_iso8601.replace(/\s/g, ""),
+            y: parseFloat(currentBatchArray[i].irradiance_730nm_near_infrared_irradiance_uW_per_cm_squared),
+          };
+          //** 760 NM */
+          rawOverTime_Chart.data.datasets[8].data[i] = {
+            x: currentBatchArray[i].timestamp_iso8601.replace(/\s/g, ""),
+            y: parseFloat(currentBatchArray[i].irradiance_760nm_near_infrared_irradiance_uW_per_cm_squared),
+          };
+          //** 810 NM */
+          rawOverTime_Chart.data.datasets[9].data[i] = {
+            x: currentBatchArray[i].timestamp_iso8601.replace(/\s/g, ""),
+            y: parseFloat(currentBatchArray[i].irradiance_810nm_near_infrared_irradiance_uW_per_cm_squared),
+          };
+          //** 860 NM */
+          rawOverTime_Chart.data.datasets[10].data[i] = {
+            x: currentBatchArray[i].timestamp_iso8601.replace(/\s/g, ""),
+            y: parseFloat(currentBatchArray[i].irradiance_860nm_near_infrared_irradiance_uW_per_cm_squared),
+          };
+        }
+      }
+  
+      //** UPDATE NDVI */
+      if (ndvi_element.classList.contains("selected")) {
+        for (let i = 0; i < currentBatchArray.length; i++) {
+          //** GRAB LAST VALUE OF ARRAY TO SET THE MAX TIMESTAMP OF CHART */
+          if (i == currentBatchArray.length - 1) {
+            chart2.options.scales.x.max = currentBatchArray[i].timestamp.replace(
+              /\s/g,
+              ""
+            );
+          }
+          //** GRAB FIRST VALUE OF ARRAY TO SET THE MIN TIMESTAMP OF CHART */
+          else if (i == 0) {
+            chart2.options.scales.x.min = currentBatchArray[i].timestamp.replace(
+              /\s/g,
+              ""
+            );
+          }
+  
+          chart2.data.datasets[0].data[i] = {
+            x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
+            // x: parseFloat(currentBatchArray[i].decimal_hour),
+            y: calculateNDVI(i),
+          };
+        }
+      }
+  
+      //** UPDATE REFLECTANCE */
+      if (reflectance_element.classList.contains("selected")) {
+        console.log("V450: " + currentBatchArray[dataTimeIndex].V450_reflectance);
+        console.log("B500: " + currentBatchArray[dataTimeIndex].B500_reflectance);
+        console.log("G550: " + currentBatchArray[dataTimeIndex].G550_reflectance);
+        console.log("Y570: " + currentBatchArray[dataTimeIndex].Y570_reflectance);
+        console.log("O600: " + currentBatchArray[dataTimeIndex].O600_reflectance);
+        console.log("R650: " + currentBatchArray[dataTimeIndex].R650_reflectance);
+        console.log(
+          "nir610: " + currentBatchArray[dataTimeIndex].nir610_reflectance
+        );
+        console.log(
+          "nir680: " + currentBatchArray[dataTimeIndex].nir680_reflectance
+        );
+        console.log(
+          "nir730: " + currentBatchArray[dataTimeIndex].nir730_reflectance
+        );
+        console.log(
+          "nir760: " + currentBatchArray[dataTimeIndex].nir760_reflectance
+        );
+        console.log(
+          "nir810: " + currentBatchArray[dataTimeIndex].nir810_reflectance
+        );
+        console.log(
+          "nir860: " + currentBatchArray[dataTimeIndex].nir860_reflectance
+        );
+        console.log("DATA TIME INDEX: " + dataTimeIndex);
+  
+        reflectance_chart.data.datasets[0].data = [
+          {
+            x: 450,
+            y: currentBatchArray[dataTimeIndex].V450_reflectance,
+          },
+          {
+            x: 500,
+            y: currentBatchArray[dataTimeIndex].B500_reflectance,
+          },
+          {
+            x: 550,
+            y: currentBatchArray[dataTimeIndex].G550_reflectance,
+          },
+          {
+            x: 570,
+            y: currentBatchArray[dataTimeIndex].Y570_reflectance,
+          },
+          {
+            x: 600,
+            y: currentBatchArray[dataTimeIndex].O600_reflectance,
+          },
+          {
+            x: 610,
+            y: currentBatchArray[dataTimeIndex].nir610_reflectance,
+          },
+          {
+            x: 650,
+            y: currentBatchArray[dataTimeIndex].R650_reflectance,
+          },
+          {
+            x: 680,
+            y: currentBatchArray[dataTimeIndex].nir680_reflectance,
+          },
+          {
+            x: 730,
+            y: currentBatchArray[dataTimeIndex].nir730_reflectance,
+          },
+          {
+            x: 760,
+            y: currentBatchArray[dataTimeIndex].nir760_reflectance,
+          },
+          {
+            x: 810,
+            y: currentBatchArray[dataTimeIndex].nir810_reflectance,
+          },
+          {
+            x: 860,
+            y: currentBatchArray[dataTimeIndex].nir860_reflectance,
+          },
+        ];
+        //console.log(currentBatchArray[dataTimeIndex]);
+      }
+  
+      //** UPDATE NIRv */
+      if (calibrationBatchSelected) {
+        for (let i = 0; i < currentBatchArray.length; i++) {
+          //** GRAB LAST VALUE OF ARRAY TO SET THE MAX TIMESTAMP OF CHART */
+          if (i == currentBatchArray.length - 1) {
+            NIRv_chart.options.scales.x.max = currentBatchArray[
+              i
+            ].timestamp.replace(/\s/g, "");
+            //console.log(currentBatchArray[i].timestamp.replace(/\s/g, ""));
+          }
+          //** GRAB FIRST VALUE OF ARRAY TO SET THE MIN TIMESTAMP OF CHART */
+          else if (i == 0) {
+            NIRv_chart.options.scales.x.min = currentBatchArray[
+              i
+            ].timestamp.replace(/\s/g, "");
+          }
+  
+          NIRv_chart.data.datasets[0].data[i] = {
+            x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
+            // x: parseFloat(currentBatchArray[i].decimal_hour),
+            y: currentBatchArray[i].NIRv,
+          };
+        }
+        //console.log("GRAPHED NIRv");
+      }
+  
+      //** UPDATE SR or SIMPLE RATIO **//
+      if (sr_element.classList.contains("selected")) {
+        for (let i = 0; i < currentBatchArray.length; i++) {
+          //** GRAB LAST VALUE OF ARRAY TO SET THE MAX TIMESTAMP OF CHART */
+          if (i == currentBatchArray.length - 1) {
+            SR_chart.options.scales.x.max = currentBatchArray[
+              i
+            ].timestamp.replace(/\s/g, "");
+          }
+          //** GRAB FIRST VALUE OF ARRAY TO SET THE MIN TIMESTAMP OF CHART */
+          else if (i == 0) {
+            SR_chart.options.scales.x.min = currentBatchArray[
+              i
+            ].timestamp.replace(/\s/g, "");
+          }
+  
+          //** SELECT NUMERATOR BASED ON SELECTOR VALUE */
+          if (srGraph_numerator.value == "450nm") {
+            srGraph_numerator_value =
+              currentBatchArray[i].V450_irradiance_uW_per_cm_squared;
+          } else if (srGraph_numerator.value == "500nm") {
+            srGraph_numerator_value =
+              currentBatchArray[i].B500_irradiance_uW_per_cm_squared;
+          } else if (srGraph_numerator.value == "550nm") {
+            srGraph_numerator_value =
+              currentBatchArray[i].G550_irradiance_uW_per_cm_squared;
+          } else if (srGraph_numerator.value == "570nm") {
+            srGraph_numerator_value =
+              currentBatchArray[i].Y570_irradiance_uW_per_cm_squared;
+          } else if (srGraph_numerator.value == "600nm") {
+            srGraph_numerator_value =
+              currentBatchArray[i].O600_irradiance_uW_per_cm_squared;
+          } else if (srGraph_numerator.value == "650nm") {
+            srGraph_numerator_value =
+              currentBatchArray[i].R650_irradiance_uW_per_cm_squared;
+          } else if (srGraph_numerator.value == "610nm") {
+            srGraph_numerator_value =
+              currentBatchArray[i].nir610_irradiance_uW_per_cm_squared;
+          } else if (srGraph_numerator.value == "680nm") {
+            srGraph_numerator_value =
+              currentBatchArray[i].nir680_irradiance_uW_per_cm_squared;
+          } else if (srGraph_numerator.value == "730nm") {
+            srGraph_numerator_value =
+              currentBatchArray[i].nir730_irradiance_uW_per_cm_squared;
+          } else if (srGraph_numerator.value == "760nm") {
+            srGraph_numerator_value =
+              currentBatchArray[i].nir760_irradiance_uW_per_cm_squared;
+          } else if (srGraph_numerator.value == "810nm") {
+            srGraph_numerator_value =
+              currentBatchArray[i].nir810_irradiance_uW_per_cm_squared;
+          } else if (srGraph_numerator.value == "860nm") {
+            srGraph_numerator_value =
+              currentBatchArray[i].nir860_irradiance_uW_per_cm_squared;
+          }
+          //** DENOMINATOR */
+          if (srGraph_denominator.value == "450nm") {
+            srGraph_denominator_value =
+              currentBatchArray[i].V450_irradiance_uW_per_cm_squared;
+          } else if (srGraph_denominator.value == "500nm") {
+            srGraph_denominator_value =
+              currentBatchArray[i].B500_irradiance_uW_per_cm_squared;
+          } else if (srGraph_denominator.value == "550nm") {
+            srGraph_denominator_value =
+              currentBatchArray[i].G550_irradiance_uW_per_cm_squared;
+          } else if (srGraph_denominator.value == "570nm") {
+            srGraph_denominator_value =
+              currentBatchArray[i].Y570_irradiance_uW_per_cm_squared;
+          } else if (srGraph_denominator.value == "600nm") {
+            srGraph_denominator_value =
+              currentBatchArray[i].O600_irradiance_uW_per_cm_squared;
+          } else if (srGraph_denominator.value == "650nm") {
+            srGraph_denominator_value =
+              currentBatchArray[i].R650_irradiance_uW_per_cm_squared;
+          } else if (srGraph_denominator.value == "610nm") {
+            srGraph_denominator_value =
+              currentBatchArray[i].nir610_irradiance_uW_per_cm_squared;
+          } else if (srGraph_denominator.value == "680nm") {
+            srGraph_denominator_value =
+              currentBatchArray[i].nir680_irradiance_uW_per_cm_squared;
+          } else if (srGraph_denominator.value == "730nm") {
+            srGraph_denominator_value =
+              currentBatchArray[i].nir730_irradiance_uW_per_cm_squared;
+          } else if (srGraph_denominator.value == "760nm") {
+            srGraph_denominator_value =
+              currentBatchArray[i].nir760_irradiance_uW_per_cm_squared;
+          } else if (srGraph_denominator.value == "810nm") {
+            srGraph_denominator_value =
+              currentBatchArray[i].nir810_irradiance_uW_per_cm_squared;
+          } else if (srGraph_denominator.value == "860nm") {
+            srGraph_denominator_value =
+              currentBatchArray[i].nir860_irradiance_uW_per_cm_squared;
+          }
+  
+          currentBatchArray[i].simpleRatio =
+            srGraph_numerator_value / srGraph_denominator_value;
+          // currentBatchArray[i].simpleRatio = currentBatchArray[i].nir860_irradiance_uW_per_cm_squared / currentBatchArray[i].R650_irradiance_uW_per_cm_squared;
+          // currentBatchArray[i].simpleRatio = currentBatchArray[i].nir860_reflectance / currentBatchArray[i].R650_reflectance;
+  
+          SR_chart.data.datasets[0].data[i] = {
+            x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
+            y: currentBatchArray[i].simpleRatio,
+          };
+  
+          //console.log("GRAPHED Simple Ratio: " + currentBatchArray[i].B500_irradiance_uW_per_cm_squared);
+        }
+      }
+  
+      //** UPDATE DSWI 4 **//
+      if (dswi_element.classList.contains("selected")) {
+        for (let i = 0; i < currentBatchArray.length; i++) {
+          //** GRAB LAST VALUE OF ARRAY TO SET THE MAX TIMESTAMP OF CHART */
+          if (i == currentBatchArray.length - 1) {
+            DSWI_chart.options.scales.x.max = currentBatchArray[
+              i
+            ].timestamp.replace(/\s/g, "");
+          }
+          //** GRAB FIRST VALUE OF ARRAY TO SET THE MIN TIMESTAMP OF CHART */
+          else if (i == 0) {
+            DSWI_chart.options.scales.x.min = currentBatchArray[
+              i
+            ].timestamp.replace(/\s/g, "");
+          }
+  
+          //currentBatchArray[i].DSWI = currentBatchArray[i].G550_irradiance_uW_per_cm_squared / currentBatchArray[i].nir680_irradiance_uW_per_cm_squared;
+          currentBatchArray[i].DSWI =
+            currentBatchArray[i].G550_reflectance /
+            currentBatchArray[i].nir680_reflectance;
+  
+          DSWI_chart.data.datasets[0].data[i] = {
+            x: currentBatchArray[i].timestamp.replace(/\s/g, ""),
+            y: currentBatchArray[i].DSWI,
+          };
+        }
       }
     }
-    //** UPDATE EXTRA INFO LABELS */
-    dateHeader_label.innerHTML =
-      currentBatchArray[dataTimeIndex].timestamp
-        .replace(/\s/g, "")
-        .substring(4, 6) +
-      "/" +
-      currentBatchArray[dataTimeIndex].timestamp
-        .replace(/\s/g, "")
-        .substring(6, 8) +
-      "/" +
-      currentBatchArray[dataTimeIndex].timestamp
-        .replace(/\s/g, "")
-        .substring(0, 4);
 
-    // uid_label.innerHTML = "UID: " + currentBatchArray[dataTimeIndex].UID;
-
-    var string = currentBatchArray[dataTimeIndex].timestamp.replace(/\s/g, ""),
-      date = new Date(
-        string.replace(/(....)(..)(.....)(..)(.*)/, "$1-$2-$3:$4:$5")
-      );
-    var dateTime_time = date.toLocaleTimeString("en-US");
-    time_label.innerHTML = "time: " + dateTime_time;
     
+    //** UPDATE EXTRA INFO LABELS */
+
+    var string, dateTime_time, date;
+
+    //** DATE HEADER LABEL AND TIME LABEL VALUES BASED ON WHICH TIMESTAMP IS AVAILABLE */
+    if(currentBatchArray[dataTimeIndex].timestamp)
+    {
+      dateHeader_label.innerHTML =
+        currentBatchArray[dataTimeIndex].timestamp
+          .replace(/\s/g, "")
+          .substring(4, 6) +
+        "/" +
+        currentBatchArray[dataTimeIndex].timestamp
+          .replace(/\s/g, "")
+          .substring(6, 8) +
+        "/" +
+        currentBatchArray[dataTimeIndex].timestamp
+          .replace(/\s/g, "")
+          .substring(0, 4);
+
+      string = currentBatchArray[dataTimeIndex].timestamp.replace(/\s/g, ""),
+        date = new Date(
+          string.replace(/(....)(..)(.....)(..)(.*)/, "$1-$2-$3:$4:$5")
+        );
+      dateTime_time = date.toLocaleTimeString("en-US");
+
+    }
+    else if(currentBatchArray[dataTimeIndex].timestamp_iso8601)
+    {
+      dateHeader_label.innerHTML =
+        currentBatchArray[dataTimeIndex].timestamp_iso8601
+          .replace(/\s/g, "")
+          .substring(4, 6) +
+        "/" +
+        currentBatchArray[dataTimeIndex].timestamp_iso8601
+          .replace(/\s/g, "")
+          .substring(6, 8) +
+        "/" +
+        currentBatchArray[dataTimeIndex].timestamp_iso8601
+          .replace(/\s/g, "")
+          .substring(0, 4);
+
+      string = currentBatchArray[dataTimeIndex].timestamp_iso8601.replace(/\s/g, ""),
+          date = new Date(
+            string.replace(/(....)(..)(.....)(..)(.*)/, "$1-$2-$3:$4:$5")
+          );
+        dateTime_time = date.toLocaleTimeString("en-US");
+    }
+    time_label.innerHTML = "time: " + dateTime_time;
+
     airTemp_label.innerHTML = currentBatchArray[dataTimeIndex].air_temperature_C;
     updateGauge(air_temp_Gauge, surface_temp_Gradient, currentBatchArray[dataTimeIndex].air_temperature_C, -20, 60);
 
@@ -4200,11 +5266,13 @@ function decipherSerialMessage(message) {
         //** MAKE SURE ITS GREATER THAN PREVIOUS, WILL HAVE ISSUES IF USED AT MIDNIGHT */
         if((parseFloat(decimal_hour_new)) > decimal_hour + overTime_increment)
         {
+          liveOverTime_reading = true;
           decimal_hour = parseFloat(decimal_hour_new);
           //console.log("NEW");
         }
         else
         {
+          liveOverTime_reading = false;
           return;
         }
       }
@@ -4603,6 +5671,9 @@ function startTimer() {
 }
 
 function addBatches(dataArray) {
+  
+  console.log(dataArray);
+  
   for (var i = 0; i < dataArray.length; i++) 
   {
     if(dataArray[i].length != 0)
@@ -4642,12 +5713,25 @@ function addBatches(dataArray) {
         }
       };
 
-      var date =
-      dataArray[i][0].timestamp.replace(/\s/g, "").substr(0, 4) +
-      "/" +
-      dataArray[i][0].timestamp.replace(/\s/g, "").substr(4, 2) +
-      "/" +
-      dataArray[i][0].timestamp.replace(/\s/g, "").substr(6, 2);
+      var date;
+
+      //** CHECK BOTH TIMESTAMP TYPES */
+      if(dataArray[i][0].timestamp)
+      {
+        date = dataArray[i][0].timestamp.replace(/\s/g, "").substr(0, 4) +
+        "/" +
+        dataArray[i][0].timestamp.replace(/\s/g, "").substr(4, 2) +
+        "/" +
+        dataArray[i][0].timestamp.replace(/\s/g, "").substr(6, 2);
+      }
+      else if(dataArray[i][0].timestamp_iso8601)
+      { 
+        date = dataArray[i][0].timestamp_iso8601.replace(/\s/g, "").substr(0, 4) +
+        "/" +
+        dataArray[i][0].timestamp_iso8601.replace(/\s/g, "").substr(4, 2) +
+        "/" +
+        dataArray[i][0].timestamp_iso8601.replace(/\s/g, "").substr(6, 2);
+      }
 
       div.innerHTML = dataArray[i][0].batch_number;
       div.index = i;
@@ -4805,9 +5889,7 @@ function saveCSV() {
   let csv = "";
   let headers = "";
   let firstHeader = true;
-  console.log(
-    "START: " + editRange_start.value + ", END: " + editRange_end.value
-  );
+  console.log(currentBatchArray);
 
   var saveArray = currentBatchArray.slice(
     editRange_start.value - 1,
@@ -4853,6 +5935,30 @@ function saveCSV() {
   link.setAttribute("download", "my_data.txt");
   document.body.appendChild(link);
   link.click();
+}
+
+function saveCSVLive()
+{
+  var liveDataCSVArray = [];
+  console.log(liveChart_overTime.data);
+
+  //** CYCLE THROUGH LABELS THAT CONTAIN ALL DATA IN A LABEL IN THE LIVE CHART */
+  for(var i = 0; i < liveChart_overTime.data.datasets.length; i++)
+  {
+    console.log(liveChart_overTime.data.datasets[i].data.length);
+    //** EXPORT DATA IN EACH LABEL, (EX. ALL DATA IN THE GROUP 450NM) */
+    for(var x = 0; x < liveChart_overTime.data.datasets[i].data.length; x++)
+    {
+      console.log(liveChart_overTime.data.datasets[i].label);
+
+      // if(liveChart_overTime.data.datasets[i].label == '450nm')
+      // {
+      //   liveDataCSVArray[x].
+      // }
+      
+      // liveDataCSVArray[x].push();
+    }
+  }
 }
 
 //** CALCULATES ALL IRRADIANCE AVERAGES FOR THE CALIBRATION BATCH */
@@ -5937,7 +7043,6 @@ overTime_live.addEventListener("click", function () {
     liveOverTime_reading = true;
     resetLiveGraph();
   }
-  
 
   document.getElementById("liveGraph_overTime").classList.toggle("active");
   updateGraphGrid();
@@ -6092,6 +7197,11 @@ function resetLiveGraph()
 
   liveChart_overTime.update();
 }
+
+// download_liveGraph.addEventListener("click", function()
+// {
+//   saveCSVLive();
+// });
 
 //** SERIAL PORT FUNCTIONALITY */
 navigator.serial.addEventListener("connect", (e) => {

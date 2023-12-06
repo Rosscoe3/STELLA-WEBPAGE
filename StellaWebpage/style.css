@@ -421,7 +421,21 @@ label {
   transition: all 0.25s ease-in-out;
 }
 
-.modeContainer select{
+.chartBox .modeContainer .dataMode{
+  pointer-events: none;
+}
+
+.chartBox.active .modeContainer .dataMode{
+  pointer-events: auto;
+}
+
+.chartBox .modeContainer select{
+  pointer-events: none;
+
+  font-family: "Inter", sans-serif;
+}
+
+.chartBox.active .modeContainer select{
   pointer-events: auto;
 
   font-family: "Inter", sans-serif;
