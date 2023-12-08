@@ -210,14 +210,6 @@ var battery_voltage_Gradient = [
   { pct: 0.5, color: { r: 255, g: 179, b: 75 } },
   { pct: 1.0, color: { r: 252, g: 77, b: 39 } }, ];
 
-  // rgb(241,1,0)
-  // rgb(199,64,17)  
-  // rgb(55,161,60)
-  // rgb(55,175,174)
-  // rgb(18,149,169)  
-  // rgb(57,132,174)  
-  // rgb(57,71,116)
-
 var relative_humidity_Gradient = [
 { pct: 0.0, color: { r: 255, g: 255, b: 205 } },
 { pct: 0.166, color: { r: 199, g: 233, b: 181 } },
@@ -2646,7 +2638,6 @@ upload_additional.addEventListener("input", function () {
   processFiles(upload_additional.files, true);
 });
 
-
 function uploadFile(file)
 {
   //** IF A FILE HAS ALREADY BEEN UPLOADED */
@@ -2988,7 +2979,6 @@ function updateChart(backward, index, exactIndex) {
 
     var progress = (dataTimeIndex / (currentBatchArray.length - 1)) * 100;
     frameNumber.innerHTML = dataTimeIndex + 1 + "/" + currentBatchArray.length;
-
 
     //** CHECK DEPENDING ON TIMESTAMP WHAT VERSION OF HEADERS YOU ARE USING */
     if(currentBatchArray[dataTimeIndex].timestamp)
@@ -5010,15 +5000,11 @@ function decipherSerialMessage(message) {
 
       if (!isNaN(parseFloat(decimal_hour_new))) {
 
-        //console.log("decimal Hour with increment: " + (decimal_hour + overTime_increment));
-        //console.log("incomming decimal hour: " + parseFloat(decimal_hour_new));
-
         //** MAKE SURE ITS GREATER THAN PREVIOUS, WILL HAVE ISSUES IF USED AT MIDNIGHT */
         if((parseFloat(decimal_hour_new)) > decimal_hour + overTime_increment)
         {
           liveOverTime_reading = true;
           decimal_hour = parseFloat(decimal_hour_new);
-          //console.log("NEW");
         }
         else
         {
@@ -5387,8 +5373,6 @@ function decipherSerialMessage(message) {
       range_m: 0,
       timestamp: 0,
     });
-
-    //console.log(liveGraph_overTime_array);
   }
 }
 
@@ -6090,13 +6074,6 @@ menuElement.addEventListener("click", function (ev) {
     sidebarButton.innerHTML = "<";
     sidebar_live.classList.toggle("active");
   }
-
-  // if (controlSidebar.classList.contains("active")) {
-  //   controlSidebar.classList.toggle("active");
-  // }
-  // if (controlSidebar_live.classList.contains("active")) {
-  //   controlSidebar_live.classList.toggle("active");
-  // }
   if (document.getElementById("temp_Graph").classList.contains("active")) {
     document.getElementById("temp_Graph").classList.toggle("active");
   }
