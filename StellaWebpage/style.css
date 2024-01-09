@@ -173,6 +173,16 @@ body {
   margin: 1%;
 }
 
+.landing h2 {
+  position: inherit;
+  bottom: 0%;
+  right: 0%;
+  text-align: justify;
+  font-size: 1vw;
+  padding-right: 1vw;
+  margin: 0%;
+}
+
 .landing img {
   position: absolute;
   width: calc(50vh + 50vw);

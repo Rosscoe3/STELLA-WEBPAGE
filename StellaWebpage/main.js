@@ -6864,7 +6864,7 @@ connectDevice.addEventListener("click", function () {
 });
 
 about_button.addEventListener("click", function () {
-  window.open("https://landsat.gsfc.nasa.gov/stella/", "_blank");
+  window.open("https://landsat.gsfc.nasa.gov/stella/stella-dataviewer-about/", "_blank");
 });
 
 recordContainer.addEventListener("click", function () {
