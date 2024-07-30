@@ -491,14 +491,14 @@ var data = {
           y: 1,
         },
       ],
-      showLine: true,
+      showLine: false,
       label: "610nm",
-      fill: false,
+      fill: true,
       hidden: true,
-      backgroundColor: "rgb(212.5,0,0)",
-      borderColor: "rgb(212.5,0,0)",
+      backgroundColor: "rgb(255, 0, 98)",
+      borderColor: "rgb(255, 0, 98)",
+      pointBackgroundColor: "rgb(255, 0, 98)",
       lineTension: 0.25,
-      pointBackgroundColor: "rgb(189, 195, 199)",
     },
     //** 680 */
     {
@@ -508,7 +508,7 @@ var data = {
           y: 1,
         },
       ],
-      showLine: true,
+      showLine: false,
       label: "680nm",
       fill: false,
       hidden: true,
@@ -525,7 +525,7 @@ var data = {
           y: 1,
         },
       ],
-      showLine: true,
+      showLine: false,
       label: "730nm",
       fill: false,
       hidden: true,
@@ -542,7 +542,7 @@ var data = {
           y: 1,
         },
       ],
-      showLine: true,
+      showLine: false,
       label: "760nm",
       fill: false,
       hidden: true,
@@ -559,7 +559,7 @@ var data = {
           y: 1,
         },
       ],
-      showLine: true,
+      showLine: false,
       label: "810nm",
       fill: false,
       hidden: true,
@@ -576,7 +576,7 @@ var data = {
           y: 1,
         },
       ],
-      showLine: true,
+      showLine: false,
       label: "860nm",
       fill: false,
       hidden: true,
@@ -593,14 +593,14 @@ var data = {
           y: 1,
         },
       ],
-      showLine: true,
+      showLine: false,
       label: "V",
       fill: false,
       hidden: true,
       backgroundColor: "rgb(147,112,219)",
       borderColor: "rgb(147,112,219)",
       lineTension: 0.25,
-      pointBackgroundColor: "rgb(189, 195, 199)",
+      pointBackgroundColor: "rgb(147,112,219)",
     },
     //** B */
     {
@@ -610,7 +610,7 @@ var data = {
           y: 1,
         },
       ],
-      showLine: true,
+      showLine: false,
       label: "B",
       fill: false,
       hidden: true,
@@ -627,7 +627,7 @@ var data = {
           y: 1,
         },
       ],
-      showLine: true,
+      showLine: false,
       label: "G",
       fill: false,
       hidden: true,
@@ -644,7 +644,7 @@ var data = {
           y: 1,
         },
       ],
-      showLine: true,
+      showLine: false,
       label: "Y",
       fill: false,
       hidden: true,
@@ -661,7 +661,7 @@ var data = {
           y: 1,
         },
       ],
-      showLine: true,
+      showLine: false,
       label: "O",
       hidden: true,
       fill: false,
@@ -678,7 +678,7 @@ var data = {
           y: 1,
         },
       ],
-      showLine: true,
+      showLine: false,
       label: "R",
       fill: false,
       hidden: true,
@@ -715,12 +715,14 @@ var data = {
           y: infraredStartData[5],
         },
       ],
-      showLine: true,
+      showLine: false,
       label: "Infrared",
       fill: true,
-      backgroundColor: infraredGradient,
-      borderColor: "rgb(255, 255, 255)",
-      pointBackgroundColor: "rgb(189, 195, 199)",
+      backgroundColor: "rgba(150, 150, 150)",
+      borderColor: "rgba(150, 150, 150)",
+      pointBackgroundColor: ["rgb(255, 0, 98)", "(200, 40, 40)", "rgb(200, 80, 80)", 
+        "rgb(200, 120, 120)", "rgb(200, 160, 160)", "rgb(200, 200, 200)"],
+      pointRadius: 4,  
     },
     //** VISIBLE dataset 13*/
     {
@@ -750,12 +752,14 @@ var data = {
           y: visibleStartData[5],
         },
       ],
-      showLine: true,
+      showLine: false,
       label: "Visible",
       fill: true,
-      backgroundColor: visibleGradient,
-      borderColor: "rgb(255, 255, 255)",
-      pointBackgroundColor: "rgb(189, 195, 199)",
+      backgroundColor: "rgba(150, 150, 150)",
+      borderColor: "rgb(150, 150, 150)",
+      pointBackgroundColor: ["rgb(147,112,219)", "rgb(0,0,255)", "rgb(0,255,0)", 
+        "rgb(255,255,0)", "rgb(255,140,0)", "rgb(255,0,0)"],
+      pointRadius: 4,
     },
     //** STANDARD DEVIATION *14*/
     {
@@ -863,7 +867,7 @@ var data_Reflectance = {
     //** Reflectance */
     {
       data: [],
-      showLine: true,
+      showLine: false,
       label: "Reflectance",
       fill: false,
       hidden: false,
@@ -1095,12 +1099,14 @@ var data3 = {
           y: visibleStartData[5],
         },
       ],
-      showLine: true,
+      showLine: false,
       label: "Visible",
       fill: true,
       backgroundColor: visibleGradient,
-      borderColor: "rgb(255, 255, 255)",
-      pointBackgroundColor: "rgb(189, 195, 199)",
+      borderColor: "rgb(150, 150, 150)",
+      pointBackgroundColor: ["rgb(147,112,219)", "rgb(0,0,255)", "rgb(0,255,0)", 
+        "rgb(255,255,0)", "rgb(255,140,0)", "rgb(255,0,0)"],
+      pointRadius: 4,
     },
     //** INFRARED */
     {
@@ -1130,12 +1136,14 @@ var data3 = {
           y: infraredStartData[5],
         },
       ],
-      showLine: true,
+      showLine: false,
       label: "Infrared",
       fill: true,
       backgroundColor: infraredGradient,
-      borderColor: "rgb(255, 255, 255)",
-      pointBackgroundColor: "rgb(189, 195, 199)",
+      borderColor: "rgb(150, 150, 150)",
+      pointBackgroundColor: ["rgb(255, 0, 98)", "(200, 40, 40)", "rgb(200, 80, 80)", 
+        "rgb(200, 120, 120)", "rgb(200, 160, 160)", "rgb(200, 200, 200)"],
+      pointRadius: 4,
     },
   ],
 };
@@ -2469,7 +2477,7 @@ function init() {
     false
   );
 
-  graphGradients();
+  //graphGradients();
 }
 
 //** GRABS THE DATA FROM THE DROP AND SENDS IT TO BE CONVERTED INTO A CSV */
@@ -2665,7 +2673,7 @@ function uploadFile(file)
       sidebarButton.classList.toggle("active");
       landing.classList.toggle("active");
     }
-    graphGradients();
+    //graphGradients();
 
     //** WHEN THE DATA FILE IS LOADED */
     reader.onload = function (event) 
@@ -6257,7 +6265,7 @@ var doit;
 window.onresize = function () {
   clearTimeout(doit);
   doit = setTimeout(function () {
-    graphGradients();
+    //graphGradients();
   }, 1000);
 
   mainChart.resize();
@@ -6616,7 +6624,7 @@ ndvi_element.addEventListener("click", function () {
   document.getElementById("calcGraph").classList.toggle("active");
   updateGraphGrid("calcGraph");
   updateChartLabels();
-  graphGradients();
+  //graphGradients();
   updateChart();
 
   clearTimeout(animWaitFunc);
@@ -6641,7 +6649,7 @@ reflectance_element.addEventListener("click", function () {
   document.getElementById("reflectance_Graph").classList.toggle("active");
   updateGraphGrid("reflectance_Graph");
   updateChartLabels();
-  graphGradients();
+  //graphGradients();
   updateChart();
 
   clearTimeout(animWaitFunc);
@@ -6665,7 +6673,7 @@ nirv_element.addEventListener("click", function () {
   document.getElementById("NIRv_Graph").classList.toggle("active");
   updateGraphGrid("NIRv_Graph");
   updateChartLabels();
-  graphGradients();
+  //graphGradients();
   updateChart();
 
   clearTimeout(animWaitFunc);
@@ -6691,7 +6699,7 @@ sr_element.addEventListener("click", function () {
 
   updateChart();
   updateChartLabels();
-  graphGradients();
+  //graphGradients();
 
   clearTimeout(animWaitFunc);
 
@@ -6716,7 +6724,7 @@ dswi_element.addEventListener("click", function () {
 
   updateChart();
   updateChartLabels();
-  graphGradients();
+  //graphGradients();
 
   clearTimeout(animWaitFunc);
 
@@ -6739,7 +6747,7 @@ raw_element.addEventListener("click", function () {
   document.getElementById("mainGraph").classList.toggle("active");
   updateGraphGrid("mainGraph");
   updateChartLabels();
-  graphGradients();
+  //graphGradients();
 
   clearTimeout(animWaitFunc);
 
@@ -6762,7 +6770,7 @@ airSurface_element.addEventListener("click", function () {
   document.getElementById("temp_Graph").classList.toggle("active");
   updateGraphGrid("temp_Graph");
   updateChartLabels();
-  graphGradients();
+  //graphGradients();
 
   clearTimeout(animWaitFunc);
 
@@ -6784,7 +6792,7 @@ rawOverTime_element.addEventListener("click", function () {
   document.getElementById("rawOverTime_Graph").classList.toggle("active");
   updateGraphGrid("rawOverTime_Graph");
   updateChartLabels();
-  graphGradients();
+  //graphGradients();
 
   clearTimeout(animWaitFunc);
 
@@ -6809,7 +6817,7 @@ raw_element_live.addEventListener("click", function () {
   document.getElementById("liveGraph").classList.toggle("active");
   updateGraphGrid();
   updateChartLabels();
-  graphGradients();
+  //graphGradients();
 
   clearTimeout(animWaitFunc);
 
